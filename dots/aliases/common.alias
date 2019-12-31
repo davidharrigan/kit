@@ -1,0 +1,9 @@
+# common aliases
+
+alias co="git checkout"
+alias cob="git checkout -b"
+alias cm="git commit -m"
+alias pull="git pull"
+alias push="git push"
+alias dif="git difftool --tool=opendiff -d"
+alias cleanup-branches="git branch -d $(git branch --merged | grep -v master | grep -v '^\*')"

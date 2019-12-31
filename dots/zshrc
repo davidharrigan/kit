@@ -1,0 +1,31 @@
+# Path to your oh-my-zsh installation.
+export ZSH=$HOME/.oh-my-zsh
+export ZSH_CUSTOM=$HOME/.zsh-custom
+
+# autocomplete
+autoload -Uz compinit
+compinit -i
+autoload -Uz bashcompinit
+bashcompinit
+
+# ZSH_THEME="dharrigan"
+ZSH_THEME="geometry/geometry"
+
+## oh-my-zsh configuration
+COMPLETION_WAITING_DOTS="true"
+
+# Plug-ins
+plugins=(git)
+
+source $ZSH/oh-my-zsh.sh
+
+# Load aliases
+. <(cat $HOME/.aliases/*.alias)
+
+# Load OS specific environments
+if [[ "$(uname)" == "Darwin" ]]; then
+    . $HOME/.env/osx/osx.env
+fi
+
+# Load environment variables
+. <(cat $HOME/.env/*.env)
