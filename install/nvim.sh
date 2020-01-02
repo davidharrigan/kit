@@ -1,4 +1,5 @@
 #/usr/bin/env bash
+set -e
 
 PLUG_DIR="$HOME/.local/share/nvim/site/autoload/plug.vim"
 
