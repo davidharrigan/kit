@@ -11,8 +11,6 @@ dotfile () {
     echo "$output"
 }
 
-echo "$BACKUP_DIR"
-
 if [ ! -d $BACKUP_DIR ]; then
     echo Create $BACKUP_DIR
     mkdir "$BACKUP_DIR"
