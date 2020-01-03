@@ -136,4 +136,5 @@ let g:go_highlight_build_constraints = 1
 
 " ----- NERDTree -----
 nmap <silent> <C-E> :NERDTreeToggle<CR>
-let NERDTreeIgnore=['\~$', 'node_modules[[dir]]', 'bower_components[[dir]]', 'dist[[dir]]', 'venv[[dir]]', '\.pyc$']
+let NERDTreeIgnore=['\~$', 'node_modules[[dir]]',  'dist[[dir]]', 'venv[[dir]]', '\.pyc$']
+
