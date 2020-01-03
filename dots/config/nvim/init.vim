@@ -76,13 +76,13 @@ set fillchars+=vert:\
 hi VertSplit ctermbg=NONE guibg=NONE
 
 " Italicize comments
-highlight Comment cterm=italic gui=itali
+highlight Comment cterm=italic gui=italic
 
 " Set line height
 set linespace=4
 
 " Disable bell banners
-set noerrorbells novisualbell t_vb
+" set noerrorbells novisualbell t_vb
 
 " ============================================================================
 "  Maps

@@ -1,4 +1,12 @@
 
+
+install: install/nvim install/dots
+
+.PHONY: install/nvim
+install/nvim:
+	@./install/nvim.sh
+	@nvim +PlugInstall +qall
+
 .PHONY: install/dots
 install/dots:
 	@./install/install-dots.sh

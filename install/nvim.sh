@@ -3,11 +3,11 @@ set -e
 
 PLUG_DIR="$HOME/.local/share/nvim/site/autoload/plug.vim"
 
-echo "installing nvim dependencies..."
+echo "> installing nvim dependencies..."
 
 # Install plug
 if [ ! -f $PLUG_DIR ]; then
-echo "installing vim plug...."
+echo "> installing vim plug...."
 echo ""
 
 curl -fLo $PLUG_DIR --create-dirs \
@@ -15,4 +15,4 @@ curl -fLo $PLUG_DIR --create-dirs \
 fi
 
 echo ""
-echo "done"
+echo "done ✅"
