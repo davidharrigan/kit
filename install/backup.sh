@@ -1,29 +1,34 @@
 #/usr/bin/env bash
-set -e
 
-SCRIPT_HOME=$(cd "$(dirname $0)" && pwd)
-KIT_HOME=$(echo $SCRIPT_HOME | rev | cut -d/ -f2- | rev)
-
-echo "hello"
-source vars.env
-
-BACKUP_DIR=$KIT_HOME/backup
+DOT_FILES=./dots
+BACKUP_DIR=./backup
 THIS_BACKUP=$BACKUP_DIR/backup-$(date +%F-%T)
+
+dotfile () {
+    local output=$1
+    output=${output/#$DOT_FILES}
+    output=${output#/}
+    echo "$output"
+}
+
+echo "$BACKUP_DIR"
 
 if [ ! -d $BACKUP_DIR ]; then
     echo Create $BACKUP_DIR
     mkdir "$BACKUP_DIR"
 fi
 
-echo Backing up current configuration into [$THIS_BACKUP]
+echo Backing up current configuration into $THIS_BACKUP
 mkdir "$THIS_BACKUP"
 
-result="Backed up: "
-for backup_file in "${DOT_FILES[@]}"; do
-    if [ -f "~/.$backup_file" ]; then
-        cp "~/.$backup_file" "$THIS_BACKUP/$backup_file"
-        $result="$result $backup_file"
+# cp "$HOME/.$backup_file" "$THIS_BACKUP/$backup_file"
+
+find $DOT_FILES -type f | while read f; do
+    df=$(dotfile $f)
+    if [ -f "$HOME/.$df" ]; then
+        echo "backing up $HOME/.$df"
+        mkdir -p `dirname $THIS_BACKUP/$df`
+        cp -r "$HOME/.$df" "$THIS_BACKUP/$df"
     fi
 done
 
-echo $result

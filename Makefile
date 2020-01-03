@@ -1,3 +1,10 @@
 
+
+.PHONY: backup
 backup:
-	./install/backup.sh
+	@./install/backup.sh
+
+.PHONY: clean/backups
+clean/backups:
+	@./install/clean-backups.sh
+
