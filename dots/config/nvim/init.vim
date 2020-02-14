@@ -10,6 +10,10 @@ call plug#begin('~/.local/share/nvim/plugged')
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'jlanzarotta/bufexplorer' " not sure if this is needed anymore (fzf)
+Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'tpope/vim-fugitive'
 
 " Git
 Plug 'airblade/vim-gitgutter'
@@ -74,7 +78,7 @@ set spell spelllang=en_us
 setlocal spell spelllang=en_us
 
 " Style vertical split bar
-set fillchars+=vert:\ 
+set fillchars+=vert:\
 hi VertSplit ctermbg=NONE guibg=NONE
 
 " Italicize comments
@@ -86,12 +90,16 @@ set linespace=4
 " Disable bell banners
 " set noerrorbells novisualbell t_vb
 
+
 " ============================================================================
 "  Maps
 " ============================================================================
 nmap <silent> <leader>V :source ~/.config/nvim/init.vim <cr>:filetype detect<cr>
 nmap <silent> <leader>bh <cr>:bprevious<cr>
 nmap <silent> <leader>bl <cr>:bnext<cr>
+" fzf
+nnoremap <C-p> :Files<Cr>
+nnoremap <C-g> :Rg<Cr>
 
 " Toggle spelling with the F7 key
 nmap <silent> <F7> :setlocal spell! spelllang=en_us<cr>
@@ -116,6 +124,18 @@ set title
 
 " Toggle paste
 set pastetoggle=<F2>
+
+
+" ============================================================================
+"  Function
+" ============================================================================
+fun! TrimWhitespace()
+    let l:save = winsaveview()
+    keeppatterns %s/\s\+$//e
+    call winrestview(l:save)
+endfun
+command! TrimWhitespace call TrimWhitespace()
+
 
 " ============================================================================
 "  Language
