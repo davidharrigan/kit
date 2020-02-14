@@ -6,6 +6,7 @@ install: install/nvim install/dots
 install/nvim:
 	@./install/nvim.sh
 	@nvim +PlugInstall +qall
+	@nvim +GoInstallBinaries +qall
 
 .PHONY: install/dots
 install/dots:
