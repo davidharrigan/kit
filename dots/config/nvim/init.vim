@@ -43,7 +43,6 @@ set mouse=a
 
 " Highlight current line
 set cursorline
-hi CursorLine cterm=NONE ctermbg=238
 highlight LineNr ctermfg=7
 
 " Color column
@@ -64,7 +63,7 @@ syntax enable
 syntax on
 
 " Set some nice character listings, then activate list
-set list listchars=tab:⟶\ ,trail:·,extends:>,precedes:<
+set list listchars=tab:⟶\ ,trail:·,extends:◣,precedes:◢,nbsp:○
 
 " Show matching brackets
 set showmatch

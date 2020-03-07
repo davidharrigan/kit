@@ -10,6 +10,8 @@ DOT_FILES_ABS=$KIT_HOME/dots
 BACKUP_DIR=./backup
 THIS_BACKUP=$BACKUP_DIR/backup-$(date +%F-%T)
 
+# returns dotfile path from config dir. e.g.:
+# ./dots/config/nvim/init.vim -> config/nvim/init.vim
 dotfile () {
     local output=$1
     output=${output/#$DOT_FILES}
