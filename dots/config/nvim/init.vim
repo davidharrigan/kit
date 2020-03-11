@@ -35,7 +35,12 @@ set nobackup
 set noswapfile
 set scrolloff=15
 
-set number
+set number relativenumber
+augroup numbertoggle
+  autocmd!
+  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+augroup END
 
 " Color settings
 set t_Co=256
@@ -89,7 +94,6 @@ set linespace=4
 " Disable bell banners
 " set noerrorbells novisualbell t_vb
 
-
 " ============================================================================
 "  Maps
 " ============================================================================
@@ -102,6 +106,8 @@ nnoremap <C-g> :Rg<Cr>
 
 " Toggle spelling with the F7 key
 nmap <silent> <F7> :setlocal spell! spelllang=en_us<cr>
+
+map <C-e> :NERDTreeToggle %<CR>
 
 " nnoremap <silent> <leader>tb :TagbarToggle<CR>
 
