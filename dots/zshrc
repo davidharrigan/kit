@@ -24,7 +24,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Load OS specific environments
 if [[ "$(uname)" == "Darwin" ]]; then
-    . $HOME/.env/osx/osx.env
+    . $HOME/.env/excluded/osx.env
 fi
 
 # Load environment variables
