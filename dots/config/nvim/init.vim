@@ -82,8 +82,9 @@ set spell spelllang=en_us
 setlocal spell spelllang=en_us
 
 " Style vertical split bar
-set fillchars+=vert:\
-hi VertSplit ctermbg=NONE guibg=NONE
+set fillchars=stl:\ ,stlnc:\ ,vert:\│,fold:-,diff:-
+" hi VertSplit ctermbg=NONE guibg=NONE
+" highlight VertSplit ctermbg=0 ctermfg=NONE
 
 " Italicize comments
 highlight Comment cterm=italic gui=italic
