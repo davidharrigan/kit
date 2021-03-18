@@ -10,7 +10,7 @@ install/nvim:
 
 .PHONY: install/dots
 install/dots:
-	@./install/install-dots.sh
+	bash ./install/install-dots.sh
 
 .PHONY: backup
 backup:

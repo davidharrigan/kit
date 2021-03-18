@@ -1,6 +1,6 @@
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
-export ZSH_CUSTOM=$HOME/.zsh-custom
+export ZSH_CUSTOM=$HOME/.oh-my-zsh/custom
 
 # autocomplete
 autoload -Uz compinit
@@ -8,7 +8,6 @@ compinit -i
 autoload -Uz bashcompinit
 bashcompinit
 
-# ZSH_THEME="dharrigan"
 ZSH_THEME="geometry/geometry"
 
 ## oh-my-zsh configuration
