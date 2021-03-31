@@ -29,3 +29,7 @@ fi
 
 # Load environment variables
 . <(cat $HOME/.env/*.env)
+
+# heroku autocomplete setup
+HEROKU_AC_ZSH_SETUP_PATH=/Users/dave/Library/Caches/heroku/autocomplete/zsh_setup && test -f $HEROKU_AC_ZSH_SETUP_PATH && source $HEROKU_AC_ZSH_SETUP_PATH;export PATH="/usr/local/opt/python@3.8/bin:$PATH"
+

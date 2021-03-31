@@ -13,5 +13,3 @@ alias cleanup-branches="git branch -d $(git branch --merged | grep -v master | g
 alias vi="nvim"
 alias vim="nvim"
 
-
-

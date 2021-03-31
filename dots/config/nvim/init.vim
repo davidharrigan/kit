@@ -37,9 +37,9 @@ set scrolloff=15
 
 set number relativenumber
 augroup numbertoggle
-  autocmd!
-  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
-  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+autocmd!
+autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
 augroup END
 
 " Color settings
@@ -56,6 +56,11 @@ highlight LineNr ctermfg=7
 
 " Color column
 set colorcolumn=120
+
+" gq wrap
+set textwidth=119
+set formatoptions-=t
+set formatoptions+=q
 
 " Set automatic indentation
 set autoindent
@@ -83,8 +88,6 @@ setlocal spell spelllang=en_us
 
 " Style vertical split bar
 set fillchars=stl:\ ,stlnc:\ ,vert:\│,fold:-,diff:-
-" hi VertSplit ctermbg=NONE guibg=NONE
-" highlight VertSplit ctermbg=0 ctermfg=NONE
 
 " Italicize comments
 highlight Comment cterm=italic gui=italic
@@ -109,6 +112,8 @@ nnoremap <C-g> :Rg<Cr>
 nmap <silent> <F7> :setlocal spell! spelllang=en_us<cr>
 
 map <C-e> :NERDTreeToggle %<CR>
+
+map <silent> <leader>gct :GoCoverageToggle<cr>
 
 " nnoremap <silent> <leader>tb :TagbarToggle<CR>
 
