@@ -23,8 +23,11 @@ source $ZSH/oh-my-zsh.sh
 
 # Load OS specific environments
 if [[ "$(uname)" == "Darwin" ]]; then
-    . $HOME/.env/excluded/osx.env
+    . $HOME/.env/os/macos.env
 fi
 
 # Load environment variables
 . <(cat $HOME/.env/*.env)
+
+autoload -U colors; colors
+

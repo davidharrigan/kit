@@ -8,12 +8,12 @@ call plug#begin('~/.local/share/nvim/plugged')
 
 " Editor
 Plug 'NLKNguyen/papercolor-theme'
-Plug 'nathanaelkane/vim-indent-guides'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'jlanzarotta/bufexplorer' " not sure if this is needed anymore (fzf)
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
+Plug 'Yggdroot/indentLine'
 
 " Git
 Plug 'airblade/vim-gitgutter'
@@ -105,7 +105,7 @@ nmap <silent> <leader>bl <cr>:bnext<cr>
 nnoremap <C-p> :Files<Cr>
 nnoremap <C-g> :Rg<Cr>
 
-" Toggle spelling with the F7 key
+" Toggle spelling with the F9 key
 nmap <silent> <F7> :setlocal spell! spelllang=en_us<cr>
 
 map <C-e> :NERDTreeToggle %<CR>
@@ -169,6 +169,9 @@ let g:go_def_mapping_enabled = 0
 " ----- NERDTree -----
 nmap <silent> <C-E> :NERDTreeToggle<CR>
 let NERDTreeIgnore=['\~$', 'node_modules[[dir]]',  'dist[[dir]]', 'venv[[dir]]', '\.pyc$']
+
+" Indent lines
+let g:indentLine_char = '┆'
 
 
 " ============================================================================

@@ -12,5 +12,3 @@ alias dif="git difftool --tool=opendiff -d"
 alias vi="nvim"
 alias vim="nvim"
 
-
-
