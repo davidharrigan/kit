@@ -8,7 +8,7 @@ compinit -i
 autoload -Uz bashcompinit
 bashcompinit
 
-ZSH_THEME="geometry/geometry"
+ZSH_THEME="half-life"
 
 ## oh-my-zsh configuration
 COMPLETION_WAITING_DOTS="true"

@@ -11,7 +11,7 @@ Plug 'NLKNguyen/papercolor-theme'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'jlanzarotta/bufexplorer' " not sure if this is needed anymore (fzf)
-Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
 
@@ -44,7 +44,7 @@ augroup END
 
 " Color settings
 set t_Co=256
-set background=dark
+" set background=dark
 colorscheme PaperColor
 
 " Allow mouse control
