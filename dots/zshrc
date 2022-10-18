@@ -8,7 +8,7 @@ compinit -i
 autoload -Uz bashcompinit
 bashcompinit
 
-ZSH_THEME="geometry/geometry"
+ZSH_THEME="half-life"
 
 ## oh-my-zsh configuration
 COMPLETION_WAITING_DOTS="true"
@@ -23,7 +23,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Load OS specific environments
 if [[ "$(uname)" == "Darwin" ]]; then
-    . $HOME/.env/excluded/osx.env
+    . $HOME/.env/os/macos.env
 fi
 
 # Load environment variables
@@ -31,4 +31,5 @@ fi
 
 # heroku autocomplete setup
 HEROKU_AC_ZSH_SETUP_PATH=/Users/dave/Library/Caches/heroku/autocomplete/zsh_setup && test -f $HEROKU_AC_ZSH_SETUP_PATH && source $HEROKU_AC_ZSH_SETUP_PATH;export PATH="/usr/local/opt/python@3.8/bin:$PATH"
+autoload -U colors; colors
 
