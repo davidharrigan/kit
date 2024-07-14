@@ -9,7 +9,11 @@ COMPLETION_WAITING_DOTS="true"
 # Plug-ins
 plugins=(git)
 
+# completions
+export FPATH=$HOME/.completion/zsh:$FPATH
+
 source $ZSH/oh-my-zsh.sh
+
 autoload -U colors; colors
 
 # User configuration
