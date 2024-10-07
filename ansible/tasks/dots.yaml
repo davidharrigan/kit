@@ -1,6 +1,14 @@
 ---
+- name: check if oh-my-zsh is installed
+  stat:
+    path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+  register: zsh_check
+
+- name: install oh-my-zsh
+  shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  when: not zsh_check.stat.exists
+
 - name: install dotfiles
   command: make install/dots
   args:
     chdir: ../
-  tags: ["dots"]
