@@ -1,0 +1,20 @@
+---
+- name: Check if gvm is installed
+  command: which gvm
+  register: gvm_check
+  ignore_errors: true
+  tags: ["go"]
+
+- name: Install gvm if not present
+  shell: bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+  when: gvm_check.rc != 0
+  tags: ["go"]
+
+- name: Check and install each specified Go version
+  include_tasks: install_go.yaml
+  with_items: "{{ go_versions }}"
+  tags: ["go"]
+
+- name: Set default go version to {{ go_default_version }}
+  shell: "source $GVM_ROOT/scripts/gvm && gvm use go{{ go_default_version | trim}} --default"
+  tags: ["go"]

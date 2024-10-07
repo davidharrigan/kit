@@ -1,5 +1,6 @@
 ---
 homebrew_apps:
+  - bison
   - go
   - helm
   - neovim

@@ -1,0 +1,11 @@
+---
+- name: Check if Go version {{ item }} is installed
+  stat:
+    path: "{{ lookup('env', 'GVM_ROOT') }}/gos/go{{ item }}"
+  register: go_check
+  tags: ["go"]
+
+- name: Install Go version {{ item }} using gvm
+  shell: gvm install go{{ item }}
+  when: not go_check.stat.exists
+  tags: ["go"]

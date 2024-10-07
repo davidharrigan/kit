@@ -12,9 +12,4 @@
       vars:
         homebrew_installed_packages: "{{ hostvars[inventory_hostname].homebrew_apps + homebrew_apps }}"
         homebrew_cask_apps: "{{ hostvars[inventory_hostname].homebrew_casks + homebrew_casks }}"
-    - role: geerlingguy.mac.mas
-      when: mas_installed_apps or mas_installed_app_ids
-      tags: ["mas"]
-    - role: geerlingguy.mac.dock
-      when: configure_dock
-      tags: ["dock"]
+    - role: go
