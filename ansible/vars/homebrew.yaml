@@ -7,12 +7,17 @@ homebrew_apps:
   - node
   - nvm
   - pre-commit
+  - ripgrep
   - terraform
   - tilt
 
 homebrew_cask_appdir: /Applications
 homebrew_casks:
+  - 1password
+  - 1password-cli
+  - alfred
   - arc
+  - bartender
   - docker
   - firefox
   - obsidian
