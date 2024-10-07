@@ -1,0 +1,18 @@
+---
+homebrew_apps:
+  - go
+  - helm
+  - neovim
+  - node
+  - nvm
+  - pre-commit
+  - terraform
+  - tilt
+
+homebrew_cask_appdir: /Applications
+homebrew_casks:
+  - arc
+  - docker
+  - firefox
+  - obsidian
+  - rectangle

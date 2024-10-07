@@ -1,22 +1,17 @@
-
-
-install: install/nvim install/dots
-
-.PHONY: install/nvim
-install/nvim:
-	@./install/nvim.sh
-	@nvim +PlugInstall +qall
-	@nvim +GoInstallBinaries +qall
-
 .PHONY: install/dots
 install/dots:
 	bash ./install/install-dots.sh
 
-.PHONY: backup
-backup:
+.PHONY: backup/dots
+backup/dots:
 	@./install/backup.sh
 
 .PHONY: clean/backups
 clean/backups:
 	@./install/clean-backups.sh
 
+galaxy/install:
+	ansible-galaxy install -r ./ansible/requirements.yaml
+
+playbook/personal:
+	ansible-playbook ./ansible/macos.yaml -l personal
