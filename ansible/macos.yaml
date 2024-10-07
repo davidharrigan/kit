@@ -5,6 +5,8 @@
     - macos
   vars_files:
     - vars/homebrew.yaml
+  environment:
+    PATH: "/opt/homebrew/bin:{{ lookup('env', 'PATH') }}"
   roles:
     - role: elliotweiser.osx-command-line-tools
     - role: geerlingguy.mac.homebrew

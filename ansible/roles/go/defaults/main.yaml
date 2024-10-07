@@ -3,3 +3,4 @@ go_versions:
   - 1.22
   - 1.23
 go_default_version: 1.23
+gvm_root: "{{ ansible_env.HOME }}/.gvm"
