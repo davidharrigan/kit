@@ -1,6 +1,6 @@
 ---
-- ansible.builtin.include_tasks: browser.yaml
-  tags: ["browser"]
+- ansible.builtin.include_tasks: apps.yaml
+  tags: ["apps"]
 - ansible.builtin.include_tasks: dock.yaml
   tags: ["dock"]
 - ansible.builtin.include_tasks: keyboard.yaml
