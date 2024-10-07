@@ -1,0 +1,6 @@
+---
+- name: install dotfiles
+  command: make install/dots
+  args:
+    chdir: ../
+  tags: ["dots"]
