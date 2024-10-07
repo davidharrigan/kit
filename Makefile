@@ -15,3 +15,6 @@ galaxy/install:
 
 playbook/personal:
 	ansible-playbook ./ansible/macos.yaml -l personal
+
+playbook/work:
+	ansible-playbook ./ansible/macos.yaml -l work
