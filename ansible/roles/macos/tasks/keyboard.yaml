@@ -1,0 +1,40 @@
+---
+- name: key repeat and delay speed
+  osx_defaults:
+    domain: NSGlobalDomain
+    key: "{{ item.key }}"
+    type: "{{ item.type }}"
+    value: "{{ item.value }}"
+  loop:
+    - key: InitialKeyRepeat
+      type: float
+      value: 25
+    - key: KeyRepeat
+      type: float
+      value: 2
+- name: disable automatic corrections and smart substitutions
+  osx_defaults:
+    domain: NSGlobalDomain
+    key: "{{ item.key }}"
+    type: "{{ item.type }}"
+    value: "{{ item.value }}"
+  loop:
+    - key: NSAutomaticCapitalizationEnabled
+      type: bool
+      value: false
+    - key: NSAutomaticDashSubstitutionEnabled
+      type: bool
+      value: false
+    - key: NSAutomaticPeriodSubstitutionEnabled
+      type: bool
+      value: false
+    - key: NSAutomaticQuoteSubstitutionEnabled
+      type: bool
+      value: false
+    - key: NSAutomaticSpellingCorrectionEnabled
+      type: bool
+      value: false
+    - key: WebAutomaticSpellingCorrectionEnabled
+      type: bool
+      value: false
+  when: item.value | string | length > 0

@@ -1,0 +1,9 @@
+---
+- ansible.builtin.include_tasks: dock.yaml
+  tags: ["dock"]
+- ansible.builtin.include_tasks: hostname.yaml
+  tags: ["hostname"]
+- ansible.builtin.include_tasks: keyboard.yaml
+  tags: ["keyboard"]
+- ansible.builtin.include_tasks: trackpad.yaml
+  tags: ["trackpad"]

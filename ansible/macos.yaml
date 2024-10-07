@@ -14,7 +14,10 @@
       vars:
         homebrew_installed_packages: "{{ hostvars[inventory_hostname].homebrew_apps + homebrew_apps }}"
         homebrew_cask_apps: "{{ hostvars[inventory_hostname].homebrew_casks + homebrew_casks }}"
+    - role: macos
+      tags: ["macos"]
     - role: go
+      tags: ["go"]
   tasks:
     - import_tasks: tasks/dots.yaml
       tags: ["dots"]

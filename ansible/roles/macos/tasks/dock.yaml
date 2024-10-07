@@ -1,0 +1,26 @@
+---
+- name: modify dock preferences
+  osx_defaults:
+    domain: com.apple.dock
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    type: "{{ item.type }}"
+  loop_control:
+    label: modify dock preference {{ item.key }}
+  loop:
+    - key: show-recents
+      value: false
+      type: bool
+    - key: titlesize
+      value: 50
+      type: int
+    - key: orientation
+      value: left
+      type: string
+    - key: autohide
+      value: true
+      type: bool
+    - key: mineffect
+      value: scale
+      type: string
+  notify: restart dock
