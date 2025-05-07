@@ -7,7 +7,7 @@ ZSH_THEME="bira"
 COMPLETION_WAITING_DOTS="true"
 
 # Plug-ins
-plugins=(git)
+plugins=(git kubectx)
 
 # completions
 export FPATH=$HOME/.completion/zsh:$FPATH
@@ -33,8 +33,20 @@ fi
 # Load environment variables
 . <(cat $HOME/.env/*.env)
 
+
 # Key binds
 bindkey "^k" history-beginning-search-backward
 bindkey "^j" history-beginning-search-forward
 
+export GPG_TTY=$(tty)
 
+
+export PATH="/opt/homebrew/opt/postgresql@13/bin:$PATH"
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/david/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
+
+# Added by Windsurf
+export PATH="/Users/david/.codeium/windsurf/bin:$PATH"

@@ -1,0 +1,7 @@
+homebrew_apps:
+  - fnm
+  - cmake
+homebrew_casks:
+  - webstorm
+  - goland
+  - datagrip

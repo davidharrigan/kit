@@ -3,6 +3,7 @@ homebrew_apps:
   - bison
   - go
   - helm
+  - kubectx
   - neovim
   - node
   - nvm

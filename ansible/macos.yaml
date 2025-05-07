@@ -18,6 +18,6 @@
       tags: ["macos"]
     - role: go
       tags: ["go"]
-  tasks:
-    - import_tasks: tasks/dots.yaml
-      tags: ["dots"]
+  # tasks:
+  #   - import_tasks: tasks/dots.yaml
+  #     tags: ["dots"]
