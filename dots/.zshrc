@@ -1,4 +1,3 @@
-# Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 
 ZSH_THEME="bira"
@@ -14,7 +13,8 @@ export FPATH=$HOME/.completion/zsh:$FPATH
 
 source $ZSH/oh-my-zsh.sh
 
-autoload -U colors; colors
+autoload -U colors
+colors
 
 # User configuration
 if command -v direnv >/dev/null 2>&1; then
@@ -27,19 +27,17 @@ fi
 
 # Load OS specific environments
 if [[ "$(uname)" == "Darwin" ]]; then
-    . $HOME/.env/os/macos.env
+  . $HOME/.env/os/macos.env
 fi
 
 # Load environment variables
 . <(cat $HOME/.env/*.env)
-
 
 # Key binds
 bindkey "^k" history-beginning-search-backward
 bindkey "^j" history-beginning-search-forward
 
 export GPG_TTY=$(tty)
-
 
 export PATH="/opt/homebrew/opt/postgresql@13/bin:$PATH"
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.

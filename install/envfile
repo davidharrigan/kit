@@ -1,3 +1,0 @@
-SCRIPT_HOME=$(cd "$(dirname $0)" && pwd)
-KIT_HOME=$(echo $SCRIPT_HOME | rev | cut -d/ -f2- | rev)
-

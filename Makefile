@@ -1,14 +1,10 @@
-.PHONY: install/dots
-install/dots:
-	bash ./install/install-dots.sh
-
-.PHONY: backup/dots
-backup/dots:
-	@./install/backup.sh
+.PHONY: install
+install:
+	./install.sh
 
 .PHONY: clean/backups
-clean/backups:
-	@./install/clean-backups.sh
+clean:
+	rm -rf ./backup
 
 galaxy/install:
 	ansible-galaxy install -r ./ansible/requirements.yaml
