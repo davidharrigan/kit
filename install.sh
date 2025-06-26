@@ -104,9 +104,14 @@ install_dotfiles() {
 
 remove_dotfiles() {
   info "Removing dotfiles..."
-
   stow -D -t "$HOME" .
   success "Dotfiles uninstalled successfully!"
+}
+
+update_submodules() {
+  info "Updating submodules..."
+  git submodule update --remote
+  success "Submodules updated successfully!"
 }
 
 # Parse command line arguments
@@ -146,6 +151,8 @@ if [ "$REMOVE" = true ]; then
 fi
 
 # Install dotfiles
+update_submodules
+echo
 backup_conflicts
 echo
 install_dotfiles
