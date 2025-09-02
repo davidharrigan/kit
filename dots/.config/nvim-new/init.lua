@@ -36,7 +36,10 @@ end, { desc = "Restart and save session", noremap = true, nowait = true })
 -- find
 leader("fr", "<cmd>FzfLua oldfiles<cr>", { desc = "Recent" })
 leader("fg", "<cmd>FzfLua helptags<cr>", { desc = "Grep tags in help files" })
-leader("fd", "<cmd>FzfLua lsp_document_symbols<cr>", { desc = "Document symbols" })
+-- leader("fd", "<cmd>FzfLua lsp_document_symbols<cr>", { desc = "Document symbols" })
+leader("fd", function()
+  require("aerial").fzf_lua_picker({})
+end, { desc = "Document symbols" })
 leader("fw", "<cmd>FzfLua lsp_workspace_symbols<cr>", { desc = "Workspace symbols" })
 
 -- buffers
@@ -63,6 +66,12 @@ leader("E", function()
   require("oil").toggle_float(vim.fn.getcwd())
 end, { desc = "Toggle explorer (cwd)" })
 
+-- terminal
+keymap("n", "<C-/>", function()
+  Snacks.terminal(nil, { cwd = vim.fn.getcwd() })
+end, { desc = "Terminal" })
+keymap("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
+
 -- code
 leader("cf", vim.lsp.buf.format, { desc = "Format" })
 
@@ -81,11 +90,12 @@ local function map_textobj_select(mappings)
 end
 
 map_textobj_select({
-  ["af"] = { args("@function.outer", "textobjects"), { desc = "Select outer function" } },
-  ["if"] = { args("@function.inner", "textobjects"), { desc = "Select inner function" } },
-  ["ac"] = { args("@class.outer", "textobjects"), { desc = "Select outer class" } },
-  ["ic"] = { args("@class.inner", "textobjects"), { desc = "Select inner class" } },
-  ["as"] = { args("@local.scope", "locals"), { desc = "Select local scope" } },
+  -- todo: i delays insert mode
+  -- ["af"] = { args("@function.outer", "textobjects"), { desc = "Select outer function" } },
+  -- ["if"] = { args("@function.inner", "textobjects"), { desc = "Select inner function" } },
+  -- ["ac"] = { args("@class.outer", "textobjects"), { desc = "Select outer class" } },
+  -- ["ic"] = { args("@class.inner", "textobjects"), { desc = "Select inner class" } },
+  -- ["as"] = { args("@local.scope", "locals"), { desc = "Select local scope" } },
 })
 
 local function map_textobj_move(mappings)
@@ -120,32 +130,57 @@ map_textobj_move({
 -- https://neovim.io/doc/user/options.html
 
 -- Buffer options
-vim.bo.expandtab = true -- Use spaces instead of tabs
-vim.bo.shiftwidth = 4 -- Size of an indent
-vim.bo.softtabstop = 4 -- Number of spaces tabs count for
-vim.bo.tabstop = 4 -- Number of spaces in a tab
-vim.bo.smartindent = true -- Insert indents automatically
+-- vim.bo.expandtab = true -- Use spaces instead of tabs
+-- vim.bo.shiftwidth = 4 -- Size of an indent
+-- vim.bo.softtabstop = 4 -- Number of spaces tabs count for
+-- vim.bo.tabstop = 4 -- Number of spaces in a tab
+-- vim.bo.smartindent = true -- Insert indents automatically
 -- vim.bo.autoindent = true
 
 local opt = vim.opt
+opt.expandtab = true -- Use spaces instead of tabs
+opt.shiftwidth = 4 -- Size of an indent
+opt.softtabstop = 4 -- Number of spaces tabs count for
+opt.tabstop = 4 -- Number of spaces in a tab
+opt.smartindent = true -- Insert indents automatically
+
 opt.colorcolumn = "120" -- Highlight column 80
-opt.signcolumn = "yes:1" -- Always show sign column
+--opt.signcolumn = "yes:1" -- Always show sign column
 opt.termguicolors = true -- Enable true colors
 opt.ignorecase = true -- Ignore case in search
 opt.swapfile = false -- Disable swap files
 opt.listchars = "tab: ,multispace:|   ,eol: " -- Characters to show for tabs, spaces, and end of line
 opt.list = true -- Show whitespace characters
-opt.shiftround = true -- Round indent to multiple of shiftwidth
+
+-- opt.shiftround = true -- Round indent to multiple of shiftwidth
 opt.number = true -- Show line numbers
 opt.relativenumber = true -- Show relative line numbers
 opt.numberwidth = 2 -- Width of the line number column
 opt.wrap = false -- Disable line wrapping
 opt.cursorline = true -- Highlight the current line
 opt.scrolloff = 8 -- Keep 8 lines above and below the cursor
-opt.inccommand = "nosplit" -- Shows the effects of a command incrementally in the buffer
+-- opt.inccommand = "nosplit" -- Shows the effects of a command incrementally in the buffer
 opt.completeopt = { "menuone", "popup", "noinsert" } -- Options for completion menu
 opt.winborder = "rounded" -- Use rounded borders for windows
-opt.hlsearch = false -- Disable highlighting of search results
+-- opt.hlsearch = false -- Disable highlighting of search results
+
+opt.undofile = true
+opt.undolevels = 10000
+
+opt.laststatus = 3 -- global statusline
+opt.cmdheight = 0
+opt.showmode = false
+
+opt.smoothscroll = true
+
+-- folds
+opt.foldmethod = "expr"
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+opt.foldtext = ""
+opt.foldlevel = 99
+-- opt.foldlevelstart = 0
+vim.opt.foldcolumn = "1"
+opt.foldnestmax = 4
 
 --------------
 -- Autocmds --

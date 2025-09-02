@@ -1,17 +1,28 @@
-local function select_textobject(query_string, query_group)
-  return function()
-    require("nvim-treesitter-textobjects.select").select_textobject(query_string, query_group)
-  end
-end
-
 return {
   {
     "nvim-treesitter/nvim-treesitter",
     branch = "main",
-    build = ":TSUpdate",
     lazy = false,
+    build = ":TSUpdate",
+    init = function()
+      vim.api.nvim_create_autocmd("FileType", {
+        callback = function(args)
+          local lang = vim.treesitter.language.get_lang(args.match)
+          if not lang then
+            vim.notify("treesitter parser not found for " .. args.match)
+            return
+          end
+
+          if vim.treesitter.language.add(lang) then
+            vim.treesitter.start(args.buf)
+          end
+        end,
+      })
+    end,
+    opts = {},
     config = function()
-      require("nvim-treesitter").install({
+      local treesitter = require("nvim-treesitter")
+      treesitter.install({
         "bash",
         "c",
         "css",

@@ -1,3 +1,12 @@
+local function term_nav(dir)
+  ---@param self snacks.terminal
+  return function(self)
+    return self:is_floating() and "<c-" .. dir .. ">" or vim.schedule(function()
+      vim.cmd.wincmd(dir)
+    end)
+  end
+end
+
 return {
   {
     "folke/snacks.nvim",
@@ -8,6 +17,16 @@ return {
       notification = {
         wo = { wrap = true },
       },
+      terminal = {
+        win = {
+          keys = {
+            nav_h = { "<C-h>", term_nav("h"), desc = "Go to Left Window", expr = true, mode = "t" },
+            nav_j = { "<C-j>", term_nav("j"), desc = "Go to Lower Window", expr = true, mode = "t" },
+            nav_k = { "<C-k>", term_nav("k"), desc = "Go to Upper Window", expr = true, mode = "t" },
+            nav_l = { "<C-l>", term_nav("l"), desc = "Go to Right Window", expr = true, mode = "t" },
+          },
+        },
+      },
     },
   },
   {
@@ -16,6 +35,60 @@ return {
     opts = {},
   },
   { "linrongbin16/gitlinker.nvim", opts = {} },
+  { "lewis6991/gitsigns.nvim", opts = {} },
+  {
+    "stevearc/aerial.nvim",
+    event = { "BufReadPost", "BufWritePost", "BufNewFile" },
+    config = function()
+      require("aerial").setup({
+        icons = {
+          Array = " ",
+          Boolean = "󰨙 ",
+          Class = " ",
+          Codeium = "󰘦 ",
+          Color = " ",
+          Control = " ",
+          Collapsed = " ",
+          Constant = "󰏿 ",
+          Constructor = " ",
+          Copilot = " ",
+          Enum = " ",
+          EnumMember = " ",
+          Event = " ",
+          Field = " ",
+          File = " ",
+          Folder = " ",
+          Function = "󰊕 ",
+          Interface = " ",
+          Key = " ",
+          Keyword = " ",
+          Method = require("mini.icons").get("lsp", "method") .. " ",
+          Module = " ",
+          Namespace = "󰦮 ",
+          Null = " ",
+          Number = "󰎠 ",
+          Object = " ",
+          Operator = " ",
+          Package = " ",
+          Property = " ",
+          Reference = " ",
+          Snippet = "󱄽 ",
+          String = " ",
+          Struct = "󰆼 ",
+          Supermaven = " ",
+          TabNine = "󰏚 ",
+          Text = " ",
+          TypeParameter = " ",
+          Unit = " ",
+          Value = " ",
+          Variable = "󰀫 ",
+        },
+      })
+    end,
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+    },
+  },
   {
     "ibhagwan/fzf-lua",
     config = function()
@@ -30,6 +103,18 @@ return {
         },
         files = {
           previewer = true,
+          -- actions = {
+          --   files = {
+          --     ["enter"] = actions.file_edit_or_qf,
+          --     ["ctrl-s"] = actions.file_split,
+          --     ["ctrl-v"] = actions.file_vsplit,
+          --     ["alt-q"] = actions.file_sel_to_qf,
+          --     ["alt-Q"] = actions.file_sel_to_ll,
+          --     ["alt-i"] = actions.toggle_ignore,
+          --     ["alt-h"] = actions.toggle_hidden,
+          --     ["alt-f"] = actions.toggle_follow,
+          --   },
+          -- },
         },
         buffers = {
           actions = {
@@ -62,19 +147,74 @@ return {
         ["<CR>"] = "actions.select",
         ["<C-s>"] = { "actions.select", opts = { vertical = true } },
         ["<C-h>"] = { "actions.select", opts = { horizontal = true } },
-        ["<C-t>"] = { "actions.select", opts = { tab = true } },
         ["<C-p>"] = "actions.preview",
         ["<C-c>"] = { "actions.close", mode = "n" },
         ["<C-l>"] = "actions.refresh",
-        ["-"] = { "actions.parent", mode = "n" },
+        ["<C-o>"] = { "actions.parent", mode = "n" },
         ["_"] = { "actions.open_cwd", mode = "n" },
         ["`"] = { "actions.cd", mode = "n" },
         ["~"] = { "actions.cd", opts = { scope = "tab" }, mode = "n" },
         ["gs"] = { "actions.change_sort", mode = "n" },
         ["gx"] = "actions.open_external",
         ["g."] = { "actions.toggle_hidden", mode = "n" },
-        ["g\\"] = { "actions.toggle_trash", mode = "n" },
       },
     },
+  },
+  {
+    "saghen/blink.cmp",
+    version = "1.*",
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
+    opts = {
+      signature = { enabled = true },
+      -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
+      -- 'super-tab' for mappings similar to vscode (tab to accept)
+      -- 'enter' for enter to accept
+      -- 'none' for no mappings
+      --
+      -- All presets have the following mappings:
+      -- C-space: Open menu or open docs if already open
+      -- C-n/C-p or Up/Down: Select next/previous item
+      -- C-e: Hide menu
+      -- C-k: Toggle signature help (if signature.enabled = true)
+      --
+      -- See :h blink-cmp-config-keymap for defining your own keymap
+      keymap = {
+        ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
+        ["<C-e>"] = { "hide" },
+        ["<Enter>"] = { "select_and_accept" },
+        ["<Up>"] = { "select_prev", "fallback" },
+        ["<Down>"] = { "select_next", "fallback" },
+        ["<C-k>"] = { "select_prev", "fallback_to_mappings" },
+        ["<C-j>"] = { "select_next", "fallback_to_mappings" },
+
+        ["<C-b>"] = { "scroll_documentation_up", "fallback" },
+        ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+
+        ["<Tab>"] = { "snippet_forward", "fallback" },
+        ["<S-Tab>"] = { "snippet_backward", "fallback" },
+
+        -- ["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
+      },
+      appearance = {
+        nerd_font_variant = "mono",
+      },
+      completion = {
+        menu = {
+          draw = {
+            treesitter = { "lsp" },
+            padding = { 0, 1 }, -- padding only on right side
+            components = {},
+            columns = { { "label", "label_description", gap = 1 }, { "kind_icon", "kind" } },
+          },
+        },
+        -- documentation = { auto_show = true, auto_show_delay = 500 },
+      },
+      sources = {
+        default = { "lsp", "path", "snippets", "buffer" },
+      },
+      fuzzy = { implementation = "prefer_rust_with_warning" },
+    },
+    opts_extend = { "sources.default" },
   },
 }

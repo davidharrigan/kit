@@ -1,6 +1,7 @@
 return {
   {
-    "davidharrigan/neovim-ayu",
+    -- "davidharrigan/neovim-ayu",
+    dir = "~/src/neovim-ayu",
     lazy = false,
     priority = 1000,
     config = function()
