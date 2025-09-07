@@ -53,6 +53,7 @@ leader("bd", function()
 end, { desc = "Delete buffer" })
 
 -- explore
+keymap("n", "<C-e>", "<cmd>Neotree toggle<cr>")
 leader("e", function()
   local oil = require("oil")
   if vim.w.is_oil_win then

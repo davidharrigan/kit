@@ -182,7 +182,8 @@ return {
       keymap = {
         ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
         ["<C-e>"] = { "hide" },
-        ["<Enter>"] = { "select_and_accept" },
+        -- ["<Enter>"] = { "select_and_accept" },
+        ["<C-y>"] = { "select_and_accept" },
         ["<Up>"] = { "select_prev", "fallback" },
         ["<Down>"] = { "select_next", "fallback" },
         ["<C-k>"] = { "select_prev", "fallback_to_mappings" },
@@ -216,5 +217,16 @@ return {
       fuzzy = { implementation = "prefer_rust_with_warning" },
     },
     opts_extend = { "sources.default" },
+  },
+
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      "nvim-tree/nvim-web-devicons", -- optional, but recommended
+    },
+    lazy = false, -- neo-tree will lazily load itself
   },
 }
