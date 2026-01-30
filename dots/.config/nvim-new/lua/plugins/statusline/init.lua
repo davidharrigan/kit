@@ -7,10 +7,19 @@ return {
   },
   event = { "BufReadPost", "BufWritePost", "BufNewFile" },
   config = function()
+    -- Load components from individual files (after heirline is loaded)
+    local ViMode = require("plugins.statusline.components.vimode")
+    local File = require("plugins.statusline.components.file")
+    local Git = require("plugins.statusline.components.git")
+    local Diagnostics = require("plugins.statusline.components.diagnostics")
+    local Symbols = require("plugins.statusline.components.symbols")
+    local Ruler = require("plugins.statusline.components.ruler")
+    local MacroRecording = require("plugins.statusline.components.macro")
+    local SearchCount = require("plugins.statusline.components.search")
+    local statuscolumn = require("plugins.statusline.components.statuscolumn")
     local tc = require("ayu.colors")
     local utils = require("heirline.utils")
     local conditions = require("heirline.conditions")
-    local components = require("plugins/statusline/components")
     local colors = {
       black = "#000000",
       bright_bg = vim.g.terminal_color_8,
@@ -48,9 +57,9 @@ return {
         init = function(self)
           self.bufnr = vim.api.nvim_get_current_buf()
         end,
-        components.File.Icon,
-        components.File.Flags,
-        components.File.Name,
+        File.Icon,
+        File.Flags,
+        File.Name,
       },
       statuscolumn = {
         init = function(self)
@@ -62,17 +71,17 @@ return {
       } or nil,
       statusline = {
         hl = { fg = "fg", bg = "black" },
-        components.ViMode,
-        components.Git.Branch,
-        components.Diagnostics,
-        components.Symbols,
+        ViMode,
+        Git.Branch,
+        Diagnostics,
+        Symbols,
 
         Align,
 
-        components.MacroRecording,
-        components.Git.Changes,
-        components.Ruler,
-        components.SearchCount,
+        MacroRecording,
+        Git.Changes,
+        Ruler,
+        SearchCount,
       },
       opts = {
         colors = colors,
