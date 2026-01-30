@@ -1,4 +1,5 @@
 return {
+  -- Ayu colorscheme (local development version)
   {
     -- "davidharrigan/neovim-ayu",
     dir = "~/src/neovim-ayu",
@@ -8,6 +9,7 @@ return {
       vim.cmd([[colorscheme ayu]])
     end,
   },
+  -- Icon provider for various plugins
   {
     "echasnovski/mini.icons",
     lazy = false,

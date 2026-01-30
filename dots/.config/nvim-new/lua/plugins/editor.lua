@@ -8,6 +8,7 @@ local function term_nav(dir)
 end
 
 return {
+  -- Collection of small QoL plugins (notifier, terminal, etc.)
   {
     "folke/snacks.nvim",
     priority = 1000,
@@ -29,13 +30,51 @@ return {
       },
     },
   },
+  -- Automatic session save/restore
   {
     "rmagatti/auto-session",
     lazy = false,
     opts = {},
   },
+  -- Displays popup with available keybindings as you type
+  {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+    opts = {
+      preset = "modern",
+      spec = {
+        { "<leader>c", group = "code" },
+        { "<leader>d", group = "debug" },
+        { "<leader>f", group = "file/find" },
+        { "<leader>g", group = "git" },
+        { "<leader>s", group = "search" },
+        { "<leader>u", group = "ui" },
+        { "<leader>b", group = "buffer" },
+        {
+          "<leader>w",
+          group = "windows",
+          proxy = "<c-w>",
+          expand = function()
+            return require("which-key.extras").expand.win()
+          end,
+        },
+      },
+    },
+    keys = {
+      {
+        "<leader>?",
+        function()
+          require("which-key").show({ global = false })
+        end,
+        desc = "Buffer Local Keymaps (which-key)",
+      },
+    },
+  },
+  -- Generate shareable git permalinks for lines/ranges
   { "linrongbin16/gitlinker.nvim", opts = {} },
+  -- Git signs in the gutter (added, modified, deleted lines)
   { "lewis6991/gitsigns.nvim", opts = {} },
+  -- Code outline window showing symbols (functions, classes, etc.)
   {
     "stevearc/aerial.nvim",
     event = { "BufReadPost", "BufWritePost", "BufNewFile" },
@@ -89,6 +128,7 @@ return {
       "nvim-treesitter/nvim-treesitter",
     },
   },
+  -- Fuzzy finder powered by fzf
   {
     "ibhagwan/fzf-lua",
     config = function()
@@ -129,6 +169,7 @@ return {
       })
     end,
   },
+  -- File explorer that lets you edit the filesystem like a buffer
   {
     "stevearc/oil.nvim",
     opts = {
@@ -160,6 +201,7 @@ return {
       },
     },
   },
+  -- Fast completion plugin with fuzzy matching
   {
     "saghen/blink.cmp",
     version = "1.*",
@@ -218,7 +260,7 @@ return {
     },
     opts_extend = { "sources.default" },
   },
-
+  -- File explorer tree sidebar
   {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",

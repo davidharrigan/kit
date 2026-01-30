@@ -1,4 +1,5 @@
 return {
+  -- Syntax highlighting and code parsing via treesitter
   {
     "nvim-treesitter/nvim-treesitter",
     branch = "main",
@@ -57,6 +58,7 @@ return {
       })
     end,
   },
+  -- Text objects based on treesitter syntax tree (e.g., select function, class)
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
     branch = "main",

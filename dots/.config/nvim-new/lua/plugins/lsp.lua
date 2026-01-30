@@ -1,4 +1,5 @@
 return {
+  -- Configuration for built-in LSP client with Mason for installing servers
   {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -15,7 +16,7 @@ return {
         "stylua",
         "tinymist",
         "typstyle",
-        "yamlls",
+        -- "yamlls",
       },
     },
     config = function(opts)
@@ -24,6 +25,8 @@ return {
       require("mason-tool-installer").setup({ ensure_installed = opts.ensure_installed })
     end,
   },
+  -- },
+  -- Lightweight formatter plugin with format-on-save support
   {
     "stevearc/conform.nvim",
     opts = {
@@ -38,6 +41,7 @@ return {
       },
     },
   },
+  -- Pretty list for diagnostics, references, quickfix, and location lists
   {
     "folke/trouble.nvim",
     opts = {}, -- for default options, refer to the configuration section for custom setup.

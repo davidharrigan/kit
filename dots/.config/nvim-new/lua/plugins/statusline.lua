@@ -1,3 +1,4 @@
+-- Highly customizable statusline, winbar, and statuscolumn framework
 return {
   "rebelot/heirline.nvim",
   -- event = "VeryLazy",
