@@ -4,6 +4,8 @@ return {
     "ibhagwan/fzf-lua",
     config = function()
       local actions = require("fzf-lua").actions
+      local icons = require("config.icons")
+
       require("fzf-lua").setup({
         defaults = {
           file_icons = "mini",
@@ -38,7 +40,10 @@ return {
         },
         lsp = {
           symbols = {
-            symbol_icons = {},
+            symbol_icons = icons.kinds,
+            symbol_fmt = function(s)
+              return "[" .. s .. "]"
+            end,
           },
         },
       })
@@ -51,49 +56,9 @@ return {
     "stevearc/aerial.nvim",
     event = { "BufReadPost", "BufWritePost", "BufNewFile" },
     config = function()
+      local icons = require("config.icons")
       require("aerial").setup({
-        icons = {
-          Array = " ",
-          Boolean = "󰨙 ",
-          Class = " ",
-          Codeium = "󰘦 ",
-          Color = " ",
-          Control = " ",
-          Collapsed = " ",
-          Constant = "󰏿 ",
-          Constructor = " ",
-          Copilot = " ",
-          Enum = " ",
-          EnumMember = " ",
-          Event = " ",
-          Field = " ",
-          File = " ",
-          Folder = " ",
-          Function = "󰊕 ",
-          Interface = " ",
-          Key = " ",
-          Keyword = " ",
-          Method = require("mini.icons").get("lsp", "method") .. " ",
-          Module = " ",
-          Namespace = "󰦮 ",
-          Null = " ",
-          Number = "󰎠 ",
-          Object = " ",
-          Operator = " ",
-          Package = " ",
-          Property = " ",
-          Reference = " ",
-          Snippet = "󱄽 ",
-          String = " ",
-          Struct = "󰆼 ",
-          Supermaven = " ",
-          TabNine = "󰏚 ",
-          Text = " ",
-          TypeParameter = " ",
-          Unit = " ",
-          Value = " ",
-          Variable = "󰀫 ",
-        },
+        icons = icons.kinds,
       })
     end,
     dependencies = {
