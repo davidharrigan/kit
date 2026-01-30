@@ -41,9 +41,10 @@ return {
         lsp = {
           symbols = {
             symbol_icons = icons.kinds,
-            symbol_fmt = function(s)
-              return "[" .. s .. "]"
-            end,
+            fzf_opts = {
+              ["--with-nth"] = "-1", -- show only last field (symbol name)
+              ["--delimiter"] = "\t", -- tab delimiter
+            },
           },
         },
       })
