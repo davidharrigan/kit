@@ -1,7 +1,7 @@
 local utils = require("heirline.utils")
 local conditions = require("heirline.conditions")
 local v, fn, api = vim.v, vim.fn, vim.api
-local icons = require("icons")
+local icons = require("config.icons")
 
 -- ViMode components.
 local ViMode = {
