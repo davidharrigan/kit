@@ -1,30 +1,10 @@
--- Workaround for gopls not supporting semanticTokensProvider
--- https://github.com/golang/go/issues/54531
-Snacks.util.lsp.on({ name = "gopls" }, function(_, client)
-  if not client.server_capabilities.semanticTokensProvider then
-    local semantic = client.config.capabilities.textDocument.semanticTokens
-    if semantic then
-      client.server_capabilities.semanticTokensProvider = {
-        full = true,
-        legend = {
-          tokenTypes = semantic.tokenTypes,
-          tokenModifiers = semantic.tokenModifiers,
-        },
-        range = true,
-      }
-    end
-  end
-end)
-
 return {
   settings = {
     gopls = {
       -- Enable automatic completion of unimported packages
       completeUnimported = true,
-      -- Use gofumpt for stricter formatting
-      gofumpt = true,
-      -- Enable static analysis
-      staticcheck = true,
+      -- Disable staticcheck (golangci-lint provides more comprehensive linting)
+      staticcheck = false,
       -- Enable semantic tokens for better syntax highlighting
       semanticTokens = true,
       -- Use placeholders for function parameters in completion

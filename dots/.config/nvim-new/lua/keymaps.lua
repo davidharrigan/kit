@@ -4,13 +4,10 @@ local keymap = vim.keymap.set
 -- Find / Search
 -- ============================================================================
 
-keymap("n", "<leader><space>", "<cmd>FzfLua files<cr>", { desc = "Fuzzy find files", nowait = true })
+keymap("n", "<leader><space>", "<cmd>FzfLua global<cr>", { desc = "Find", nowait = true })
 keymap("n", "<leader>/", "<cmd>FzfLua live_grep<cr>", { desc = "Fuzzy grep files", nowait = true })
+keymap("n", "<leader>ff", "<cmd>FzfLua files<cr>", { desc = "Files", nowait = true })
 keymap("n", "<leader>fr", "<cmd>FzfLua oldfiles<cr>", { desc = "Recent" })
-keymap("n", "<leader>fd", function()
-  require("aerial").fzf_lua_picker({})
-end, { desc = "Document symbols" })
-keymap("n", "<leader>fw", "<cmd>FzfLua lsp_workspace_symbols<cr>", { desc = "Workspace symbols" })
 
 -- ============================================================================
 -- Buffers
@@ -32,7 +29,8 @@ keymap("n", "L", "<cmd>bnext<cr>")
 -- ============================================================================
 
 keymap("n", "<leader>gs", "<cmd>FzfLua git_status<cr>", { desc = "Git status" })
-keymap("n", "<leader>gc", "<cmd>FzfLua git_commits<cr>", { desc = "Git diff" })
+keymap("n", "<leader>gc", "<cmd>FzfLua git_bcommits<cr>", { desc = "Git commits (branch)" })
+keymap("n", "<leader>gC", "<cmd>FzfLua git_bcommit<cr>", { desc = "Git commits" })
 
 -- ============================================================================
 -- Explorer
@@ -65,18 +63,28 @@ keymap("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
 -- Code / LSP
 -- ============================================================================
 
+keymap("n", "<leader>cc", "<cmd>FzfLua lsp_code_actions<cr>", { desc = "Code actions" })
 keymap("n", "<leader>cf", vim.lsp.buf.format, { desc = "Format" })
+keymap("n", "<leader>cs", "<cmd>FzfLua lsp_document_symbols<cr>", { desc = "Document Symbols" })
+keymap("n", "<leader>cS", "<cmd>FzfLua lsp_workspace_symbols<cr>", { desc = "Workspace symbols" })
+keymap("n", "<leader>fd", function()
+  require("aerial").fzf_lua_picker({})
+end, { desc = "Document symbols" })
+-- keymap("n", "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", { desc = "Symbols (Trouble)" })
+-- keymap(
+--   "n",
+--   "<leader>cl",
+--   "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+--   { desc = "LSP Definitions / references / ... (Trouble)" }
+-- )
 
 -- ============================================================================
--- Diagnostics / Trouble
+-- Diagnostics
 -- ============================================================================
 
-keymap("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Diagnostics (Trouble)" })
-keymap("n", "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", { desc = "Buffer Diagnostics (Trouble)" })
-keymap("n", "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", { desc = "Symbols (Trouble)" })
-keymap("n", "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", { desc = "LSP Definitions / references / ... (Trouble)" })
-keymap("n", "<leader>xL", "<cmd>Trouble loclist toggle<cr>", { desc = "Location List (Trouble)" })
-keymap("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", { desc = "Quickfix List (Trouble)" })
+keymap("n", "<leader>xx", "<cmd>FzfLua diagnostics_document<cr>", { desc = "Diagnostics" })
+keymap("n", "<leader>xX", "<cmd>FzfLua diagnostics_workspace<cr>", { desc = "Diagnostics (workspace)" })
+keymap("n", "<leader>xq", "<cmd>FzfLua quickfix<cr>", { desc = "Quickfix" })
 
 -- ============================================================================
 -- Session

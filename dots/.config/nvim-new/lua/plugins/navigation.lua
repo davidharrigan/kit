@@ -13,19 +13,10 @@ return {
           height = 0.9,
         },
         files = {
-          previewer = true,
-          -- actions = {
-          --   files = {
-          --     ["enter"] = actions.file_edit_or_qf,
-          --     ["ctrl-s"] = actions.file_split,
-          --     ["ctrl-v"] = actions.file_vsplit,
-          --     ["alt-q"] = actions.file_sel_to_qf,
-          --     ["alt-Q"] = actions.file_sel_to_ll,
-          --     ["alt-i"] = actions.toggle_ignore,
-          --     ["alt-h"] = actions.toggle_hidden,
-          --     ["alt-f"] = actions.toggle_follow,
-          --   },
-          -- },
+          actions = {
+            ["ctrl-i"] = { fn = actions.toggle_ignore, reload = true },
+            ["ctrl-h"] = { fn = actions.toggle_hidden, reload = true },
+          },
         },
         buffers = {
           actions = {
@@ -37,7 +28,22 @@ return {
             ["ctrl-x"] = { fn = actions.buf_del, reload = true },
           },
         },
+        diagnostics = {
+          file_icons = true,
+        },
+        complete_path = {
+          cmd = nil, -- default: auto detect fd|rg|find
+          complete = { ["enter"] = actions.complete },
+          word_pattern = nil, -- default: "[^%s\"']*"
+        },
+        lsp = {
+          symbols = {
+            symbol_icons = {},
+          },
+        },
       })
+      -- Register fzf-lua for vim.ui.select
+      require("fzf-lua").register_ui_select()
     end,
   },
   -- Code outline window showing symbols (functions, classes, etc.)

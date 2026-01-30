@@ -25,6 +25,28 @@ return {
       require("mason").setup()
       require("mason-lspconfig").setup()
       require("mason-tool-installer").setup({ ensure_installed = opts.ensure_installed })
+
+      -- Workaround for gopls not supporting semanticTokensProvider
+      -- https://github.com/golang/go/issues/54531
+      Snacks.util.lsp.on({ name = "gopls" }, function(_, client)
+        -- Disable gopls formatting - let conform.nvim handle it with gofumpt/goimports
+        client.server_capabilities.documentFormattingProvider = false
+        client.server_capabilities.documentRangeFormattingProvider = false
+
+        if not client.server_capabilities.semanticTokensProvider then
+          local semantic = client.config.capabilities.textDocument.semanticTokens
+          if semantic then
+            client.server_capabilities.semanticTokensProvider = {
+              full = true,
+              legend = {
+                tokenTypes = semantic.tokenTypes,
+                tokenModifiers = semantic.tokenModifiers,
+              },
+              range = true,
+            }
+          end
+        end
+      end)
     end,
   },
   -- },
