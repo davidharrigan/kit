@@ -41,6 +41,11 @@ return {
         lsp = {
           symbols = {
             symbol_icons = icons.kinds,
+            symbol_hl = function(s)
+              return "CmpItemKind" .. s
+            end,
+            -- prepend parent to symbol
+            -- parent_postfix = ".",
             fzf_opts = {
               ["--with-nth"] = "-1", -- show only last field (symbol name)
               ["--delimiter"] = "\t", -- tab delimiter
