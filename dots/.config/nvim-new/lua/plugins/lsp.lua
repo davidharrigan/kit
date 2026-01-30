@@ -9,6 +9,8 @@ return {
     },
     opts = {
       ensure_installed = {
+        "gofumpt",
+        "goimports",
         "golangci_lint_ls",
         "gopls",
         "lua_ls",
@@ -35,6 +37,7 @@ return {
         lsp_fallback = true,
       },
       formatters_by_ft = {
+        go = { "goimports", "gofumpt" },
         json = { "prettier" },
         lua = { "stylua" },
         typst = { "typstyle" },
