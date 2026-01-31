@@ -77,6 +77,13 @@ end, { desc = "Document symbols" })
 --   "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
 --   { desc = "LSP Definitions / references / ... (Trouble)" }
 -- )
+keymap("n", "gd", vim.lsp.buf.definition, { desc = "Goto Definition" })
+keymap("n", "gr", vim.lsp.buf.references, { desc = "References", nowait = true })
+keymap("n", "gI", vim.lsp.buf.implementation, { desc = "Goto Implementation" })
+keymap("n", "gy", vim.lsp.buf.type_definition, { desc = "Goto T[y]pe Definition" })
+keymap("n", "gD", vim.lsp.buf.declaration, { desc = "Goto Declaration" })
+keymap("n", "K", vim.lsp.buf.hover, { desc = "Hover" })
+keymap("n", "gK", vim.lsp.buf.signature_help, { desc = "Signature Help" })
 
 -- ============================================================================
 -- Diagnostics
