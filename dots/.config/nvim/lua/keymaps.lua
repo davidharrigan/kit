@@ -84,6 +84,7 @@ keymap("n", "gy", vim.lsp.buf.type_definition, { desc = "Goto T[y]pe Definition"
 keymap("n", "gD", vim.lsp.buf.declaration, { desc = "Goto Declaration" })
 keymap("n", "K", vim.lsp.buf.hover, { desc = "Hover" })
 keymap("n", "gK", vim.lsp.buf.signature_help, { desc = "Signature Help" })
+keymap("n", "gx", "<cmd>lua require('gx').open()<cr>", { desc = "Open link" })
 
 -- ============================================================================
 -- Diagnostics
