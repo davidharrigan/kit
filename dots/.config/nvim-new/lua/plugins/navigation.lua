@@ -15,6 +15,7 @@ return {
           height = 0.9,
         },
         files = {
+          -- formatter = "path.filename_first",
           actions = {
             ["ctrl-i"] = { fn = actions.toggle_ignore, reload = true },
             ["ctrl-h"] = { fn = actions.toggle_hidden, reload = true },

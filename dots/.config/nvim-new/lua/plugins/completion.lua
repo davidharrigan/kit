@@ -20,27 +20,30 @@ return {
       --
       -- See :h blink-cmp-config-keymap for defining your own keymap
       keymap = {
+        preset = "super-tab",
         ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
         ["<C-e>"] = { "hide" },
-        -- ["<Enter>"] = { "select_and_accept" },
-        ["<C-y>"] = { "select_and_accept" },
+        ["<Enter>"] = { "accept", "fallback" },
         ["<Up>"] = { "select_prev", "fallback" },
         ["<Down>"] = { "select_next", "fallback" },
         ["<C-k>"] = { "select_prev", "fallback_to_mappings" },
         ["<C-j>"] = { "select_next", "fallback_to_mappings" },
-
         ["<C-b>"] = { "scroll_documentation_up", "fallback" },
         ["<C-f>"] = { "scroll_documentation_down", "fallback" },
-
-        ["<Tab>"] = { "snippet_forward", "fallback" },
-        ["<S-Tab>"] = { "snippet_backward", "fallback" },
-
-        -- ["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
       },
       appearance = {
         nerd_font_variant = "mono",
       },
       completion = {
+        trigger = {
+          show_on_insert_on_trigger_character = true,
+        },
+        list = {
+          selection = {
+            preselect = true,
+            auto_insert = false,
+          },
+        },
         menu = {
           draw = {
             treesitter = { "lsp" },
@@ -49,7 +52,7 @@ return {
             columns = { { "label", "label_description", gap = 1 }, { "kind_icon", "kind" } },
           },
         },
-        -- documentation = { auto_show = true, auto_show_delay = 500 },
+        documentation = { auto_show = true, auto_show_delay_ms = 200 },
       },
       sources = {
         default = { "lsp", "path", "snippets", "buffer" },

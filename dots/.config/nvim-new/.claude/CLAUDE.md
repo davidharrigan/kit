@@ -22,6 +22,16 @@ To use this config:
 NVIM_APPNAME=nvim-new nvim
 ```
 
+### Checking for errors
+
+After launching, check for any configuration errors or warnings:
+
+```vim
+:lua Snacks.notifier.show_history()
+```
+
+This displays the notification history, which will show any plugin loading errors, configuration issues, or warnings that occurred during startup.
+
 ## Project Structure
 
 This configuration is organized as follows:
