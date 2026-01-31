@@ -108,12 +108,6 @@ remove_dotfiles() {
   success "Dotfiles uninstalled successfully!"
 }
 
-update_submodules() {
-  info "Updating submodules..."
-  git submodule update --remote
-  success "Submodules updated successfully!"
-}
-
 # Parse command line arguments
 REMOVE=false
 
@@ -150,9 +144,6 @@ if [ "$REMOVE" = true ]; then
   exit 0
 fi
 
-# Install dotfiles
-update_submodules
-echo
 backup_conflicts
 echo
 install_dotfiles

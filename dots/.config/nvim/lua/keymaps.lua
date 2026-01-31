@@ -30,7 +30,7 @@ keymap("n", "L", "<cmd>bnext<cr>")
 
 keymap("n", "<leader>gs", "<cmd>FzfLua git_status<cr>", { desc = "Git status" })
 keymap("n", "<leader>gc", "<cmd>FzfLua git_bcommits<cr>", { desc = "Git commits (branch)" })
-keymap("n", "<leader>gC", "<cmd>FzfLua git_bcommit<cr>", { desc = "Git commits" })
+keymap("n", "<leader>gC", "<cmd>FzfLua git_commits<cr>", { desc = "Git commits" })
 
 -- ============================================================================
 -- Explorer

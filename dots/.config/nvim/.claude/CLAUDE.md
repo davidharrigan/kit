@@ -2,24 +2,16 @@
 
 ## Testing this configuration
 
-When testing if this Neovim configuration loads correctly, use the following command to ensure you're testing THIS config and not the default one:
+To test if this Neovim configuration loads correctly:
 
 ```bash
-NVIM_APPNAME=nvim-new nvim --headless +"lua print('Config loaded successfully')" +quit 2>&1
+nvim --headless +"lua print('Config loaded successfully')" +quit 2>&1
 ```
 
 Or for a more complete test that checks plugins:
 
 ```bash
-NVIM_APPNAME=nvim-new nvim --headless +"lua vim.print(vim.inspect(require('lazy').plugins()))" +quit 2>&1
-```
-
-## Running this config interactively
-
-To use this config:
-
-```bash
-NVIM_APPNAME=nvim-new nvim
+nvim --headless +"lua vim.print(vim.inspect(require('lazy').plugins()))" +quit 2>&1
 ```
 
 ### Checking for errors
@@ -30,6 +22,12 @@ After launching, check for any configuration errors or warnings:
 :lua Snacks.notifier.show_history()
 ```
 
+Or in headless mode:
+
+```bash
+nvim --headless +"lua vim.defer_fn(function() vim.print(vim.inspect(require('snacks.notifier').get_history())) vim.cmd('quit') end, 1000)" 2>&1
+```
+
 This displays the notification history, which will show any plugin loading errors, configuration issues, or warnings that occurred during startup.
 
 ## Project Structure
@@ -37,7 +35,7 @@ This displays the notification history, which will show any plugin loading error
 This configuration is organized as follows:
 
 ```
-nvim-new/
+nvim/
 ├── init.lua              # Minimal bootstrap and module loading
 ├── lua/
 │   ├── config/           # Core configuration modules
