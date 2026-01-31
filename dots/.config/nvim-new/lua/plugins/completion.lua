@@ -61,4 +61,17 @@ return {
     },
     opts_extend = { "sources.default" },
   },
+  -- Indent guides integration with blink
+  {
+    "saghen/blink.indent",
+    opts = {
+      static = {
+        char = "▏",
+      },
+      scope = {
+        highlights = { "BlinkIndentBlue" },
+        char = "▏",
+      },
+    },
+  },
 }

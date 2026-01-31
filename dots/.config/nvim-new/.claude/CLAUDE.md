@@ -69,5 +69,5 @@ nvim-new/
 - Neovim 0.11+ automatically loads LSP configs from the `lsp/` directory
 - This config uses lazy.nvim for plugin management
 - Plugin specs are auto-imported from `lua/plugins/`
-- Keymaps are organized in a single `keymaps.lua` file by functional sections (Find/Search, Buffers, Git, Explorer, Terminal, Code/LSP, Diagnostics/Trouble, Session, Treesitter)
+- **IMPORTANT: ALL keymaps MUST be defined in `keymaps.lua`, NOT in plugin specs.** Keymaps are organized in a single `keymaps.lua` file by functional sections (Find/Search, Buffers, Git, Explorer, Terminal, Code/LSP, Diagnostics/Trouble, Session, Treesitter). Never use the `keys` field in plugin specifications.
 - Statusline components are modularized into individual files under `statusline/components/`

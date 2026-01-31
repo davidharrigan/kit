@@ -23,8 +23,8 @@ opt.colorcolumn = "120" -- Highlight column 80
 opt.termguicolors = true -- Enable true colors
 opt.ignorecase = true -- Ignore case in search
 opt.swapfile = false -- Disable swap files
-opt.listchars = "tab:  ,multispace:|   ,eol: " -- Characters to show for tabs, spaces, and end of line
-opt.list = true -- Show whitespace characters
+-- opt.listchars = "tab:  ,multispace:|   ,eol: " -- Characters to show for tabs, spaces, and end of line
+-- opt.list = true -- Show whitespace characters
 
 -- opt.shiftround = true -- Round indent to multiple of shiftwidth
 opt.number = true -- Show line numbers

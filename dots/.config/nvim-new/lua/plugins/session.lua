@@ -32,9 +32,12 @@ return {
   },
   -- Automatic session save/restore
   {
-    "rmagatti/auto-session",
-    lazy = false,
-    opts = {},
+    "folke/persistence.nvim",
+    event = "BufReadPre",
+    opts = {
+      -- Automatically save session on exit
+      save_empty = false,
+    },
   },
   -- Displays popup with available keybindings as you type
   {
@@ -47,6 +50,7 @@ return {
         { "<leader>d", group = "debug" },
         { "<leader>f", group = "file/find" },
         { "<leader>g", group = "git" },
+        { "<leader>q", group = "session" },
         { "<leader>s", group = "search" },
         { "<leader>u", group = "ui" },
         { "<leader>b", group = "buffer" },

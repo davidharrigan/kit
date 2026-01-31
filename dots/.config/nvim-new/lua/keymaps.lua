@@ -97,10 +97,29 @@ keymap("n", "<leader>xq", "<cmd>FzfLua quickfix<cr>", { desc = "Quickfix" })
 -- Session
 -- ============================================================================
 
-keymap("n", "<leader>rs", function()
-  vim.cmd("AutoSession save")
-  vim.cmd('restart lua vim.notify("Restarted")')
-end, { desc = "Restart and save session", noremap = true, nowait = true })
+keymap("n", "<leader>qs", function()
+  require("persistence").load()
+end, { desc = "Restore Session" })
+
+keymap("n", "<leader>qS", function()
+  require("persistence").select()
+end, { desc = "Select Session" })
+
+keymap("n", "<leader>ql", function()
+  require("persistence").load({ last = true })
+end, { desc = "Restore Last Session" })
+
+keymap("n", "<leader>qd", function()
+  require("persistence").stop()
+end, { desc = "Don't Save Current Session" })
+
+keymap("n", "<leader>qr", function()
+  require("persistence").save()
+  -- Create marker file so session is restored after restart
+  local marker_file = vim.fn.stdpath("cache") .. "/restart_marker"
+  vim.fn.writefile({}, marker_file)
+  vim.cmd("restart")
+end, { desc = "Restart and restore session" })
 
 -- ============================================================================
 -- Treesitter Text Objects
