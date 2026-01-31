@@ -15,6 +15,7 @@ return {
         "gopls",
         "lua_ls",
         "prettier",
+        "rust_analyzer",
         "stylua",
         "tinymist",
         "typstyle",
