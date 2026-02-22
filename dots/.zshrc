@@ -16,6 +16,13 @@ source $ZSH/oh-my-zsh.sh
 autoload -U colors
 colors
 
+# Draw a horizontal line between commands
+_draw_line() {
+  print -P '%F{8}${(l:$COLUMNS::─:)}%f'
+}
+autoload -U add-zsh-hook
+add-zsh-hook precmd _draw_line
+
 # User configuration
 if command -v direnv >/dev/null 2>&1; then
   # load direnv
