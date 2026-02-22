@@ -1,10 +1,14 @@
 return {
+  -- Syntax highlighting and code parsing via treesitter
   {
     "nvim-treesitter/nvim-treesitter",
     branch = "main",
     lazy = false,
     build = ":TSUpdate",
     init = function()
+      -- jsonc parser was removed Dec 2025, use json parser instead
+      vim.treesitter.language.register("json", "jsonc")
+
       vim.api.nvim_create_autocmd("FileType", {
         callback = function(args)
           local lang = vim.treesitter.language.get_lang(args.match)
@@ -31,11 +35,13 @@ return {
         "gitcommit",
         "gitignore",
         "go",
+        "gomod",
+        "gosum",
+        "gowork",
         "html",
         "javascript",
         "jsdoc",
         "json",
-        "jsonc",
         "lua",
         "luadoc",
         "luap",
@@ -57,6 +63,7 @@ return {
       })
     end,
   },
+  -- Text objects based on treesitter syntax tree (e.g., select function, class)
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
     branch = "main",

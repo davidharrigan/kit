@@ -11,4 +11,5 @@ alias dif="git difftool --tool=opendiff -d"
 # vim
 alias vi="nvim"
 alias vim="nvim"
-alias vv="alias vv='NVIM_APPNAME=nvim-new nvim'"
+alias vv="nvim"
+# alias vv="alias vv='NVIM_APPNAME=nvim-new nvim'"
