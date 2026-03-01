@@ -4,6 +4,19 @@
 local autocmd = vim.api.nvim_create_autocmd
 local augroup = vim.api.nvim_create_augroup
 
+-- Enable treesitter highlighting per buffer
+autocmd("FileType", {
+  group = augroup("treesitter_highlight", { clear = true }),
+  callback = function(ev)
+    local lang = vim.treesitter.language.get_lang(ev.match)
+    if not lang then
+      vim.notify("treesitter parser not found for " .. ev.match)
+      return
+    end
+    pcall(vim.treesitter.start, ev.buf)
+  end,
+})
+
 -- Highlight yanked text
 local highlight_group = augroup("YankHighlight", { clear = true })
 autocmd("TextYankPost", {

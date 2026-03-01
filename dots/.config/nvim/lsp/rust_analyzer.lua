@@ -9,7 +9,8 @@ return {
         prefix = "self",
       },
       -- Enable cargo check on save
-      checkOnSave = {
+      checkOnSave = true,
+      check = {
         command = "clippy",
       },
       -- Enable procedural macro support

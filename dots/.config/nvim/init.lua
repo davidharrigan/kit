@@ -24,6 +24,9 @@ require("config.autocmds")
 require("config.diagnostics")
 require("keymaps")
 
+-- jsonc parser was removed Dec 2025, use json parser instead
+vim.treesitter.language.register("json", "jsonc")
+
 -------------
 -- Plugins --
 -------------

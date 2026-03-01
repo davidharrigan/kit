@@ -36,7 +36,7 @@ keymap("n", "<leader>gC", "<cmd>FzfLua git_commits<cr>", { desc = "Git commits" 
 -- Explorer
 -- ============================================================================
 
-keymap("n", "<C-e>", "<cmd>Neotree toggle<cr>")
+keymap("n", "<C-e>", "<cmd>Neotree toggle reveal<cr>")
 keymap("n", "<leader>e", function()
   local oil = require("oil")
   if vim.w.is_oil_win then
@@ -49,15 +49,6 @@ end, { desc = "Toggle explorer" })
 keymap("n", "<leader>E", function()
   require("oil").toggle_float(vim.fn.getcwd())
 end, { desc = "Toggle explorer (cwd)" })
-
--- ============================================================================
--- Terminal
--- ============================================================================
-
-keymap("n", "<C-/>", function()
-  Snacks.terminal(nil, { cwd = vim.fn.getcwd() })
-end, { desc = "Terminal" })
-keymap("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
 
 -- ============================================================================
 -- Code / LSP

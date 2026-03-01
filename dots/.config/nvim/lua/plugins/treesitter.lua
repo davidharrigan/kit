@@ -5,25 +5,6 @@ return {
     branch = "main",
     lazy = false,
     build = ":TSUpdate",
-    init = function()
-      -- jsonc parser was removed Dec 2025, use json parser instead
-      vim.treesitter.language.register("json", "jsonc")
-
-      vim.api.nvim_create_autocmd("FileType", {
-        callback = function(args)
-          local lang = vim.treesitter.language.get_lang(args.match)
-          if not lang then
-            vim.notify("treesitter parser not found for " .. args.match)
-            return
-          end
-
-          if vim.treesitter.language.add(lang) then
-            vim.treesitter.start(args.buf)
-          end
-        end,
-      })
-    end,
-    opts = {},
     config = function()
       local treesitter = require("nvim-treesitter")
       treesitter.install({
@@ -52,6 +33,7 @@ return {
         "query",
         "regex",
         "rust",
+        "svelte",
         "toml",
         "tsx",
         "typescript",
