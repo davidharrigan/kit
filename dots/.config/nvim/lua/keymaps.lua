@@ -55,6 +55,7 @@ end, { desc = "Toggle explorer (cwd)" })
 -- ============================================================================
 
 keymap("n", "<leader>cc", "<cmd>FzfLua lsp_code_actions<cr>", { desc = "Code actions" })
+keymap("n", "<leader>cr", vim.lsp.buf.rename, { desc = "Rename" })
 keymap("n", "<leader>cf", vim.lsp.buf.format, { desc = "Format" })
 keymap("n", "<leader>cs", "<cmd>FzfLua lsp_document_symbols<cr>", { desc = "Document Symbols" })
 keymap("n", "<leader>cS", "<cmd>FzfLua lsp_workspace_symbols<cr>", { desc = "Workspace symbols" })
