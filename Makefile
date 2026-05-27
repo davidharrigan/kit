@@ -12,6 +12,10 @@ clean:
 brew/install:
 	$(LOAD_ENV) brew bundle --file=./dots/.homebrew/Brewfile
 
+.PHONY: brew/install/%
+brew/install/%:
+	$(LOAD_ENV) brew bundle --file=./dots/.homebrew/Brewfile.$*
+
 galaxy/install:
 	ansible-galaxy install -r ./ansible/requirements.yaml
 

@@ -1,0 +1,12 @@
+tap "datadog-labs/pack"
+tap "snyk/tap"
+
+brew "awscli"
+brew "snyk-cli"
+brew "datadog-labs/pack/pup"
+
+cask "cursor"
+cask "datagrip", args: { appdir: "/Applications" }
+cask "gcloud-cli"
+cask "slack"
+cask "teleport", version: "18.8.2"

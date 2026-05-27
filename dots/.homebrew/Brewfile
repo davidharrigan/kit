@@ -1,7 +1,6 @@
 tap "hashicorp/tap"
-tap "hashicorp/tap"
-tap "homebrew/services"
 tap "manaflow-ai/cmux"
+tap "terraform-linters/tap"
 
 brew "adr-tools"
 brew "fnm"
@@ -23,7 +22,6 @@ brew "ripgrep"
 brew "rtk"
 brew "rust"
 brew "stow"
-brew "tflint"
 brew "tilt"
 brew "tmux"
 brew "tree"
@@ -31,16 +29,21 @@ brew "tree-sitter-cli"
 brew "watch"
 brew "yq"
 brew "hashicorp/tap/terraform"
+brew "terraform-linters/tap/tflint"
 
 cask "1password"
 cask "1password-cli"
 cask "arc"
 cask "bartender"
+cask "claude-code"
 cask "cmux"
+cask "docker-desktop"
 cask "firefox"
 cask "ghostty"
 cask "obsidian"
+cask "proxyman"
 cask "rectangle"
+cask "visual-studio-code"
 
 go "golang.org/x/perf/cmd/benchstat"
 go "github.com/go-delve/delve/cmd/dlv"
@@ -51,14 +54,3 @@ go "honnef.co/go/tools/cmd/staticcheck"
 cargo "bob-nvim"
 
 npm "@google/gemini-cli"
-
-if ENV["WORK_MACHINE"]
-    tap "datadog-labs/pack"
-    tap "snyk/tap"
-
-    brew "awscli"
-    brew "snyk-cli"
-    brew "datadog-labs/pack/pup"
-    cask "gcloud-cli"
-    cask "datagrip", args: { appdir: "/Applications" }
-end
