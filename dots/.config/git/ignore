@@ -1,16 +1,17 @@
 # Mac
 .DS_Store
 
-# Jetbrains
+# editor
+*~
+.vscode/
 **/.idea/*
 
-# vi
-*~
-
-.vscode/
 .claudesync/
 .claudeignore
 .rooignore
 
-**/.claude/settings.local.json
-CLAUDE.local.md
+__projects/
+**/*.local.json
+**/*.local.md
+**/*.local.env
+**/*.local.config

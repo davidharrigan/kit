@@ -10,8 +10,10 @@
 -- vim.bo.tabstop = 4 -- Number of spaces in a tab
 -- vim.bo.smartindent = true -- Insert indents automatically
 -- vim.bo.autoindent = true
-
+--
 local opt = vim.opt
+opt.textwidth=120
+
 opt.expandtab = true -- Use spaces instead of tabs
 opt.shiftwidth = 4 -- Size of an indent
 opt.softtabstop = 4 -- Number of spaces tabs count for
