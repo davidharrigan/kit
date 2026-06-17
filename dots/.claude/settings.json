@@ -1,0 +1,28 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "model": "sonnet",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/rtk-rewrite.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "feature-dev@claude-plugins-official": false,
+    "context7@claude-plugins-official": false,
+    "rust-analyzer-lsp@claude-plugins-official": false,
+    "gopls-lsp@claude-plugins-official": false
+  },
+  "effortLevel": "high",
+  "editorMode": "vim",
+  "autoCompactEnabled": false
+}
