@@ -46,12 +46,15 @@ bindkey "^j" history-beginning-search-forward
 
 export GPG_TTY=$(tty)
 
-export PATH="/Users/david/.local/share/bob/nvim-bin:$PATH"
+export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
 
 export PATH="/opt/homebrew/opt/postgresql@13/bin:$PATH"
 
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
-fpath=(/Users/david/.docker/completions $fpath)
+fpath=($HOME/.docker/completions $fpath)
 autoload -Uz compinit
 compinit
 # End of Docker CLI completions
+
+# Added by Antigravity
+export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
