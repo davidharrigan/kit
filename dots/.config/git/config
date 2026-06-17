@@ -42,3 +42,5 @@
   rebase = true
 [includeIf "hasconfig:remote.*.url:git@github.com:snyk/**"]
   path = snyk.local.config
+[core]
+	excludesfile = /Users/david/.config/git/ignore
