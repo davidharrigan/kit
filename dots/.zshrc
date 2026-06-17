@@ -30,24 +30,42 @@ if command -v direnv >/dev/null 2>&1; then
 fi
 
 # Load aliases
-. <(cat $HOME/.aliases/*.alias)
+alias co="git checkout"
+alias cob="git checkout -b"
+alias cm="git commit -m"
+alias pull="git pull"
+alias push="git push"
+alias dif="git difftool --tool=opendiff -d"
 
-# Load OS specific environments
-if [[ "$(uname)" == "Darwin" ]]; then
-  . $HOME/.env/os/macos.env
-fi
-
-# Load environment variables
-. <(cat $HOME/.env/*.env)
+alias vi="nvim"
+alias vim="nvim"
+alias vv="nvim"
+# alias vv="alias vv='NVIM_APPNAME=nvim-new nvim'"
 
 # Key binds
 bindkey "^k" history-beginning-search-backward
 bindkey "^j" history-beginning-search-forward
 
+# Load environment variables
+export XDG_CONFIG_HOME=$HOME/.config
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+export PROMPT_EOL_MARK=""
+export CC=gcc
+export EDITOR=nvim
 export GPG_TTY=$(tty)
 
-export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
+# Load OS specific environments
+if [[ "$(uname)" == "Darwin" ]]; then
+  export PATH="$PATH:/opt/homebrew/bin"
+  export PATH="$PATH:$HOME/Library/Python/3.9/bin"
+fi
 
+# Load other environment variables
+. <(cat $HOME/.env/*.env)
+
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
 export PATH="/opt/homebrew/opt/postgresql@13/bin:$PATH"
 
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
