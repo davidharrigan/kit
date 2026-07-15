@@ -1,0 +1,69 @@
+{
+  "version": 3,
+  "skills": {
+    "cmux": {
+      "source": "manaflow-ai/cmux",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/manaflow-ai/cmux.git",
+      "skillPath": "skills/cmux/SKILL.md",
+      "skillFolderHash": "d7b4a428df22553048a6830f4b5f3733fe1f9393",
+      "installedAt": "2026-06-17T01:50:23.766Z",
+      "updatedAt": "2026-06-17T03:51:53.758Z"
+    },
+    "cmux-browser": {
+      "source": "manaflow-ai/cmux",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/manaflow-ai/cmux.git",
+      "skillPath": "skills/cmux-browser/SKILL.md",
+      "skillFolderHash": "6d5dfc4de15faae37f932fa71f2bc9943bd2dafe",
+      "installedAt": "2026-06-17T01:50:23.770Z",
+      "updatedAt": "2026-06-17T01:50:23.770Z"
+    },
+    "cmux-markdown": {
+      "source": "manaflow-ai/cmux",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/manaflow-ai/cmux.git",
+      "skillPath": "skills/cmux-markdown/SKILL.md",
+      "skillFolderHash": "c6cf70a1ad9f98867a652dc03ded80905c2706c8",
+      "installedAt": "2026-06-17T01:50:23.774Z",
+      "updatedAt": "2026-06-17T01:50:23.774Z"
+    },
+    "cmux-workspace": {
+      "source": "manaflow-ai/cmux",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/manaflow-ai/cmux.git",
+      "skillPath": "skills/cmux-workspace/SKILL.md",
+      "skillFolderHash": "b8a24863c44d8233c1c9ed760fe91876c8265321",
+      "installedAt": "2026-06-17T01:50:23.776Z",
+      "updatedAt": "2026-06-17T01:50:23.776Z"
+    },
+    "git-commit": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/github/awesome-copilot.git",
+      "skillPath": "skills/git-commit/SKILL.md",
+      "skillFolderHash": "883a6a7466f55a9cd9f22cf1cce2d9333fc9b998",
+      "installedAt": "2026-06-17T04:26:15.657Z",
+      "updatedAt": "2026-06-17T04:26:15.657Z"
+    }
+  },
+  "dismissed": {
+    "findSkillsPrompt": true
+  },
+  "lastSelectedAgents": [
+    "amp",
+    "antigravity",
+    "antigravity-cli",
+    "cline",
+    "codex",
+    "cursor",
+    "deepagents",
+    "gemini-cli",
+    "github-copilot",
+    "kimi-code-cli",
+    "opencode",
+    "warp",
+    "zed",
+    "claude-code"
+  ]
+}

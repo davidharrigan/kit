@@ -62,9 +62,10 @@ if [[ "$(uname)" == "Darwin" ]]; then
 fi
 
 # Load other environment variables
-. <(cat $HOME/.env/*.env)
+# . <(cat $HOME/.env/*.env)
 
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/go/bin:$PATH"
 export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
 export PATH="/opt/homebrew/opt/postgresql@13/bin:$PATH"
 
@@ -76,3 +77,6 @@ compinit
 
 # Added by Antigravity
 export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
+
+# Added by Antigravity IDE
+export PATH="/Users/david/.antigravity-ide/antigravity-ide/bin:$PATH"
