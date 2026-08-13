@@ -2,6 +2,35 @@
   "$schema": "https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux.schema.json",
   "schemaVersion": 1,
 
+  // ── Sidebar: one row per project — name, branch, path. Nothing else. ──
+  //
+  // These toggles are global, not per-workspace. The split still works out:
+  // the rows turned off below auto-populate on ANY workspace, while
+  // showCustomMetadata and showProgress only render when something explicitly
+  // sets them (cmux set-status / set-progress) — in practice, only agents.
+  // So personal workspaces stay bare and agent workspaces keep their pills.
+  "sidebar": {
+    "showBranchDirectory": true,      // path
+    "branchLayout": "vertical",       // branch
+    "showCustomMetadata": true,       // agent status pills — /task orchestrators
+    "showProgress": true,             // agent progress bars
+    "showNotificationMessage": false, // was up to 12 lines of agent chatter
+    "showLog": false,
+    "showPorts": false,
+    "showPullRequests": false,        // flip to true to get PR status inline
+    "showSSH": false
+  },
+
+  // Stop agent activity from reordering the sidebar under you.
+  "app": {
+    "reorderOnNotification": false,
+    "iMessageMode": false
+  },
+
+  // Note: AI workspace auto-naming lives at automation.workspaceAutoNaming and
+  // is left as-is (managed in Settings). It never overwrites a name you set —
+  // so name a workspace once and it is permanently opted out.
+
   // This file uses JSON with comments (JSONC).
   // Uncomment and edit any setting to make it file-managed.
   // Remove a setting to fall back to the value saved in Settings.

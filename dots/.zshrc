@@ -80,3 +80,7 @@ export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 
 # Added by Antigravity IDE
 export PATH="/Users/david/.antigravity-ide/antigravity-ide/bin:$PATH"
+
+
+# Added by Antigravity CLI installer
+export PATH="/Users/david/.local/bin:$PATH"
