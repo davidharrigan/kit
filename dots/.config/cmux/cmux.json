@@ -18,13 +18,60 @@
     "showLog": false,
     "showPorts": false,
     "showPullRequests": false,        // flip to true to get PR status inline
-    "showSSH": false
+    "showSSH": false,
+
+    // Below: unmodified — pinned to schema default, confirmed absent from
+    // Settings UI storage (~/Library/Preferences/com.cmuxterm.app.plist).
+    "hideAllDetails": false,
+    "openPortLinksInCmuxBrowser": true,
+    "openPullRequestLinksInCmuxBrowser": true,
+    "wrapWorkspaceTitles": false,
+    "showWorkspaceDescription": true,
+    "beta": {
+      "workspaceTodos": {
+        "checklistStyle": "popover"
+      }
+    },
+    "notificationMessageLineLimit": 12,
+    "watchGitStatus": true,
+    "makePullRequestsClickable": true,
+    "showAgentActivity": true,
+    "loadingSpinnerPosition": "leading",
+    "notificationBadgePosition": "leading"
+    // rightMaxWidth omitted — schema defines no default (built-in dynamic cap applies)
   },
 
   // Stop agent activity from reordering the sidebar under you.
   "app": {
     "reorderOnNotification": false,
-    "iMessageMode": false
+    "iMessageMode": false,
+
+    // Below: unmodified — pinned to schema default, confirmed absent from
+    // Settings UI storage (~/Library/Preferences/com.cmuxterm.app.plist).
+    "language": "system",
+    "appearance": "system",
+    "appIcon": "automatic",
+    "windowTitleTemplate": "",
+    "menuBarOnly": false,
+    "newWorkspacePlacement": "afterCurrent",
+    "forkConversationDefaultDestination": "right",
+    "workspaceInheritWorkingDirectory": true,
+    "minimalMode": false,
+    "keepWorkspaceOpenWhenClosingLastSurface": false,
+    "focusPaneOnFirstClick": true,
+    "focusHistoryIncludesPanesAndTabs": false,
+    "preferredEditor": "",
+    "openSupportedFilesInCmux": true,
+    "openMarkdownInCmuxViewer": true,
+    "globalFontMagnification": 100,
+    "sendAnonymousTelemetry": true,
+    "confirmQuit": "always",
+    "warnBeforeQuit": true,
+    "warnBeforeClosingTab": true,
+    "warnBeforeClosingTabXButton": false,
+    "hideTabCloseButton": false,
+    "renameSelectsExistingName": true,
+    "commandPaletteSearchesAllSurfaces": false
   },
 
   // Note: AI workspace auto-naming lives at automation.workspaceAutoNaming and
