@@ -1,6 +1,6 @@
 ---
 name: cmux-workspace
-description: "Work inside the current cmux workspace and terminal. Use for cmux workspace, current workspace, caller surface, panes, surfaces, socket targeting, and non-interfering cmux automation."
+description: "Work inside the current cmux workspace and terminal. Use for cmux workspace, current workspace, caller surface, panes, surfaces, tagged reloads, socket targeting, and non-interfering cmux automation."
 ---
 
 # cmux Workspace
@@ -73,6 +73,59 @@ Use this policy:
 - Send commands to the new or reused helper surface by explicit surface ref. Do not focus it unless the user asks.
 
 This means repeated "open it" requests should normally create tabs inside the existing right helper pane, not more splits.
+
+After creating a helper terminal, verify that it is usable before claiming work is visible there:
+
+```bash
+cmux surface-health --workspace "${CMUX_WORKSPACE_ID:-}"
+cmux read-screen --workspace "${CMUX_WORKSPACE_ID:-}" --surface surface:<helper> --lines 20
+cmux top --workspace "${CMUX_WORKSPACE_ID:-}" --processes --format tsv
+```
+
+If `read-screen` reports `Terminal surface not found`, or `surface-health` shows the helper terminal is not attached and `top` shows no process for it, treat that as a cmux CLI/runtime bug. Do not claim the command is running in the workspace. Clean up any empty helper surfaces you created, then report the bug or use an already-materialized cmux terminal surface. Do not use hidden `tmux`, `nohup`, or detached background fallbacks for visible dogfood handoff unless the user explicitly asks for that workaround.
+
+## Artifact Previews
+
+When a task produces videos, images, checked frames, screenshots, PDFs, or other user-facing artifacts, open the final artifacts in cmux before handoff. Put them in the caller workspace's right-side helper pane as file preview tabs, and use `--no-focus` so the user's current terminal stays selected.
+
+Final user-facing artifacts should persist under `/cmux-assets/<branch>/...`. If `/cmux-assets` cannot be created because the root volume is read-only, use `cmux-assets/<branch>/...` under the current repo checkout and state that fallback. Use `/tmp` only for scratch, then copy accepted artifacts into the durable tree before opening or reporting them.
+
+Use absolute durable paths or paths relative to the current repo checkout. If the artifact lives in a worktree, copy it into the durable branch-scoped asset tree before final handoff; do not report paths that only work from inside the worktree.
+
+Resolve the workspace and pane in this order:
+
+1. Prefer `CMUX_WORKSPACE_ID` and `CMUX_SURFACE_ID`.
+2. If those are missing or rejected by `cmux`, inspect `cmux identify --json` and state that you are falling back to the current focused cmux context.
+3. Reuse an existing non-caller helper pane when obvious.
+4. If no helper pane exists, create one on the right with `--focus false`, then re-list panes to get the pane ref.
+
+Template:
+
+```bash
+ARTIFACTS=(
+  "/cmux-assets/<branch>/demos/demo.mov"
+  "/cmux-assets/<branch>/demos/frame-tail.png"
+)
+
+WORKSPACE="${CMUX_WORKSPACE_ID:-}"
+SURFACE="${CMUX_SURFACE_ID:-}"
+
+cmux identify --json
+cmux list-panes --workspace "$WORKSPACE" --json
+cmux list-pane-surfaces --workspace "$WORKSPACE" --json
+
+# Pick an existing non-caller helper pane from the pane list. If none exists:
+cmux new-pane --workspace "$WORKSPACE" --type terminal --direction right --focus false
+cmux list-panes --workspace "$WORKSPACE" --json
+
+cmux open "${ARTIFACTS[@]}" \
+  --workspace "$WORKSPACE" \
+  --pane pane:<right-helper> \
+  --no-focus
+cmux list-pane-surfaces --workspace "$WORKSPACE" --json
+```
+
+If `cmux open` fails because the caller env points at a stale workspace, retry once with the refs from `cmux identify --json`. Do not keep guessing across other workspaces. If opening still fails, report the failure and include the exact artifact paths.
 
 ## Hierarchy
 
@@ -176,18 +229,34 @@ cmux clear-status build --workspace "${CMUX_WORKSPACE_ID:-}"
 cmux clear-progress --workspace "${CMUX_WORKSPACE_ID:-}"
 ```
 
-## Contributor Reloads
+## Rebuild and Reload
 
-For cmux app/runtime changes in a cmux source checkout, use tagged reloads from the active worktree. A tagged reload creates an isolated app name, bundle ID, debug socket, and DerivedData path.
+For cmux app/runtime changes, use tagged reloads from the active worktree. A tagged reload creates an isolated app name, bundle ID, debug socket, and DerivedData path.
 
 ```bash
 ./scripts/reload.sh --tag <short-tag>
 ```
 
+If reload output includes `Dev web origin`, start the matching dev server from the same worktree before handoff and prove it responds:
+
+```bash
+cd web
+CMUX_PORT=<printed-port> CMUX_PORT_RANGE=<range> CMUX_PORT_END=<end> bun dev
+curl -fsS "http://127.0.0.1:<printed-port>"
+```
+
+Run that server in the right-side helper terminal and verify the terminal exists with `read-screen` or `top`. If the helper terminal cannot be instantiated, report the cmux CLI/runtime bug instead of using a hidden background fallback.
+
 Never build or launch untagged `cmux DEV`. If tests or tools need a socket, use the tag-specific socket:
 
 ```bash
 CMUX_SOCKET_PATH=/tmp/cmux-debug-<short-tag>.sock cmux identify --json
+```
+
+When a task touches shared iOS/runtime code, also run the iOS reload flow from the worktree:
+
+```bash
+ios/scripts/reload.sh --tag <ios-tag>
 ```
 
 ## Socket and Access
@@ -218,8 +287,10 @@ cmux ping
 - Never call `focus-pane`, `focus-panel`, `select-workspace`, or focus-changing `tab-action` verbs unless the user explicitly asked. The user may be visually on a different workspace, window, or app.
 - Pass `--focus false` on `move-surface` and any creation verb that supports it.
 - For auxiliary output, reuse the right-side helper pane; create one only if it does not exist.
+- Persist final videos, images, checked frames, and other user-facing artifacts under `/cmux-assets/<branch>/...` or the explicit fallback `cmux-assets/<branch>/...`, then open them in the right-side helper pane with `cmux open ... --no-focus` before handoff.
 - Build layout additively with `new-pane --type ... --url ...` rather than create-then-move-then-focus chains.
 - If a CLI command rejects a valid surface or pane ref, report it to the user. Do not work around by focusing.
 - Do not close, focus, move, or send input to another workspace unless the user names that target.
 - Use short refs for chat and command examples. Use UUIDs only for logs, persistence, or debugging.
-- For app/runtime changes in a cmux source checkout, reload with `./scripts/reload.sh --tag <tag>` from the worktree before dogfood handoff.
+- For app/runtime changes, always reload with `./scripts/reload.sh --tag <tag>` from the worktree before dogfood handoff.
+- If a tagged reload prints `Dev web origin`, the handoff is incomplete until the same-worktree dev server is running and `curl -fsS <Dev web origin>` passes.

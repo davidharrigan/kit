@@ -1,141 +1,159 @@
 ---
 name: cmux-browser
-description: End-user browser automation with cmux. Use when you need to open sites, interact with pages, wait for state changes, and extract data from cmux browser surfaces.
+description: "Automate the browser inside cmux. Use for cmux browser, browser surface, webview, current workspace browser, snapshot refs, DOM actions, waits, screenshots, cookies, storage, tabs, downloads, console, errors, and browser session state."
 ---
 
-# Browser Automation with cmux
+# cmux Browser
 
-Use this skill for browser tasks inside cmux webviews.
+Use this skill for browser automation inside cmux webview surfaces. It is different from a standalone browser automation tool because every browser surface lives inside a cmux workspace, pane, and surface topology.
+
+## Default Rule
+
+Open and control browser surfaces in the current caller workspace unless the user explicitly names another workspace or window.
+
+Before mutating browser state, identify the caller:
+
+```bash
+printf 'workspace=%s\nsurface=%s\nsocket=%s\n' \
+  "${CMUX_WORKSPACE_ID:-}" \
+  "${CMUX_SURFACE_ID:-}" \
+  "${CMUX_SOCKET_PATH:-}"
+cmux identify --json
+```
+
+Use `CMUX_WORKSPACE_ID` for new browser splits and `CMUX_SURFACE_ID` to understand the terminal that invoked the automation. Do not open a browser in the visually focused workspace if it differs from the caller workspace.
 
 ## Core Workflow
 
-1. Open or target a browser surface.
-2. Verify navigation with `get url` before waiting or snapshotting.
-3. Snapshot (`--interactive`) to get fresh element refs.
-4. Act with refs (`click`, `fill`, `type`, `select`, `press`).
-5. Wait for state changes.
-6. Re-snapshot after DOM/navigation changes.
-
 ```bash
-cmux --json browser open https://example.com
-# use returned surface ref, for example: surface:7
+# Open in the caller workspace and capture the returned surface ref.
+cmux --json browser open https://example.com --workspace "${CMUX_WORKSPACE_ID:-}"
 
+# Use the returned surface, for example surface:7.
 cmux browser surface:7 get url
 cmux browser surface:7 wait --load-state complete --timeout-ms 15000
-cmux browser surface:7 snapshot --interactive
-cmux browser surface:7 fill e1 "hello"
-cmux --json browser surface:7 click e2 --snapshot-after
-cmux browser surface:7 snapshot --interactive
+cmux browser surface:7 snapshot --interactive --compact
+cmux browser surface:7 click e2 --snapshot-after
+cmux browser surface:7 snapshot --interactive --compact
 ```
 
-## Surface Targeting
+Loop: navigate, verify URL, wait, snapshot, act, then re-snapshot. Snapshot refs are temporary. Re-snapshot after navigation, modal changes, tab changes, or DOM updates.
+
+## Targeting
+
+Most subcommands require a browser surface:
 
 ```bash
-# identify current context
-cmux identify --json
-
-# open routed to a specific topology target
-cmux browser open https://example.com --workspace workspace:2 --window window:1 --json
+cmux browser identify
+cmux browser identify --surface surface:2
+cmux browser surface:2 get url
+cmux browser --surface surface:2 get title
 ```
 
-Notes:
-- CLI output defaults to short refs (`surface:N`, `pane:N`, `workspace:N`, `window:N`).
-- UUIDs are still accepted on input; only request UUID output when needed (`--id-format uuids|both`).
-- Keep using one `surface:N` per task unless you intentionally switch.
-
-## Wait Support
-
-cmux supports wait patterns similar to agent-browser:
+Open commands can create or reuse a browser split:
 
 ```bash
-cmux browser <surface> wait --selector "#ready" --timeout-ms 10000
-cmux browser <surface> wait --text "Success" --timeout-ms 10000
-cmux browser <surface> wait --url-contains "/dashboard" --timeout-ms 10000
-cmux browser <surface> wait --load-state complete --timeout-ms 15000
-cmux browser <surface> wait --function "document.readyState === 'complete'" --timeout-ms 10000
+cmux browser open http://localhost:3000 --workspace "${CMUX_WORKSPACE_ID:-}" --json
+cmux browser open-split https://example.com --workspace workspace:2 --json
+cmux browser new https://example.com --window window:1 --json
 ```
 
-## Common Flows
+Keep one browser surface per task unless the user asks for multiple tabs or pages.
 
-### Form Submit
+## Command Groups
+
+See [references/commands.md](references/commands.md) for the full command list. Main groups:
+
+- Navigation and targeting: `identify`, `open`, `open-split`, `new`, `navigate`, `goto`, `back`, `forward`, `reload`, `url`, `focus-webview`, `is-webview-focused`.
+- Waiting: `wait --selector`, `--text`, `--url-contains`, `--load-state`, `--function`.
+- DOM interaction: `click`, `dblclick`, `hover`, `focus`, `check`, `uncheck`, `scroll-into-view`, `type`, `fill`, `press`, `keydown`, `keyup`, `select`, `scroll`.
+- Inspection: `snapshot`, `screenshot`, `get`, `is`, `find`, `highlight`.
+- JavaScript and injection: `eval`, `addinitscript`, `addscript`, `addstyle`.
+- Frames, dialogs, downloads: `frame`, `dialog`, `download`.
+- State and session: `cookies`, `storage`, `state`.
+- Tabs and diagnostics: `tab`, `console`, `errors`.
+- Environment and lower-level APIs: `viewport`, `geolocation`, `offline`, `trace`, `network`, `screencast`, `input`.
+
+## Common Patterns
+
+### Durable Captures
+
+Save browser screenshots, traces, downloaded diagnostics, and reusable session state under `/cmux-assets/<branch>/browser/...`, not `/tmp`, before reporting them to the user.
 
 ```bash
-cmux --json browser open https://example.com/signup
+BRANCH="$(git branch --show-current 2>/dev/null || true)"
+BRANCH="${BRANCH:-$(basename "$PWD")}"
+BRANCH="$(printf '%s' "$BRANCH" | tr -cs 'A-Za-z0-9._-' '-' | sed 's/^-//;s/-$//')"
+ASSET_BASE="/cmux-assets"
+if ! mkdir -p "$ASSET_BASE/$BRANCH" 2>/dev/null; then
+  ASSET_BASE="$(pwd)/cmux-assets"
+  mkdir -p "$ASSET_BASE/$BRANCH"
+fi
+BROWSER_ASSET_ROOT="$ASSET_BASE/$BRANCH/browser/$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BROWSER_ASSET_ROOT"
+```
+
+If `/cmux-assets` is unavailable because the root volume is read-only, use the fallback path and state it. Do not leave final screenshots or session files only in `/tmp`.
+
+### Navigate, Wait, Inspect
+
+```bash
+cmux --json browser open http://localhost:3000 --workspace "${CMUX_WORKSPACE_ID:-}"
 cmux browser surface:7 get url
 cmux browser surface:7 wait --load-state complete --timeout-ms 15000
-cmux browser surface:7 snapshot --interactive
-cmux browser surface:7 fill e1 "Jane Doe"
-cmux browser surface:7 fill e2 "jane@example.com"
-cmux --json browser surface:7 click e3 --snapshot-after
-cmux browser surface:7 wait --url-contains "/welcome" --timeout-ms 15000
-cmux browser surface:7 snapshot --interactive
+cmux browser surface:7 snapshot --interactive --compact
+cmux browser surface:7 get title
 ```
 
-### Clear an Input
+### Form Fill
 
 ```bash
-cmux browser surface:7 fill e11 "" --snapshot-after --json
-cmux browser surface:7 get value e11 --json
+cmux browser surface:7 fill "#email" --text "ops@example.com"
+cmux browser surface:7 fill "#password" --text "$PASSWORD"
+cmux browser surface:7 click "button[type='submit']" --snapshot-after
+cmux browser surface:7 wait --text "Welcome" --timeout-ms 15000
+cmux browser surface:7 is visible "#dashboard"
 ```
 
-### Stable Agent Loop (Recommended)
+### Debug Capture
 
 ```bash
-# navigate -> verify -> wait -> snapshot -> action -> snapshot
-cmux browser surface:7 get url
-cmux browser surface:7 wait --load-state complete --timeout-ms 15000
-cmux browser surface:7 snapshot --interactive
-cmux --json browser surface:7 click e5 --snapshot-after
-cmux browser surface:7 snapshot --interactive
+cmux browser surface:7 console list
+cmux browser surface:7 errors list
+cmux browser surface:7 screenshot --out "$BROWSER_ASSET_ROOT/cmux-failure.png"
+cmux browser surface:7 snapshot --interactive --compact
 ```
 
-If `get url` is empty or `about:blank`, navigate first instead of waiting on load state.
-
-## Deep-Dive References
-
-| Reference | When to Use |
-|-----------|-------------|
-| [references/commands.md](references/commands.md) | Full browser command mapping and quick syntax |
-| [references/snapshot-refs.md](references/snapshot-refs.md) | Ref lifecycle and stale-ref troubleshooting |
-| [references/authentication.md](references/authentication.md) | Login/OAuth/2FA patterns and state save/load |
-| [references/authentication.md#saving-authentication-state](references/authentication.md#saving-authentication-state) | Save authenticated state right after login |
-| [references/session-management.md](references/session-management.md) | Multi-surface isolation and state persistence patterns |
-| [references/video-recording.md](references/video-recording.md) | Current recording status and practical alternatives |
-| [references/proxy-support.md](references/proxy-support.md) | Proxy behavior in WKWebView and workarounds |
-
-## Ready-to-Use Templates
-
-| Template | Description |
-|----------|-------------|
-| [templates/form-automation.sh](templates/form-automation.sh) | Snapshot/ref form fill loop |
-| [templates/authenticated-session.sh](templates/authenticated-session.sh) | Login once, save/load state |
-| [templates/capture-workflow.sh](templates/capture-workflow.sh) | Navigate + capture snapshots/screenshots |
-
-## Limits (WKWebView)
-
-These commands currently return `not_supported` because they rely on Chrome/CDP-only APIs not exposed by WKWebView:
-- viewport emulation
-- offline emulation
-- trace/screencast recording
-- network route interception/mocking
-- low-level raw input injection
-
-Use supported high-level commands (`click`, `fill`, `press`, `scroll`, `wait`, `snapshot`) instead.
-
-## Troubleshooting
-
-### `js_error` on `snapshot --interactive` or `eval`
-
-Some complex pages can reject or break the JavaScript used for rich snapshots and ad-hoc evaluation.
-
-Recovery steps:
+### Session Save and Restore
 
 ```bash
-cmux browser surface:7 get url
-cmux browser surface:7 get text body
-cmux browser surface:7 get html body
+cmux browser surface:7 state save "$BROWSER_ASSET_ROOT/cmux-browser-session.json"
+cmux browser surface:7 state load "$BROWSER_ASSET_ROOT/cmux-browser-session.json"
+cmux browser surface:7 reload --snapshot-after
 ```
 
-- Use `get url` first so you know whether the page actually navigated.
-- Fall back to `get text body` or `get html body` when `snapshot --interactive` or `eval` returns `js_error`.
-- If the page is still failing, navigate to a simpler intermediate page, then retry the task from there.
+## Remote Workspaces
+
+In remote SSH workspaces, browser panes route HTTP and WebSocket traffic through the remote machine. `localhost:3000` means the remote host's localhost, and browser storage is isolated per remote workspace context.
+
+## Rebuild and Reload
+
+If browser automation is validating a cmux app/runtime change, first build a tagged app from the active worktree:
+
+```bash
+./scripts/reload.sh --tag <short-tag>
+CMUX_SOCKET_PATH=/tmp/cmux-debug-<short-tag>.sock cmux browser open http://localhost:3000 --workspace "${CMUX_WORKSPACE_ID:-}"
+```
+
+Never automate against an untagged debug socket for tests or dogfood builds.
+
+## Rules
+
+- Scope browser opens and actions to the current caller workspace by default.
+- Pass `--workspace "${CMUX_WORKSPACE_ID:-}"` when creating a browser surface from a cmux terminal.
+- Use returned `surface:N` refs, and re-snapshot after any state-changing action.
+- Verify `get url` before waiting or diagnosing page state.
+- Use `--snapshot-after` on mutating actions when you need immediate verification.
+- Prefer `get`, `is`, and `find` for scripts. Use screenshots and snapshots for human review.
+- Do not close, move, or focus browser surfaces outside the caller workspace unless the user names that target.
+- Do not use unsupported standalone-browser assumptions. cmux uses WKWebView-backed browser surfaces.

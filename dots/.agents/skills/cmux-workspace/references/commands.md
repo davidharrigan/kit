@@ -107,4 +107,5 @@ cmux reload-config
 ```bash
 ./scripts/reload.sh --tag <short-tag>
 CMUX_SOCKET_PATH=/tmp/cmux-debug-<short-tag>.sock cmux identify --json
+ios/scripts/reload.sh --tag <ios-tag>
 ```
