@@ -6,8 +6,10 @@ description: "Launch an orchestrator session in a new cmux workspace for a unit 
 # /task
 
 Launch a dedicated orchestrator session for a unit of work, in its own cmux
-workspace — named for the task, and colored so it reads as an orchestrator at a
-glance in the sidebar.
+workspace — named for the task, grouped under its repo, and tinted a per-repo
+purple shade so orchestrators from the same repo cluster together in the
+sidebar. The new session inherits the caller's permission mode, so it starts
+working with the same autonomy the user has already granted.
 
 ```
 /task 42                                  # GitHub issue in the current repo
@@ -43,65 +45,53 @@ Record whether a **closing reference** applies: only a GitHub issue in the targe
 repo gets `Closes #N` in a PR body. A Jira key or a plain description does not —
 reference it in prose instead.
 
-## 2. Render the prompt
+## 2. Launch
 
-Write the rendered prompt to a temp file rather than substituting inline. Task
-briefs contain quotes, backticks, and newlines that will not survive a shell
-one-liner:
+Write the resolved brief to a file with the **Write tool** — never a shell
+heredoc. Briefs contain quotes, backticks, and newlines that will not survive a
+one-liner, and the Write tool needs no escaping and no approval:
 
-```bash
-PROMPT=$(mktemp /tmp/task-XXXXXX.md)
-sed -e "s|{{TASK_ID}}|<task-id>|g" ~/.claude/skills/task/orchestrator.md > "$PROMPT"
+```
+Write  <scratchpad>/task-brief.md   ← the resolved brief text, verbatim
 ```
 
-Then append the resolved brief under the `## The work` heading at the end of the
-file, with a `Closing reference:` line stating either `Closes #N` or `none`.
-Appending sidesteps escaping entirely.
-
-## 3. Launch the workspace
-
-Create the workspace **unfocused** — the user may be looking elsewhere. Name it
-for the task id, and start it in the **main checkout**, not a worktree: the
-orchestrator spawns worktree-isolated agents and must be able to see all of
-their branches.
+Then run this **once** from inside the target repo. It is one command, and the
+script renders the orchestrator prompt (`orchestrator.md` + your brief + the
+closing reference) internally, so there is nothing to escape and nothing to
+approve beyond this call:
 
 ```bash
-cmux workspace create --name "<task-id>" \
-  --cwd "$(git rev-parse --show-toplevel)" \
-  --description "<one-line task summary>" \
-  --focus false \
-  --command 'claude "$(cat '"$PROMPT"')"'
+~/.claude/skills/task/scripts/launch.sh "<task-id>" "<one-line summary>" "<closing-ref>" "<brief-file>"
 ```
 
-`--command` sends its text plus Enter to the new workspace's terminal, so the
-`$(cat ...)` runs in *that* shell. Keep the outer single quotes exactly as
-written — they stop the calling shell from expanding the substitution first.
-Nested quotes, backticks, and `$` in the brief survive this intact.
+`<closing-ref>` is `Closes #N` for a same-repo GitHub issue, or `none`.
 
-The command prints `OK workspace:<N>`. Capture that ref — the next step needs
-it. (`--json` is accepted but not honored here; parse the `OK` line.)
+The script does everything deterministic about the launch, and must not be
+reimplemented inline:
 
-## 4. Mark it as an orchestrator
+- **Renders the prompt** — substitutes `{{TASK_ID}}` in `orchestrator.md` and
+  appends the closing reference and your brief under `## The work`.
+- **Inherits the caller's permission mode** — it reads the live `permissionMode`
+  from this session's transcript and forwards it to the child `claude` via
+  `--permission-mode`, so the orchestrator starts with the same autonomy you
+  currently have. (Normal/`default` mode passes no flag — the child's natural
+  default.)
+- **Groups the workspace under its repo** — one sidebar group per repo, created
+  from the first orchestrator for that repo (no phantom anchor workspace).
+- **Tints group, row, and status pill** a deterministic purple shade derived
+  from the repo name, and exports it as `TASK_SHADE` so the orchestrator's own
+  status updates keep the same shade.
+- Creates the workspace **unfocused**, in the **main checkout** (not a worktree),
+  so the orchestrator can see every slice branch.
 
-Two indicators, both workspace-scoped. Set them immediately after creation:
+It prints two lines — `WORKSPACE workspace:<N>` and `MODE <mode>`. Parse both;
+the hand-off reports them. On any `ERROR:` line, stop and show it to the user.
 
-```bash
-cmux workspace-action --workspace workspace:<N> --action set-color --color Purple
-cmux set-status orchestrator "<task-id>" --workspace workspace:<N> \
-  --icon sparkle --color "#a855f7" --priority 80
-```
+## 3. Hand off
 
-Reserve **Purple** for orchestrator workspaces so the color means one thing. The
-status pill rides in the sidebar row next to the name; the orchestrator updates
-its value as work progresses (see orchestrator.md), and it is cleared on finish.
-
-Set `CMUX_QUIET=1` for these calls if the deprecation notices are noisy.
-
-## 5. Hand off
-
-Tell the user the workspace name and ref it landed in, and that the orchestrator
-will post its slice plan before starting work. Then stop. Do not do any of the
-work in the calling session.
+Tell the user the workspace name and ref it landed in, which permission mode it
+inherited, and that the orchestrator will post its slice plan before starting
+work. Then stop. Do not do any of the work in the calling session.
 
 ## Rules
 

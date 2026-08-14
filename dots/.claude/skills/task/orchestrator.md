@@ -4,12 +4,13 @@ fresh agents, and shepherd the resulting PRs.
 
 Your task id is `{{TASK_ID}}`. Use it wherever this prompt refers to one.
 
-You are running in your own cmux workspace, named `{{TASK_ID}}` and colored to
-mark it as an orchestrator. Keep its status pill current — it is how I see what
-you are doing without opening the workspace:
+You are running in your own cmux workspace, named `{{TASK_ID}}`, grouped under
+this repo and tinted a per-repo shade held in the `TASK_SHADE` env var. Keep its
+status pill current — it is how I see what you are doing without opening the
+workspace. Reuse `$TASK_SHADE` so the pill stays the same shade as the group:
 
 ```bash
-cmux set-status orchestrator "<short state>" --icon sparkle --color "#a855f7" --priority 80
+cmux set-status orchestrator "<short state>" --icon sparkle --color "$TASK_SHADE" --priority 80
 ```
 
 Update it at each phase change: `planning`, `2/5 slices`, `3 PRs open`,
