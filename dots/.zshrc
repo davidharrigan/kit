@@ -6,7 +6,8 @@ ZSH_THEME="custom"
 COMPLETION_WAITING_DOTS="true"
 
 # Plug-ins
-plugins=(git kubectx)
+# plugins=(git kubectx)
+plugins=(kubectx)
 
 # completions
 export FPATH=$HOME/.completion/zsh:$FPATH

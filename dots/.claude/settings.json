@@ -1,6 +1,5 @@
 {
   "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-8[1m]"
   },
   "permissions": {
@@ -288,12 +287,12 @@
     "type": "command",
     "command": "bash /Users/david/.claude/statusline-command.sh"
   },
+  "enabledPlugins": {
+    "gopls-lsp@claude-plugins-official": true
+  },
   "effortLevel": "high",
   "tui": "fullscreen",
   "theme": "auto",
   "editorMode": "vim",
-  "autoCompactEnabled": false,
-  "enabledPlugins": {
-    "gopls-lsp@claude-plugins-official": true
-  }
+  "autoCompactEnabled": false
 }
