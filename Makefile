@@ -16,6 +16,16 @@ brew/install:
 brew/install/%:
 	$(LOAD_ENV) brew bundle --file=./dots/.homebrew/Brewfile.$*
 
+PERMGEN := cd tools/permgen && go run . -config permissions.yaml -claude ../../dots/.claude/settings.json
+
+.PHONY: perms/generate
+perms/generate:
+	$(PERMGEN)
+
+.PHONY: perms/check
+perms/check:
+	$(PERMGEN) -check
+
 galaxy/install:
 	ansible-galaxy install -r ./ansible/requirements.yaml
 

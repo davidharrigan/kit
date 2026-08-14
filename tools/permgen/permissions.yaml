@@ -1,0 +1,219 @@
+# Tool-agnostic permission source of truth.
+#
+# List bare commands/patterns only -- NO Bash(...)/Read(...) wrapper, NO ":*",
+# and NO "rtk " duplicates. `permgen` adds the wrapper, the ":*", and the rtk
+# variants (it asks `rtk hook check` how each command is actually rewritten).
+#
+# Wrapping rule for `bash` values:
+#   - contains a "*"  -> used verbatim inside Bash(...)   e.g. "rm -rf /*"
+#   - otherwise       -> ":*" appended                    e.g. git status -> Bash(git status:*)
+# `read` values are wrapped as Read(...) verbatim (path globs, never ":*").
+#
+# rtk-native meta commands (no bare form) are written verbatim under bash and
+# passed through untouched: rtk read, rtk json, rtk env, rtk deps, rtk gain,
+# rtk log, rtk discover, rtk proxy.
+
+allow:
+  bash:
+    # docker (read-only)
+    - docker ps
+    - docker logs
+    - docker inspect
+    - docker images
+    # git (read + local)
+    - git status
+    - git add
+    - git commit -m
+    - git commit -am
+    - git commit --amend
+    - git pull
+    - git fetch
+    - git log
+    - git diff
+    - git branch
+    - git stash
+    - git remote
+    - git tag
+    - git show
+    - git blame
+    - git init
+    - git worktree
+    # file inspection
+    - ls
+    - ll
+    - cat
+    - less
+    - more
+    - head
+    - tail
+    # search
+    - grep
+    - egrep
+    - fgrep
+    - rg
+    # text processing
+    - cut
+    - sort
+    - uniq
+    - wc
+    - diff
+    - sed
+    - tree
+    - du
+    # path helpers
+    - pwd
+    - basename
+    - dirname
+    - realpath
+    - readlink
+    # data
+    - jq
+    - yq
+    # system info
+    - date
+    - whoami
+    - hostname
+    - uname
+    - which
+    - whereis
+    - id
+    - groups
+    - uptime
+    # more text
+    - tr
+    - fold
+    - column
+    - paste
+    - join
+    # rtk-native meta (no bare form)
+    - rtk read
+    - rtk json
+    - rtk env
+    - rtk deps
+    - rtk gain
+    - rtk log
+    - rtk discover
+    # misc
+    - mktemp
+    - cmux
+    - ~/.claude/skills/task/scripts/launch.sh
+    - "* --version"
+    - "* --help"
+    # gh (read-only)
+    - gh search
+    - gh issue list
+    - gh issue view
+    - gh pr list
+    - gh pr view
+    - gh pr checks
+    - gh pr diff
+    - gh release list
+    - gh release view
+    - gh repo view
+    # gh api: reads auto-approve here; writes are forced to prompt in `ask` below
+    - gh api
+
+deny:
+  bash:
+    - sudo
+    - doas
+    - "rm -rf /"
+    - "rm -rf /*"
+    - mkfs
+    - fdisk
+    - diskutil eraseDisk
+    - diskutil eraseVolume
+    - "dd if=/dev/zero of=/dev/*"
+    - "dd if=/dev/random of=/dev/*"
+    - shutdown
+    - reboot
+    - halt
+    - passwd
+    - csrutil
+    - spctl
+    - nc -l
+    - netcat -l
+    - socat
+    - masscan
+    - "bash -i >& /dev/tcp/*"
+    - "sh -i >& /dev/tcp/*"
+    - "exec < /dev/tcp/*"
+    - "exec > /dev/tcp/*"
+    - "exec 3<>/dev/tcp/*"
+    - "docker run --privileged *"
+    - "docker run -v /:/host *"
+    - "docker run -v /var/run/docker.sock:/var/run/docker.sock *"
+    - "* ~/.aws/*"
+    - "* ~/.ssh/id_*"
+    - "* ~/.gnupg/*"
+    - "* ~/.azure/*"
+    - "* ~/.config/gcloud/*"
+    - "* ~/.kube/config*"
+  read:
+    - ~/.ssh/id_*
+    - ~/.aws/**
+    - ~/.gnupg/**
+    - ~/.azure/**
+    - ~/.config/gcloud/**
+    - ~/.kube/config
+
+ask:
+  bash:
+    # protected-branch / force pushes
+    - git push origin main
+    - git push origin master
+    - git push upstream main
+    - git push --force origin main
+    - git push --force origin master
+    - git push -f origin main
+    - git push -f origin master
+    - git push --force-with-lease origin main
+    - git push --force-with-lease origin master
+    - "git push * main*"
+    - "git push * master*"
+    # history / config rewrites
+    - git reset
+    - git config
+    - git clone
+    - git branch -d
+    - git branch -D
+    # redirection / arbitrary shells
+    - tee
+    - split
+    - csplit
+    - sh
+    - bash
+    - zsh
+    - eval
+    - rtk proxy
+    # destructive / process control
+    - rm
+    - kill
+    - pkill
+    - killall
+    - nmap
+    # env exfiltration
+    - "env | base64*"
+    - "printenv | base64*"
+    - "set | base64*"
+    # gh api writes: `ask` overrides the `gh api` allow above, so reads still
+    # auto-approve. Match on write-FLAG PRESENCE (not the method value) -- this
+    # avoids lowercase (`-X post`), `=` (`--method=POST`) and attached (`-XPOST`)
+    # gaps. Two forms per flag (right after `gh api`, and anywhere later) cover
+    # both arg orders. `-f/-F/--field/--raw-field` imply POST (e.g. posting a
+    # comment with -f body=...); `--input` sends a request body from a file.
+    # Best-effort (glob matching, not a hard boundary) -- see README.
+    - "gh api -X*"
+    - "gh api * -X*"
+    - "gh api --method*"
+    - "gh api * --method*"
+    - "gh api -f*"
+    - "gh api * -f*"
+    - "gh api -F*"
+    - "gh api * -F*"
+    - "gh api --field*"
+    - "gh api * --field*"
+    - "gh api --raw-field*"
+    - "gh api * --raw-field*"
+    - "gh api --input*"
+    - "gh api * --input*"
