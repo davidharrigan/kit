@@ -1,0 +1,16 @@
+# Per-project overrides for cmdhook.mjs. Copy to <repo>/.claude/cmdhook.toml.
+# The hook reads <project-root>/.claude/cmdhook.toml (resolved via git). This
+# file in dots/.claude/ is only a reference — it is NOT read globally.
+#
+# Minimal sectioned TOML: [section] headers, `key = value` (bool / "string" /
+# ["array","of","strings"]).
+
+# sed-coercion: deny `sed -i FILE` (→ Edit) and `sed` file-paging (→ Read).
+# Set enabled = false to turn it off for a repo.
+[sed_coercion]
+enabled = true
+
+# gh-api gate: endpoint suffixes whose writes auto-approve in THIS repo instead
+# of prompting, e.g. posting issue/PR comments without a prompt.
+[gh_api]
+allow_endpoints = ["/comments"]

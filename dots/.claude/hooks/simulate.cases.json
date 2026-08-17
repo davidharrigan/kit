@@ -1,0 +1,31 @@
+[
+  { "command": "cd /Users/david/src/engram && just test", "expect": "allow" },
+  { "command": "cd /Users/david/src/engram && git status", "expect": "allow" },
+  { "command": "cd /Users/david/src/engram && cargo build", "expect": "allow" },
+  {
+    "command": "cd /Users/david/src/engram && pnpm install",
+    "expect": "allow"
+  },
+  {
+    "command": "cd /Users/david/src/engram && ./deploy.sh",
+    "expect": "prompt"
+  },
+  {
+    "command": "cd /Users/david/src/engram && rm -rf build",
+    "expect": "prompt"
+  },
+  { "command": "cat foo.txt", "expect": "allow" },
+  { "command": "git status", "expect": "allow" },
+  { "command": "gh api repos/o/r/issues", "expect": "allow" },
+  {
+    "command": "gh api repos/o/r/issues/1/comments -f body=hi",
+    "expect": "prompt"
+  },
+  { "command": "sed -i s/a/b/ foo.rs", "expect": "deny" },
+  { "command": "sed -n '1,50p' foo.rs", "expect": "deny" },
+  { "command": "cat foo | sed s/a/b/", "expect": "allow" },
+  { "command": "curl https://example.com", "expect": "prompt" },
+  { "command": "rm -rf /", "expect": "deny" },
+  { "command": "herdr agent list", "expect": "allow" },
+  { "command": "herdr agent send-keys foo", "expect": "prompt" }
+]

@@ -1,17 +1,14 @@
 # Tool-agnostic permission source of truth.
 #
-# List bare commands/patterns only -- NO Bash(...)/Read(...) wrapper, NO ":*",
-# and NO "rtk " duplicates. `permgen` adds the wrapper, the ":*", and the rtk
-# variants (it asks `rtk hook check` how each command is actually rewritten).
+# List bare commands/patterns only -- NO Bash(...)/Read(...) wrapper, NO ":*".
+# `permgen` adds the wrapper and the ":*".
 #
 # Wrapping rule for `bash` values:
 #   - contains a "*"  -> used verbatim inside Bash(...)   e.g. "rm -rf /*"
 #   - otherwise       -> ":*" appended                    e.g. git status -> Bash(git status:*)
 # `read` values are wrapped as Read(...) verbatim (path globs, never ":*").
-#
-# rtk-native meta commands (no bare form) are written verbatim under bash and
-# passed through untouched: rtk read, rtk json, rtk env, rtk deps, rtk gain,
-# rtk log, rtk discover, rtk proxy.
+# `webfetch` values are wrapped as WebFetch(...) verbatim, e.g. "domain:github.com".
+# `raw` values are passed through unwrapped, e.g. "WebSearch".
 
 allow:
   bash:
@@ -38,6 +35,7 @@ allow:
     - git blame
     - git init
     - git worktree
+    - git rev-parse
     # file inspection
     - ls
     - ll
@@ -51,6 +49,7 @@ allow:
     - egrep
     - fgrep
     - rg
+    - find
     # text processing
     - cut
     - sort
@@ -61,6 +60,7 @@ allow:
     - tree
     - du
     # path helpers
+    - cd
     - pwd
     - basename
     - dirname
@@ -85,16 +85,22 @@ allow:
     - column
     - paste
     - join
-    # rtk-native meta (no bare form)
-    - rtk read
-    - rtk json
-    - rtk env
-    - rtk deps
-    - rtk gain
-    - rtk log
-    - rtk discover
+    # build / test runners
+    - cargo
+    - go
+    - just
+    - pnpm
+    # herdr: inspect verbs only (inject verbs stay ask -- see `ask` below)
+    - herdr agent list
+    - herdr agent get
+    - herdr agent read
+    - herdr agent wait
+    - herdr agent focus
+    - herdr agent explain
     # misc
     - mktemp
+    - mkdir
+    - sleep
     - cmux
     - ~/.claude/skills/task/scripts/launch.sh
     - "* --version"
@@ -107,11 +113,20 @@ allow:
     - gh pr view
     - gh pr checks
     - gh pr diff
+    - gh run view
+    - gh run list
     - gh release list
     - gh release view
     - gh repo view
     # gh api: reads auto-approve here; writes are forced to prompt in `ask` below
     - gh api
+  read:
+    - //private/tmp/**
+  webfetch:
+    - domain:github.com
+    - domain:raw.githubusercontent.com
+  raw:
+    - WebSearch
 
 deny:
   bash:
@@ -177,6 +192,16 @@ ask:
     - git clone
     - git branch -d
     - git branch -D
+    - gh pr create
+    - gh pr merge
+    - gh pr close
+    - gh pr review
+    # herdr inject verbs: drive another agent -- prompt before one agent
+    # sends commands/keys/prompts into another. Inspect verbs are allowed above.
+    - herdr agent send-keys
+    - herdr agent prompt
+    - herdr agent start
+    - herdr agent rename
     # redirection / arbitrary shells
     - tee
     - split
@@ -185,7 +210,6 @@ ask:
     - bash
     - zsh
     - eval
-    - rtk proxy
     # destructive / process control
     - rm
     - kill
@@ -196,24 +220,7 @@ ask:
     - "env | base64*"
     - "printenv | base64*"
     - "set | base64*"
-    # gh api writes: `ask` overrides the `gh api` allow above, so reads still
-    # auto-approve. Match on write-FLAG PRESENCE (not the method value) -- this
-    # avoids lowercase (`-X post`), `=` (`--method=POST`) and attached (`-XPOST`)
-    # gaps. Two forms per flag (right after `gh api`, and anywhere later) cover
-    # both arg orders. `-f/-F/--field/--raw-field` imply POST (e.g. posting a
-    # comment with -f body=...); `--input` sends a request body from a file.
-    # Best-effort (glob matching, not a hard boundary) -- see README.
-    - "gh api -X*"
-    - "gh api * -X*"
-    - "gh api --method*"
-    - "gh api * --method*"
-    - "gh api -f*"
-    - "gh api * -f*"
-    - "gh api -F*"
-    - "gh api * -F*"
-    - "gh api --field*"
-    - "gh api * --field*"
-    - "gh api --raw-field*"
-    - "gh api * --raw-field*"
-    - "gh api --input*"
-    - "gh api * --input*"
+    # gh api writes are handled by the cmdhook.mjs policy hook (proper arg
+    # parsing + per-repo endpoint allow), not fragile flag globs. See
+    # dots/.claude/hooks/cmdhook.mjs. `gh api` reads still auto-approve via the
+    # `allow` list above.

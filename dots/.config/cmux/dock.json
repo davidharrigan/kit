@@ -1,0 +1,9 @@
+{
+  "controls": [
+    {
+      "id": "feed",
+      "title": "Feed",
+      "command": "cmux feed tui --opentui"
+    }
+  ]
+}
