@@ -5,6 +5,7 @@ input=$(cat)
 
 cwd=$(echo "$input" | jq -r '.cwd // .workspace.current_dir // empty')
 model=$(echo "$input" | jq -r '.model.display_name // empty')
+effort=$(echo "$input" | jq -r '.effort.level // empty')
 used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 
 # Git info (skip lock to avoid blocking)
@@ -36,6 +37,9 @@ fi
 model_part=""
 if [ -n "$model" ]; then
   model_part=" ${cyan}${model}${reset}"
+  if [ -n "$effort" ]; then
+    model_part="${model_part}${magenta}(${effort})${reset}"
+  fi
 fi
 
 ctx_part=""
