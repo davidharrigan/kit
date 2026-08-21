@@ -8,6 +8,8 @@ keymap("n", "<leader><space>", "<cmd>FzfLua global<cr>", { desc = "Find", nowait
 keymap("n", "<leader>/", "<cmd>FzfLua live_grep<cr>", { desc = "Fuzzy grep files", nowait = true })
 keymap("n", "<leader>ff", "<cmd>FzfLua files<cr>", { desc = "Files", nowait = true })
 keymap("n", "<leader>fr", "<cmd>FzfLua oldfiles<cr>", { desc = "Recent" })
+keymap("n", "<leader>fs", "<cmd>FzfLua lsp_document_symbols<cr>", { desc = "Document Symbols" })
+keymap("n", "<leader>fS", "<cmd>FzfLua lsp_live_workspace_symbols<cr>", { desc = "Workspace symbols" })
 
 -- ============================================================================
 -- Buffers
@@ -54,14 +56,12 @@ end, { desc = "Toggle explorer (cwd)" })
 -- Code / LSP
 -- ============================================================================
 
-keymap("n", "<leader>cc", "<cmd>FzfLua lsp_code_actions<cr>", { desc = "Code actions" })
+keymap("n", "<leader>ca", "<cmd>FzfLua lsp_code_actions<cr>", { desc = "Code actions" })
+keymap("n", "<leader>cc", vim.lsp.codelens.run, { desc = "Run Codelens" })
+
 keymap("n", "<leader>cr", vim.lsp.buf.rename, { desc = "Rename" })
 keymap("n", "<leader>cf", vim.lsp.buf.format, { desc = "Format" })
-keymap("n", "<leader>cs", "<cmd>FzfLua lsp_document_symbols<cr>", { desc = "Document Symbols" })
-keymap("n", "<leader>cS", "<cmd>FzfLua lsp_workspace_symbols<cr>", { desc = "Workspace symbols" })
-keymap("n", "<leader>fd", function()
-  require("aerial").fzf_lua_picker({})
-end, { desc = "Document symbols" })
+
 -- keymap("n", "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", { desc = "Symbols (Trouble)" })
 -- keymap(
 --   "n",
@@ -70,9 +70,12 @@ end, { desc = "Document symbols" })
 --   { desc = "LSP Definitions / references / ... (Trouble)" }
 -- )
 keymap("n", "gd", vim.lsp.buf.definition, { desc = "Goto Definition" })
-keymap("n", "gr", vim.lsp.buf.references, { desc = "References", nowait = true })
-keymap("n", "gI", vim.lsp.buf.implementation, { desc = "Goto Implementation" })
-keymap("n", "gy", vim.lsp.buf.type_definition, { desc = "Goto T[y]pe Definition" })
+-- keymap("n", "gr", vim.lsp.buf.references, { desc = "References", nowait = true })
+-- keymap("n", "gI", vim.lsp.buf.implementation, { desc = "Goto Implementation" })
+-- keymap("n", "gy", vim.lsp.buf.type_definition, { desc = "Goto T[y]pe Definition" })
+keymap("n", "gr", "<cmd> FzfLua lsp_references", { desc = "References", nowait = true })
+keymap("n", "gI", "<cmd> FzfLua lsp_implementations", { desc = "Goto Implementation" })
+keymap("n", "gy", "<cmd> FzfLua lsp_definitions", { desc = "Goto T[y]pe Definition" })
 keymap("n", "gD", vim.lsp.buf.declaration, { desc = "Goto Declaration" })
 keymap("n", "K", vim.lsp.buf.hover, { desc = "Hover" })
 keymap("n", "gK", vim.lsp.buf.signature_help, { desc = "Signature Help" })

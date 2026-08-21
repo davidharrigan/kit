@@ -19,8 +19,6 @@ return {
         "stylua",
         "tinymist",
         "typstyle",
-        "gofumpt",
-        "goimports",
         -- "yamlls",
       },
     },
