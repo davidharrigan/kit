@@ -1,3 +1,4 @@
+onboarding = false
 # herdr configuration
 # Place this file at ~/.config/herdr/config.toml
 
@@ -85,6 +86,11 @@ key = "prefix+o"
 type = "plugin_action"
 command = "chmarax.herdr-nvim.pick-file"
 description = "open file from agent output"
+
+[[keys.command]]
+key = "prefix+r"
+type = "plugin_action"
+command = "persiyanov.reviewr.toggle"   # <plugin_id>.<action_id> — note the id, not the name
 
 # Prefix-mode actions
 # help = "prefix+?"
@@ -269,7 +275,7 @@ description = "open file from agent output"
 
 # Background notification popup delivery
 show_agent_labels_on_pane_borders = true
-agent_panel_sort = "priority"
+agent_panel_sort = "spaces"
 [ui.toast]
 # off = disable pop-up notifications
 # herdr = show in-app toasts

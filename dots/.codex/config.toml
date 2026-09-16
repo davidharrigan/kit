@@ -1,0 +1,60 @@
+# Portable preferences from ~/.codex/config.toml.
+# Keep credentials, project trust, hook approvals, and app-managed paths local.
+model = "gpt-6-astra"
+model_reasoning_effort = "high"
+service_tier = "default"
+approvals_reviewer = "auto_review"
+
+[mcp_servers.datadog]
+url = "https://mcp.datadoghq.com/v1/mcp"
+
+[features]
+hooks = true
+
+[plugins."codex-app-tools@openai-bundled"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."visualize@openai-bundled"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = false
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = false
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = false
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[plugins."chrome@openai-bundled"]
+enabled = true
+
+[plugins."unified-computer-use@openai-bundled"]
+enabled = true
+
+[plugins."computer-use@openai-bundled"]
+enabled = true
+
+[plugins."slack@openai-curated-remote"]
+enabled = false
+
+[desktop]
+followUpQueueMode = "queue"
+conversationDetailMode = "STEPS_PROSE"
+
+[tui]
+status_line = [
+    "current-dir",
+    "git-branch",
+    "model-with-reasoning",
+    "context-used",
+]

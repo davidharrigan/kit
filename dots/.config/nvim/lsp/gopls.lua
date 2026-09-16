@@ -1,6 +1,7 @@
 return {
   settings = {
     gopls = {
+      gofumpt = true,
       -- Enable automatic completion of unimported packages
       completeUnimported = true,
       -- Disable staticcheck (golangci-lint provides more comprehensive linting)
