@@ -63,7 +63,7 @@ if [[ "$(uname)" == "Darwin" ]]; then
 fi
 
 # Load other environment variables
-# . <(cat $HOME/.env/*.env)
+. <(cat $HOME/.env/*.env)
 
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/go/bin:$PATH"
@@ -78,13 +78,7 @@ compinit
 
 # Added by Antigravity
 export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
-
-# Added by Antigravity IDE
-export PATH="/Users/david/.antigravity-ide/antigravity-ide/bin:$PATH"
-
-
-# Added by Antigravity CLI installer
-export PATH="/Users/david/.local/bin:$PATH"
+export PATH="$HOME/.antigravity-ide/antigravity-ide/bin:$PATH"
 
 # bun completions
 [ -s "/Users/david/.bun/_bun" ] && source "/Users/david/.bun/_bun"

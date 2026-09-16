@@ -1,1 +1,9 @@
 backup
+
+# Codex stores credentials and runtime state alongside its configuration.
+# Only these reviewed configuration files belong in the repository.
+/dots/.codex/*
+!/dots/.codex/config.toml
+!/dots/.codex/hooks.json
+!/dots/.codex/keybindings.json
+!/dots/.codex/herdr-agent-state.sh
