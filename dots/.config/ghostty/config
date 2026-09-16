@@ -34,5 +34,7 @@
 # resize-overlay-duration = 4s 200ms
 
 theme = dark:Ayu,light:Ayu Light
-font-family = "Monaspace Neon NF"
+font-family = "Ioskeley Mono Term"
+font-size = 13
+font-feature = zero
 mouse-hide-while-typing = true

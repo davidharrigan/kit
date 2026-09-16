@@ -57,3 +57,11 @@ opt.foldlevel = 99
 -- opt.foldlevelstart = 0
 vim.opt.foldcolumn = "1"
 opt.foldnestmax = 4
+-- Fold glyphs for the fold column. These match heirline-components' fold icons
+-- so that if Neovim ever falls back to the native foldcolumn (e.g. before the
+-- heirline statuscolumn attaches) it shows chevrons instead of fold-level digits.
+opt.fillchars = vim.tbl_extend("force", vim.opt.fillchars:get(), {
+  foldopen = vim.fn.nr2char(0xf47c),
+  foldclose = vim.fn.nr2char(0xf460),
+  foldsep = " ",
+})

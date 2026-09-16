@@ -5,7 +5,10 @@ return {
   dependencies = {
     "Zeioth/heirline-components.nvim",
   },
-  event = { "BufReadPost", "BufWritePost", "BufNewFile" },
+  -- Load at startup so the heirline statuscolumn is applied before any buffer
+  -- is rendered. Lazy-loading left a gap where Neovim drew its native
+  -- foldcolumn (fold-level digits) instead of the heirline fold chevrons.
+  lazy = false,
   config = function()
     -- Load components from individual files (after heirline is loaded)
     local ViMode = require("plugins.statusline.components.vimode")

@@ -44,6 +44,7 @@ allow:
     - more
     - head
     - tail
+    - echo
     # search
     - grep
     - egrep
@@ -192,16 +193,16 @@ ask:
     - git clone
     - git branch -d
     - git branch -D
-    - gh pr create
-    - gh pr merge
+    # - gh pr create
+    # - gh pr merge
     - gh pr close
     - gh pr review
     # herdr inject verbs: drive another agent -- prompt before one agent
     # sends commands/keys/prompts into another. Inspect verbs are allowed above.
-    - herdr agent send-keys
-    - herdr agent prompt
-    - herdr agent start
-    - herdr agent rename
+    # - herdr agent send-keys
+    # - herdr agent prompt
+    # - herdr agent start
+    # - herdr agent rename
     # redirection / arbitrary shells
     - tee
     - split
@@ -211,7 +212,10 @@ ask:
     - zsh
     - eval
     # destructive / process control
-    - rm
+    - rm -rf ~*
+    - Bash(rm -rf $HOME*
+    - Bash(rm -rf ..*
+    - rm -rf .git*
     - kill
     - pkill
     - killall
