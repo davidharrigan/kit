@@ -76,6 +76,11 @@ autoload -Uz compinit
 compinit
 # End of Docker CLI completions
 
+# Custom completions
+fpath=($HOME/.zsh/completions $fpath)
+autoload -Uz compinit
+compinit
+
 # Added by Antigravity
 export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 export PATH="$HOME/.antigravity-ide/antigravity-ide/bin:$PATH"

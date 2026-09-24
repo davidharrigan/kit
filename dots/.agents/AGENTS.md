@@ -41,6 +41,14 @@ When making refactors or applying PR feedback, only change what was explicitly
 requested. Do NOT add tests, fields, or other changes to files that weren't part
 of the ask.
 
+## Deliverables vs. session talk
+Do not carry session decisions into durable artifacts as negations. Something
+decided against this session ("not using X", "dropped the Y approach") is chat
+context, not content for docs, code comments, commit/PR messages, or prompts for
+others — a reader who never saw the alternative gets a dangling reference. State
+what the artifact is. If an exclusion truly matters downstream, frame it
+positively and self-contained.
+
 ## Code Style / Refactoring 
 Do NOT introduce new abstractions or complexity unless explicitly requested;
 Keep diffs minimal and match existing patterns in the target file.
