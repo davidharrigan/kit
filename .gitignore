@@ -7,3 +7,11 @@ backup
 !/dots/.codex/hooks.json
 !/dots/.codex/keybindings.json
 !/dots/.codex/herdr-agent-state.sh
+
+# nix build output
+result
+
+# machine capture output (local only; capture.sh is tracked)
+baseline/*/
+
+/dots/.claude/skills/synced
