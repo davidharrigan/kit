@@ -25,12 +25,3 @@ perms/generate:
 .PHONY: perms/check
 perms/check:
 	$(PERMGEN) -check
-
-galaxy/install:
-	ansible-galaxy install -r ./ansible/requirements.yaml
-
-playbook/personal:
-	ansible-playbook ./ansible/macos.yaml -l personal
-
-playbook/work:
-	ansible-playbook ./ansible/macos.yaml -l work
