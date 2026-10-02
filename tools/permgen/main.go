@@ -1,10 +1,9 @@
 // Command permgen turns a tool-agnostic permission YAML into the `permissions`
-// block of a Claude Code settings.json, adding the correct `rtk`-prefixed
-// variants by asking `rtk hook check` how each command is actually rewritten.
+// block of a Claude Code settings.json.
 //
 // Usage:
 //
-//	permgen [-claude .claude/settings.json] [-config permissions.yaml] [-check] [-rtk rtk]
+//	permgen [-claude .claude/settings.json] [-config permissions.yaml] [-check]
 //
 // By default the source is the merge of ~/.agents/permissions.yaml (global) and
 // ./.agents/permissions.yaml (project); -config overrides with a single file.
@@ -12,8 +11,7 @@
 //
 // The pipeline is: parse YAML -> neutral Config -> renderClaude. A future
 // renderCodex would consume the same Config to emit Codex's config.toml; see
-// README.md. rtk-prefixing is a Claude-render concern only (Codex has no such
-// PreToolUse hook), so it lives here in renderClaude, not in the shared model.
+// README.md.
 package main
 
 import (
@@ -29,10 +27,6 @@ import (
 
 	"gopkg.in/yaml.v3"
 )
-
-// sentinel is an unlikely trailing arg appended when probing rtk, so it sees a
-// valid arg-bearing command (bare `git` is passthru, `git status ARG` rewrites).
-const sentinel = "RTKSENTINEL9Z"
 
 // ToolMap is the per-tool permission lists inside a section.
 type ToolMap struct {
@@ -60,7 +54,6 @@ func main() {
 	cfgPath := flag.String("config", "", "single permission YAML source (overrides the default ~/.agents + ./.agents merge)")
 	claudePath := flag.String("claude", filepath.Join(".claude", "settings.json"), "settings.json to merge the permissions block into")
 	check := flag.Bool("check", false, "do not write; exit non-zero if the file is out of date")
-	rtkBin := flag.String("rtk", "rtk", "rtk binary to probe for command rewrites")
 	flag.Parse()
 
 	if info, err := os.Stat(filepath.Dir(*claudePath)); err != nil || !info.IsDir() {
@@ -72,7 +65,7 @@ func main() {
 		fatal("load config: %v", err)
 	}
 
-	perms := renderClaude(cfg, *rtkBin)
+	perms := renderClaude(cfg)
 
 	current, err := os.ReadFile(*claudePath)
 	if err != nil {
@@ -162,69 +155,36 @@ func mergeToolMap(dst *ToolMap, src ToolMap) {
 }
 
 // renderClaude expands the neutral Config into the Claude permissions object.
-// Within each section the natural permissions come first, sorted
-// alphabetically, followed by the auto-generated rtk-prefixed twins, also
-// sorted alphabetically.
-func renderClaude(cfg Config, rtkBin string) Perms {
-	r := &rtkProbe{bin: rtkBin, cache: map[string]string{}}
+// Within each section the permissions are sorted alphabetically.
+func renderClaude(cfg Config) Perms {
 	return Perms{
-		Allow: renderSection(cfg.Allow, false, r),
-		Deny:  renderSection(cfg.Deny, true, r),
-		Ask:   renderSection(cfg.Ask, false, r),
+		Allow: renderSection(cfg.Allow),
+		Deny:  renderSection(cfg.Deny),
+		Ask:   renderSection(cfg.Ask),
 	}
 }
 
 // renderSection expands one section's bash/read/webfetch/raw lists into their
-// wrapped Claude permission strings: natural permissions (sorted) first, then
-// the auto-generated rtk twins (sorted) at the bottom.
-func renderSection(tm ToolMap, deny bool, r *rtkProbe) []string {
-	natural, rtkTwins := expandBash(tm.Bash, deny, r)
-	natural = append(natural, wrapReadAll(tm.Read)...)
-	natural = append(natural, wrapWebFetchAll(tm.WebFetch)...)
-	natural = append(natural, tm.Raw...)
+// wrapped Claude permission strings, deduplicated and sorted.
+func renderSection(tm ToolMap) []string {
+	out := wrapBashAll(tm.Bash)
+	out = append(out, wrapReadAll(tm.Read)...)
+	out = append(out, wrapWebFetchAll(tm.WebFetch)...)
+	out = append(out, tm.Raw...)
 
-	natural = dedup(natural)
-	rtkTwins = dedup(rtkTwins)
-	sort.Strings(natural)
-	sort.Strings(rtkTwins)
-	return append(natural, rtkTwins...)
+	out = dedup(out)
+	sort.Strings(out)
+	return out
 }
 
-// expandBash wraps each bash value and, separately, its auto-generated rtk
-// variant. It returns the natural permissions and the rtk twins as two lists
-// so the caller can place the twins at the bottom of the section.
-//
-// deny mode is broad and safety-first: every command-leading entry also gets a
-// naive "rtk "-prefixed twin (no probe), so rtk-native invocations are blocked
-// too. allow/ask mode is precise: it probes rtk for the real rewrite, which
-// correctly maps cat/head/tail -> `rtk read` rather than `rtk cat`.
-func expandBash(vals []string, deny bool, r *rtkProbe) (natural, rtkTwins []string) {
+func wrapBashAll(vals []string) []string {
+	out := make([]string, 0, len(vals))
 	for _, v := range vals {
-		v = strings.TrimSpace(v)
-		if v == "" {
-			continue
-		}
-		natural = append(natural, wrapBash(v))
-		if firstToken(v) == "rtk" {
-			continue
-		}
-		if deny {
-			if !strings.HasPrefix(v, "*") {
-				rtkTwins = append(rtkTwins, wrapBash("rtk "+v))
-			}
-			continue
-		}
-		if strings.Contains(v, "*") {
-			if r.covered(v) {
-				rtkTwins = append(rtkTwins, wrapBash("rtk "+v))
-			}
-			continue
-		}
-		if rtkV, ok := r.rewrite(v); ok {
-			rtkTwins = append(rtkTwins, wrapBash(rtkV))
+		if v = strings.TrimSpace(v); v != "" {
+			out = append(out, wrapBash(v))
 		}
 	}
-	return natural, rtkTwins
+	return out
 }
 
 func wrapReadAll(vals []string) []string {
@@ -256,14 +216,6 @@ func wrapBash(v string) string {
 	return "Bash(" + v + ":*)"
 }
 
-func firstToken(v string) string {
-	f := strings.Fields(v)
-	if len(f) == 0 {
-		return ""
-	}
-	return f[0]
-}
-
 func dedup(in []string) []string {
 	seen := map[string]bool{}
 	out := in[:0]
@@ -274,43 +226,6 @@ func dedup(in []string) []string {
 		}
 	}
 	return out
-}
-
-// rtkProbe queries `rtk hook check` and caches results.
-type rtkProbe struct {
-	bin   string
-	cache map[string]string
-}
-
-func (r *rtkProbe) check(cmd string) string {
-	if v, ok := r.cache[cmd]; ok {
-		return v
-	}
-	out, err := exec.Command(r.bin, "hook", "check", cmd).Output()
-	res := ""
-	if err == nil {
-		res = strings.TrimSpace(string(out))
-	}
-	r.cache[cmd] = res
-	return res
-}
-
-// rewrite probes a star-free command and returns its exact rtk rewrite prefix
-// (e.g. "cat" -> "rtk read", "git status" -> "rtk git status").
-func (r *rtkProbe) rewrite(v string) (string, bool) {
-	probe := v + " " + sentinel
-	out := r.check(probe)
-	if !strings.HasPrefix(out, "rtk ") {
-		return "", false
-	}
-	return strings.TrimSuffix(out, " "+sentinel), true
-}
-
-// covered reports whether a glob command is rewritten by rtk (which, for the
-// commands that reach this path, is always a pure "rtk " prefix).
-func (r *rtkProbe) covered(v string) bool {
-	probe := strings.ReplaceAll(v, "*", "x") + " " + sentinel
-	return strings.HasPrefix(r.check(probe), "rtk ")
 }
 
 // mergePermissions replaces only the top-level "permissions" key in the

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // simulate.mjs — dry-run predictor for how Claude Code's PreToolUse pipeline
-// resolves a Bash command. It runs the REAL hooks (rtk hook claude + cmdhook)
-// on a synthetic tool-use payload, merges their outputs the way CC documents,
+// resolves a Bash command. It runs the REAL cmdhook hook on a synthetic
+// tool-use payload, merges its output the way CC documents,
 // and — for the no-hook-decision case — predicts the outcome from the static
 // allow/deny/ask lists in settings.json (compound-aware, like CC).
 //
@@ -84,12 +84,10 @@ function staticVerdict(command, rules) {
 // ── full pipeline for one command ─────────────────────────────────
 function simulate(command, cwd, rules) {
   const payload = { tool_name: "Bash", tool_input: { command }, cwd };
-  const rtk = runHook("rtk", ["hook", "claude"], payload);
   const cmd = runHook("node", [CMDHOOK], payload);
 
-  const rewritten = rtk?.updatedInput?.command ?? command;
-  const hookDecs = [rtk?.permissionDecision, cmd?.permissionDecision].filter(Boolean);
-  const stat = staticVerdict(rewritten, rules);
+  const hookDecs = [cmd?.permissionDecision].filter(Boolean);
+  const stat = staticVerdict(command, rules);
 
   let final;
   if (hookDecs.includes("deny") || stat === "deny") final = "deny";
@@ -99,9 +97,8 @@ function simulate(command, cwd, rules) {
 
   const reason =
     cmd?.permissionDecisionReason ??
-    rtk?.permissionDecisionReason ??
     (final === "allow" && stat === "allow" ? "static allow-list" : "");
-  return { command, rewritten, final, reason };
+  return { command, final, reason };
 }
 
 // ── CLI ───────────────────────────────────────────────────────────
@@ -128,8 +125,7 @@ function main() {
       if (!ok) failed++;
       const mark = c.expect ? (ok ? "✔" : "✘") : "•";
       const exp = c.expect && !ok ? `  (expected ${c.expect})` : "";
-      const rw = r.rewritten !== r.command ? `  →  ${r.rewritten}` : "";
-      console.log(`${mark} ${r.final.padEnd(6)} ${c.command}${rw}${exp}`);
+      console.log(`${mark} ${r.final.padEnd(6)} ${c.command}${exp}`);
     }
     console.log(`\n${cases.length} cases, ${failed} failed`);
     process.exit(failed ? 1 : 0);
@@ -141,7 +137,6 @@ function main() {
   }
   const r = simulate(args.command, args.cwd, rules);
   console.log(`command:   ${r.command}`);
-  if (r.rewritten !== r.command) console.log(`rewritten: ${r.rewritten}`);
   console.log(`decision:  ${r.final}${r.reason ? `  (${r.reason})` : ""}`);
 }
 

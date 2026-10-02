@@ -107,7 +107,7 @@ test("gh api write to an allow-listed endpoint defers", () => {
 });
 
 // ── pass-through (cd handled by the allow-list, not here) ─────────
-test("cd DIR && allow-listed cmd defers (rtk/allow-list handles it)", () => {
+test("cd DIR && allow-listed cmd defers (allow-list handles it)", () => {
   assert.equal(run("cd /x && git status"), null);
 });
 
