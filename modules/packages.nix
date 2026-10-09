@@ -61,6 +61,7 @@
   # Formulae not packaged in nixpkgs.
   homebrew.brews = [
     "crit"
+    "herdr"
   ];
 
   # GUI apps.
