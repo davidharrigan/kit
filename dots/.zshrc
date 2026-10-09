@@ -63,7 +63,7 @@ if [[ "$(uname)" == "Darwin" ]]; then
 fi
 
 # Load other environment variables
-. <(cat $HOME/.env/*.env)
+for f in $HOME/.env/*.env(N); do . "$f"; done
 
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/go/bin:$PATH"
