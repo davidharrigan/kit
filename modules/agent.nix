@@ -18,6 +18,16 @@ in
       description = "Agent";
     };
 
+    # Fast user switching, with its menu in the menu bar for every user, to move
+    # between agent's GUI session and the others.
+    system.defaults.CustomSystemPreferences.".GlobalPreferences".MultipleSessionEnabled = true;
+    home-manager.sharedModules = [
+      {
+        # 2 = show in menu bar.
+        targets.darwin.currentHostDefaults."com.apple.controlcenter".UserSwitcher = 2;
+      }
+    ];
+
     home-manager.users.agent = {
       imports = [ ./home.nix ];
 
