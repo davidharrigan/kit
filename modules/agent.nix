@@ -3,7 +3,7 @@ let
   cfg = config.kit.agent;
 in
 {
-  options.kit.agent.enable = lib.mkEnableOption "a hidden `agent` user";
+  options.kit.agent.enable = lib.mkEnableOption "an `agent` user";
 
   config = lib.mkIf cfg.enable {
     # Only users listed in knownUsers are created (and deleted) by nix-darwin.
@@ -11,7 +11,7 @@ in
     users.users.agent = {
       uid = 510;
       gid = 20; # staff
-      isHidden = true;
+      isHidden = false;
       home = "/Users/agent";
       createHome = true;
       shell = pkgs.zsh;

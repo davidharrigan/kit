@@ -56,12 +56,12 @@ affects the pre-unlock prompt.
 
 ### Agent user
 
-nix-darwin creates `agent` as a hidden standard user (no admin, no sudo)
+nix-darwin creates `agent` as a standard user (no admin, no sudo)
 without a password or SecureToken, so it can't unlock FileVault. Its job
 (`launchd.agents.agent` in `modules/agent.nix`) runs inside its GUI session, which
 desktop apps (e.g. Tauri) and a real browser need.
 
-- Set a password so it can log in: `sudo dscl . -passwd /Users/agent`.
+- Set a password so it can log in: `sudo dscl . -passwd /Users/agent '<password>'`, or in Users & Groups.
 - Enable Screen Sharing (System Settings → General → Sharing).
 - After each reboot: unlock FileVault over SSH as david, then log agent in via
   Screen Sharing. If david is on the console, choose to log in as agent in a
