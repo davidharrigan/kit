@@ -75,8 +75,6 @@
     "claude"
     "claude-code@latest"
     "codex"
-    # TODO: "docker" is now an alias of "docker-desktop"; drop one.
-    "docker"
     "docker-desktop"
     "firefox"
     "ghostty"
