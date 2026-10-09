@@ -28,6 +28,18 @@ in
       }
     ];
 
+    # Block agent's TCP/UDP traffic to the local network. Loaded into a sub-anchor
+    # of com.apple/*, which the stock /etc/pf.conf already evaluates.
+    launchd.daemons.agent-pf = {
+      script = ''
+        /sbin/pfctl -E
+        /sbin/pfctl -a com.apple/kit-agent -f ${pkgs.writeText "agent.pf" ''
+          block return out quick proto { tcp udp } from any to 192.168.0.0/16 user agent
+        ''}
+      '';
+      serviceConfig.RunAtLoad = true;
+    };
+
     home-manager.users.agent = {
       imports = [ ./home.nix ];
 
