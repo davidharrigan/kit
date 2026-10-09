@@ -149,13 +149,5 @@ in
           ${asUser} ${pkgs.duti}/bin/duti -s com.microsoft.VSCode "$type" all
         done
       fi
-
-      # Firefox is the default browser. macOS asks to confirm the change, so
-      # only set it when it isn't already the default.
-      if [ -e /Applications/Firefox.app ] && [ "$(${asUser} osascript -l JavaScript -e \
-        'ObjC.import("AppKit"); $.NSWorkspace.sharedWorkspace.URLForApplicationToOpenURL($.NSURL.URLWithString("https://example.com")).path.js')" != /Applications/Firefox.app ]; then
-        ${asUser} ${pkgs.duti}/bin/duti -s org.mozilla.firefox http
-        ${asUser} ${pkgs.duti}/bin/duti -s org.mozilla.firefox https
-      fi
     '';
 }
