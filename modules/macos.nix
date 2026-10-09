@@ -1,5 +1,30 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 let
+  dockApps = [
+    "/Applications/Ghostty.app"
+    "/Applications/Firefox.app"
+    "/Applications/Obsidian.app"
+    "/Applications/Claude.app"
+    "/Applications/ChatGPT.app"
+    "/Applications/Antigravity.app"
+    "/System/Applications/Mail.app"
+    "/System/Applications/Music.app"
+    "/System/Applications/Home.app"
+    "/System/Applications/System Settings.app"
+  ];
+
+  # Content types Finder opens in VS Code.
+  vscodeTypes = [
+    "public.plain-text"
+    "public.source-code"
+    "public.script"
+    "public.shell-script"
+    "public.json"
+    "public.yaml"
+    "public.xml"
+    "net.daringfireball.markdown"
+  ];
+
   # HID usage codes for modifier remapping (Apple TN2450).
   key = {
     capsLock = 30064771129;
@@ -54,18 +79,7 @@ in
       mineffect = "scale";
       tilesize = 50;
       show-recents = false;
-      persistent-apps = [
-        "/Applications/Ghostty.app"
-        "/Applications/Firefox.app"
-        "/Applications/Obsidian.app"
-        "/Applications/Claude.app"
-        "/Applications/ChatGPT.app"
-        "/Applications/Antigravity.app"
-        "/System/Applications/Mail.app"
-        "/System/Applications/Music.app"
-        "/System/Applications/Home.app"
-        "/System/Applications/System Settings.app"
-      ];
+      persistent-apps = dockApps;
       persistent-others = [
         "/Applications"
         {
@@ -100,17 +114,48 @@ in
     CustomUserPreferences."com.apple.AdLib".allowApplePersonalizedAdvertising = false;
   };
 
-  # nix-darwin's system.defaults can't write ByHost (-currentHost) prefs.
-  # macOS applies them at login or when the keyboard connects.
+  # Dock apps installed by Homebrew don't exist yet when the Dock is set up,
+  # so they show as "?". Note any missing ones before Homebrew runs.
+  system.activationScripts.preActivation.text = ''
+    dockAppsMissing=
+    for app in ${lib.escapeShellArgs dockApps}; do
+      [ -e "$app" ] || dockAppsMissing=1
+    done
+  '';
+
   system.activationScripts.postActivation.text =
     let
       user = config.system.primaryUser;
+      asUser = ''launchctl asuser "$(id -u -- ${user})" sudo --user=${user} --'';
     in
+    # nix-darwin's system.defaults can't write ByHost (-currentHost) prefs.
+    # macOS applies them at login or when the keyboard connects.
     lib.concatStrings (
       lib.mapAttrsToList (device: mappings: ''
-        launchctl asuser "$(id -u -- ${user})" sudo --user=${user} -- defaults -currentHost write -g \
+        ${asUser} defaults -currentHost write -g \
           ${lib.escapeShellArg "com.apple.keyboard.modifiermapping.${device}"} \
           ${lib.escapeShellArg (lib.generators.toPlist { escape = true; } mappings)}
       '') modifierMappings
-    );
+    )
+    + ''
+      # Rewrite the user defaults (Dock included) now that Homebrew apps exist.
+      if [ -n "$dockAppsMissing" ]; then
+        ${config.system.activationScripts.userDefaults.text}
+      fi
+
+      # VS Code is the default editor for text and code files.
+      if [ -e "/Applications/Visual Studio Code.app" ]; then
+        for type in ${lib.escapeShellArgs vscodeTypes}; do
+          ${asUser} ${pkgs.duti}/bin/duti -s com.microsoft.VSCode "$type" all
+        done
+      fi
+
+      # Firefox is the default browser. macOS asks to confirm the change, so
+      # only set it when it isn't already the default.
+      if [ -e /Applications/Firefox.app ] && [ "$(${asUser} osascript -l JavaScript -e \
+        'ObjC.import("AppKit"); $.NSWorkspace.sharedWorkspace.URLForApplicationToOpenURL($.NSURL.URLWithString("https://example.com")).path.js')" != /Applications/Firefox.app ]; then
+        ${asUser} ${pkgs.duti}/bin/duti -s org.mozilla.firefox http
+        ${asUser} ${pkgs.duti}/bin/duti -s org.mozilla.firefox https
+      fi
+    '';
 }

@@ -24,6 +24,7 @@
     kubectx
     lazygit
     lima
+    neovim
     pipx
     pnpm
     poppler-utils
@@ -66,9 +67,12 @@
   homebrew.casks = [
     "1password"
     "1password-cli"
+    "antigravity"
     "autodesk-fusion"
     "bambu-studio"
     "blender"
+    "chatgpt"
+    "claude"
     "claude-code@latest"
     "codex"
     # TODO: "docker" is now an alias of "docker-desktop"; drop one.
@@ -78,6 +82,7 @@
     "ghostty"
     "obsidian"
     "rectangle"
+    "visual-studio-code"
     # Not in nixpkgs; other fonts are in fonts.packages above.
     "font-ioskeley-mono"
   ];
