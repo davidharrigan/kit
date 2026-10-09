@@ -37,7 +37,6 @@
           specialArgs = { inherit inputs; };
           modules = [
             ./modules/system.nix
-            ./modules/macos.nix
             ./modules/packages.nix
             ./modules/ssh.nix
             ./modules/always-on.nix

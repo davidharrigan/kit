@@ -1,5 +1,5 @@
 # Machine-wide settings shared by every host: Nix, users, sudo, shell and
-# Homebrew itself. Apps are in packages.nix, macOS defaults in macos.nix.
+# Homebrew itself. Apps are in packages.nix, macOS defaults (per user) in macos.nix.
 { inputs, config, ... }:
 {
   imports = [
@@ -35,6 +35,8 @@
     useUserPackages = true;
     # Existing regular files in the way are renamed to <file>.before-hm.
     backupFileExtension = "before-hm";
+    # Every home-manager user gets the same macOS defaults.
+    sharedModules = [ ./macos.nix ];
     users.david = ./home.nix;
   };
 

@@ -1,5 +1,10 @@
+# macOS defaults (a home-manager module shared by every user via
+# home-manager.sharedModules in system.nix). Override per user in that user's
+# home-manager block.
 { config, lib, pkgs, ... }:
 let
+  home = config.home.homeDirectory;
+
   dockApps = [
     "/Applications/Ghostty.app"
     "/Applications/Firefox.app"
@@ -24,6 +29,32 @@ let
     "public.xml"
     "net.daringfireball.markdown"
   ];
+
+  # Dock tiles in the format com.apple.dock stores them.
+  appTile = path: {
+    tile-data.file-data = {
+      _CFURLString = path;
+      _CFURLStringType = 0;
+    };
+  };
+  # arrangement 1 = name, 2 = date added; showas 0 = automatic, 1 = fan; displayas 0 = stack.
+  folderTile =
+    {
+      path,
+      arrangement ? 1,
+      showas ? 0,
+    }:
+    {
+      tile-data = {
+        file-data = {
+          _CFURLString = "file://${path}";
+          _CFURLStringType = 15;
+        };
+        inherit arrangement showas;
+        displayas = 0;
+      };
+      tile-type = "directory-tile";
+    };
 
   # HID usage codes for modifier remapping (Apple TN2450).
   key = {
@@ -52,10 +83,13 @@ let
       (remap key.leftAlt key.leftCmd)
     ];
   };
+
+  # Tap to click off.
+  trackpad.Clicking = false;
 in
 {
   # macOS defaults captured from chainsaw (baseline/capture.sh).
-  system.defaults = {
+  targets.darwin.defaults = {
     # Dark mode, fast key repeat, no autocorrect or smart punctuation, silent alert sound.
     NSGlobalDomain = {
       AppleInterfaceStyle = "Dark";
@@ -73,89 +107,68 @@ in
     };
 
     # Auto-hiding dock on the left, scale minimize effect, no recent apps.
-    dock = {
+    "com.apple.dock" = {
       autohide = true;
       orientation = "left";
       mineffect = "scale";
       tilesize = 50;
       show-recents = false;
-      persistent-apps = dockApps;
+      persistent-apps = map appTile dockApps;
       persistent-others = [
-        "/Applications"
-        {
-          folder = {
-            path = "/Users/david/Downloads";
-            arrangement = "date-added";
-            showas = "fan";
-          };
-        }
+        (folderTile { path = "/Applications"; })
+        (folderTile {
+          path = "${home}/Downloads";
+          arrangement = 2;
+          showas = 1;
+        })
       ];
     };
 
     # Finder opens in list view.
-    finder.FXPreferredViewStyle = "Nlsv";
+    "com.apple.finder".FXPreferredViewStyle = "Nlsv";
 
     # Screenshots go to Downloads.
-    screencapture.location = "~/Downloads";
+    "com.apple.screencapture".location = "~/Downloads";
 
     # Menu bar clock: 0 = show date when space allows; AM/PM shown.
-    menuExtraClock = {
+    "com.apple.menuextra.clock" = {
       ShowDate = 0;
       ShowAMPM = true;
     };
 
-    # Tap to click off.
-    trackpad.Clicking = false;
+    # Built-in and Bluetooth trackpads read separate domains.
+    "com.apple.AppleMultitouchTrackpad" = trackpad;
+    "com.apple.driver.AppleBluetoothMultitouch.trackpad" = trackpad;
 
     # Stage Manager off.
-    WindowManager.GloballyEnabled = false;
+    "com.apple.WindowManager".GloballyEnabled = false;
 
     # Apple personalized ads off.
-    CustomUserPreferences."com.apple.AdLib".allowApplePersonalizedAdvertising = false;
+    "com.apple.AdLib".allowApplePersonalizedAdvertising = false;
   };
 
-  # Dock apps installed by Homebrew don't exist yet when the Dock is set up,
-  # so they show as "?". Note any missing ones before Homebrew runs.
-  system.activationScripts.preActivation.text = ''
-    dockAppsMissing=
-    for app in ${lib.escapeShellArgs dockApps}; do
-      [ -e "$app" ] || dockAppsMissing=1
-    done
+  # macOS applies these at login or when the keyboard connects.
+  targets.darwin.currentHostDefaults.NSGlobalDomain = lib.mapAttrs' (
+    device: mappings: lib.nameValuePair "com.apple.keyboard.modifiermapping.${device}" mappings
+  ) modifierMappings;
+
+  home.activation.macosApps = lib.hm.dag.entryAfter [ "setDarwinDefaults" ] ''
+    # Pick up the Dock settings above (no-op when the user isn't logged in).
+    run /usr/bin/killall -qu "$USER" Dock || true
+
+    # VS Code is the default editor for text and code files.
+    if [ -e "/Applications/Visual Studio Code.app" ]; then
+      for type in ${lib.escapeShellArgs vscodeTypes}; do
+        run ${pkgs.duti}/bin/duti -s com.microsoft.VSCode "$type" all
+      done
+    fi
+
+    # Firefox is the default browser. macOS asks to confirm the change, so
+    # only set it when it isn't already the default.
+    if [ -e /Applications/Firefox.app ] && [ "$(/usr/bin/osascript -l JavaScript -e \
+      'ObjC.import("AppKit"); $.NSWorkspace.sharedWorkspace.URLForApplicationToOpenURL($.NSURL.URLWithString("https://example.com")).path.js')" != /Applications/Firefox.app ]; then
+      run ${pkgs.duti}/bin/duti -s org.mozilla.firefox http
+      run ${pkgs.duti}/bin/duti -s org.mozilla.firefox https
+    fi
   '';
-
-  system.activationScripts.postActivation.text =
-    let
-      user = config.system.primaryUser;
-      asUser = ''launchctl asuser "$(id -u -- ${user})" sudo --user=${user} --'';
-    in
-    # nix-darwin's system.defaults can't write ByHost (-currentHost) prefs.
-    # macOS applies them at login or when the keyboard connects.
-    lib.concatStrings (
-      lib.mapAttrsToList (device: mappings: ''
-        ${asUser} defaults -currentHost write -g \
-          ${lib.escapeShellArg "com.apple.keyboard.modifiermapping.${device}"} \
-          ${lib.escapeShellArg (lib.generators.toPlist { escape = true; } mappings)}
-      '') modifierMappings
-    )
-    + ''
-      # Rewrite the user defaults (Dock included) now that Homebrew apps exist.
-      if [ -n "$dockAppsMissing" ]; then
-        ${config.system.activationScripts.userDefaults.text}
-      fi
-
-      # VS Code is the default editor for text and code files.
-      if [ -e "/Applications/Visual Studio Code.app" ]; then
-        for type in ${lib.escapeShellArgs vscodeTypes}; do
-          ${asUser} ${pkgs.duti}/bin/duti -s com.microsoft.VSCode "$type" all
-        done
-      fi
-
-      # Firefox is the default browser. macOS asks to confirm the change, so
-      # only set it when it isn't already the default.
-      if [ -e /Applications/Firefox.app ] && [ "$(${asUser} osascript -l JavaScript -e \
-        'ObjC.import("AppKit"); $.NSWorkspace.sharedWorkspace.URLForApplicationToOpenURL($.NSURL.URLWithString("https://example.com")).path.js')" != /Applications/Firefox.app ]; then
-        ${asUser} ${pkgs.duti}/bin/duti -s org.mozilla.firefox http
-        ${asUser} ${pkgs.duti}/bin/duti -s org.mozilla.firefox https
-      fi
-    '';
 }

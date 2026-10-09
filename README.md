@@ -30,7 +30,7 @@ flake.nix              list of hosts
 hosts/<name>.nix       hostname, feature toggles (kit.*), host-only apps
 modules/               shared by every host
   packages.nix         apps and tools: CLI (nixpkgs), fonts, brews, casks
-  macos.nix            macOS defaults
+  macos.nix            macOS defaults, applied to every user
   system.nix           Nix, users, Touch ID, Homebrew setup
   home.nix             links everything in dots/ into $HOME
   ssh.nix              optional features, off unless a host enables them
