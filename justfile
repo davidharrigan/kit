@@ -28,6 +28,10 @@ check:
 capture:
     ./baseline/capture.sh
 
+# gh sign-in, GitHub SSH keys and the agent's 1Password service account.
+credentials:
+    ./credentials.sh
+
 rollback:
     sudo darwin-rebuild --rollback
 

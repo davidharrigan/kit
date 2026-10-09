@@ -65,6 +65,9 @@ fi
 # Load other environment variables
 for f in $HOME/.env/*.env(N); do . "$f"; done
 
+# 1Password service account (agent user; written by credentials.sh)
+[[ -r ~/.config/op/service-account-token ]] && export OP_SERVICE_ACCOUNT_TOKEN=$(<~/.config/op/service-account-token)
+
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/go/bin:$PATH"
 export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
