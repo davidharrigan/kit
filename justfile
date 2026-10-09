@@ -2,7 +2,7 @@
 # Override with `just host=power build` or KIT_HOST=power.
 host := env("KIT_HOST", `scutil --get LocalHostName | tr '[:upper:]' '[:lower:]'`)
 
-# darwin-rebuild isn't on PATH until the first switch, so run it straight from nix-darwin.
+# darwin-rebuild isn't on PATH until the first apply, so run it straight from nix-darwin.
 rebuild := `command -v darwin-rebuild || echo "nix run github:nix-darwin/nix-darwin/nix-darwin-26.05#darwin-rebuild --"`
 
 # Build the system without activating it.
@@ -14,7 +14,7 @@ diff: build
     nix store diff-closures /run/current-system ./result
 
 # Build, then activate.
-switch: build
+apply: build
     sudo {{rebuild}} switch --flake .#{{host}}
 
 # Bump all flake inputs (flake.lock).

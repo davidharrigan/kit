@@ -8,18 +8,18 @@ Things nix-darwin can't declare. Redo them after a fresh install.
 
 System Settings → Privacy & Security:
 
-- **Accessibility**: Rectangle, Bartender (chainsaw).
+- **Accessibility**: Rectangle, Bartender.
 - **Full Disk Access**: Ghostty, if a shell needs protected folders.
 - **Screen Recording**: screenshot and screen-recording tools.
 
 Grants to Nix-installed binaries point at a `/nix/store/...` path, which
 changes when the package is rebuilt or updated. Re-grant if a tool loses
-access after `just switch`.
+access after `just apply`.
 
 ### App Store
 
 Only needed if `homebrew.masApps` is added later: sign in to the App Store
-before switching.
+before applying.
 
 ## power (server)
 

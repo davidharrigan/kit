@@ -44,7 +44,7 @@ matching file in `modules/`. Dotfiles go in `dots/`. A new host: add
 `hosts/<name>.nix` and its name in `flake.nix`.
 
 Every git-tracked file in `dots/` is symlinked into `$HOME`, pointing at this
-checkout, so edits apply immediately. A new file needs a `just switch`, except
+checkout, so edits apply immediately. A new file needs a `just apply`, except
 inside the directories listed in `wholeDirs` in `modules/home.nix`, which are
 linked as a whole.
 
@@ -81,10 +81,10 @@ curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install --enable
 3. Apps installed by hand that are also in a cask list make `brew bundle`
    fail; adopt them first: `brew install --cask --adopt <cask>...`.
 
-4. First switch:
+4. First apply:
 
    ```sh
-   just switch
+   just apply
    ```
 
    - "Unexpected files in /etc": rename each listed file to
@@ -111,17 +111,17 @@ git clone https://github.com/davidharrigan/kit.git ~/src/kit && cd ~/src/kit
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
 nix shell nixpkgs#just          # just isn't installed yet
 just build
-just switch
+just apply
 ```
 
 On a host with `kit.agent.enable`, install Oh My Zsh for the agent user after
-the first switch. The switch already created `~agent/.oh-my-zsh/custom/themes`,
-which makes the installer refuse to run, so remove it first and switch again to
+the first apply. The apply already created `~agent/.oh-my-zsh/custom/themes`,
+which makes the installer refuse to run, so remove it first and apply again to
 restore the theme link:
 
 ```sh
 sudo -u agent -H sh -c 'rm -rf ~/.oh-my-zsh && sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc'
-just switch
+just apply
 ```
 
 Then follow [MANUAL.md](MANUAL.md).
