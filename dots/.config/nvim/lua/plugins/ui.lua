@@ -2,7 +2,8 @@ return {
   -- Ayu colorscheme (local development version)
   {
     -- "davidharrigan/neovim-ayu",
-    dir = "~/src/neovim-ayu",
+    -- dir = "~/src/neovim-ayu",
+    "davidharrigan/neovim-ayu",
     lazy = false,
     priority = 1000,
     config = function()
