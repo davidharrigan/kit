@@ -53,6 +53,16 @@ in
       }
       (lib.mkIf config.kit.agent.enable {
         users.users.agent.openssh.authorizedKeys.keys = cfg.authorizedKeys;
+
+        # When Remote Login is limited to some users, macOS also requires
+        # membership in com.apple.access_ssh; add agent to it.
+        system.activationScripts.postActivation.text = ''
+          if dscl . -read /Groups/com.apple.access_ssh &>/dev/null &&
+            ! dseditgroup -o checkmember -m agent com.apple.access_ssh &>/dev/null; then
+            echo "adding agent to com.apple.access_ssh..." >&2
+            dseditgroup -o edit -a agent -t user com.apple.access_ssh
+          fi
+        '';
       })
     ]
   );
