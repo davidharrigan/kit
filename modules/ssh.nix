@@ -35,6 +35,21 @@ in
         '';
 
         users.users.david.openssh.authorizedKeys.keys = cfg.authorizedKeys;
+
+        # Each SSH user gets its own key pair, generated once if missing.
+        home-manager.users = lib.genAttrs sshUsers (
+          user:
+          { lib, ... }:
+          {
+            home.activation.sshKey = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+              if [ ! -e "$HOME/.ssh/id_ed25519" ]; then
+                run mkdir -p -m 700 "$HOME/.ssh"
+                run /usr/bin/ssh-keygen -q -t ed25519 -N "" \
+                  -C "${user}@${config.networking.hostName}" -f "$HOME/.ssh/id_ed25519"
+              fi
+            '';
+          }
+        );
       }
       (lib.mkIf config.kit.agent.enable {
         users.users.agent.openssh.authorizedKeys.keys = cfg.authorizedKeys;

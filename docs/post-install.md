@@ -67,8 +67,8 @@ desktop apps (e.g. Tauri) and a real browser need.
   Screen Sharing. If david is on the console, choose to log in as agent in a
   separate virtual session. Auto-login isn't possible with FileVault on.
 - Act as it from a shell: `sudo -u agent -i`.
-- Give it its own SSH/GitHub key: `ssh-keygen -t ed25519` as agent, then add
-  the public key to GitHub.
+- Its SSH key (`~/.ssh/id_ed25519`) is generated on first apply; add the
+  public key to GitHub.
 - Login keychain unlocks with its GUI login; `sudo -u agent` shells don't get it.
 - Git identity comes from the shared git config (david's). Override it for
   agent if needed.
