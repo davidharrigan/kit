@@ -1,4 +1,4 @@
-# Manual steps
+# Post-install steps
 
 Things nix-darwin can't declare. Redo them after a fresh install.
 
@@ -72,4 +72,4 @@ desktop apps (e.g. Tauri) and a real browser need.
 - Login keychain unlocks with its GUI login; `sudo -u agent` shells don't get it.
 - Git identity comes from the shared git config (david's). Override it for
   agent if needed.
-- Install Oh My Zsh for it (see README, fresh server).
+- Install Oh My Zsh for it (see [nix.md](nix.md), fresh Mac).
