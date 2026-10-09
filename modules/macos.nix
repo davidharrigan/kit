@@ -156,19 +156,24 @@ in
     # Pick up the Dock settings above (no-op when the user isn't logged in).
     run /usr/bin/killall -qu "$USER" Dock || true
 
-    # VS Code is the default editor for text and code files.
-    if [ -e "/Applications/Visual Studio Code.app" ]; then
-      for type in ${lib.escapeShellArgs vscodeTypes}; do
-        run ${pkgs.duti}/bin/duti -s com.microsoft.VSCode "$type" all
-      done
-    fi
+    # LaunchServices is only reachable from a GUI login session.
+    if /bin/launchctl print "gui/$(/usr/bin/id -u)" >/dev/null 2>&1; then
+      # VS Code is the default editor for text and code files.
+      if [ -e "/Applications/Visual Studio Code.app" ]; then
+        for type in ${lib.escapeShellArgs vscodeTypes}; do
+          run ${pkgs.duti}/bin/duti -s com.microsoft.VSCode "$type" all
+        done
+      fi
 
-    # Firefox is the default browser. macOS asks to confirm the change, so
-    # only set it when it isn't already the default.
-    if [ -e /Applications/Firefox.app ] && [ "$(/usr/bin/osascript -l JavaScript -e \
-      'ObjC.import("AppKit"); $.NSWorkspace.sharedWorkspace.URLForApplicationToOpenURL($.NSURL.URLWithString("https://example.com")).path.js')" != /Applications/Firefox.app ]; then
-      run ${pkgs.duti}/bin/duti -s org.mozilla.firefox http
-      run ${pkgs.duti}/bin/duti -s org.mozilla.firefox https
+      # Firefox is the default browser. macOS asks to confirm the change, so
+      # only set it when it isn't already the default.
+      if [ -e /Applications/Firefox.app ] && [ "$(/usr/bin/osascript -l JavaScript -e \
+        'ObjC.import("AppKit"); $.NSWorkspace.sharedWorkspace.URLForApplicationToOpenURL($.NSURL.URLWithString("https://example.com")).path.js')" != /Applications/Firefox.app ]; then
+        run ${pkgs.duti}/bin/duti -s org.mozilla.firefox http
+        run ${pkgs.duti}/bin/duti -s org.mozilla.firefox https
+      fi
+    else
+      noteEcho "Skipping default apps for $USER: no GUI session"
     fi
   '';
 }
