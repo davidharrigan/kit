@@ -60,21 +60,17 @@ Sharing), then:
 xcode-select --install
 # install Nix (above)
 git clone https://github.com/davidharrigan/kit.git ~/src/kit && cd ~/src/kit
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
 nix shell nixpkgs#just          # just isn't installed yet
 just build
 just apply
+just bootstrap -i
 ```
 
-On a host with `kit.agent.enable`, install Oh My Zsh for the agent user after
-the first apply. The apply already created `~agent/.oh-my-zsh/custom/themes`,
-which makes the installer refuse to run, so remove it first and apply again to
-restore the theme link:
-
-```sh
-sudo -u agent -H sh -c 'rm -rf ~/.oh-my-zsh && sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc'
-just apply
-```
+`just bootstrap` installs Oh My Zsh for david (and agent), and on a host with
+`kit.agent.enable` turns on Screen Sharing and FileVault. It then runs
+`just credentials`. Safe to re-run; it only asks for input it needs. With `-i`
+it also offers to set agent's password and to redo gh sign-ins and agent's
+1Password token.
 
 Then follow [post-install.md](post-install.md).
 

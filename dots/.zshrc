@@ -12,6 +12,10 @@ plugins=(kubectx)
 # completions
 export FPATH=$HOME/.completion/zsh:$FPATH
 
+# Homebrew's completion dirs belong to one user, so compinit prompts every other
+# user on the machine about insecure dirs. Load them without the prompt.
+ZSH_DISABLE_COMPFIX=true
+
 source $ZSH/oh-my-zsh.sh
 
 autoload -U colors
@@ -76,13 +80,13 @@ export PATH="/opt/homebrew/opt/postgresql@13/bin:$PATH"
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
 fpath=($HOME/.docker/completions $fpath)
 autoload -Uz compinit
-compinit
+compinit -u
 # End of Docker CLI completions
 
 # Custom completions
 fpath=($HOME/.zsh/completions $fpath)
 autoload -Uz compinit
-compinit
+compinit -u
 
 # Added by Antigravity
 export PATH="$HOME/.antigravity/antigravity/bin:$PATH"

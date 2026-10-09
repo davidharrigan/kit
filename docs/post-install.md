@@ -34,8 +34,8 @@ Sharing → Remote Login shows it as on.
 
 ### FileVault
 
-Enable it as david: `sudo fdesetup enable` (or System Settings → Privacy &
-Security → FileVault).
+`just bootstrap` enables it (`sudo fdesetup enable`); save the recovery key it
+prints.
 
 After a reboot or power loss the Mac waits at the unlock screen. On macOS 26+
 it can be unlocked over SSH (`man apple_ssh_and_filevault`):
@@ -61,14 +61,14 @@ without a password or SecureToken, so it can't unlock FileVault. Its job
 (`launchd.agents.agent` in `modules/agent.nix`) runs inside its GUI session, which
 desktop apps (e.g. Tauri) and a real browser need.
 
-- Set a password so it can log in: `sudo dscl . -passwd /Users/agent '<password>'`, or in Users & Groups.
-- Enable Screen Sharing (System Settings → General → Sharing).
+- `just bootstrap` enables Screen Sharing, installs Oh My Zsh and runs
+  `just credentials` (below). `just bootstrap -i` also sets its password.
 - After each reboot: unlock FileVault over SSH as david, then log agent in via
   Screen Sharing. If david is on the console, choose to log in as agent in a
   separate virtual session. Auto-login isn't possible with FileVault on.
 - Act as it from a shell: `sudo -u agent -i`.
 - Its SSH key (`~/.ssh/id_ed25519`) is generated on first apply.
-- Run `just credentials` as david. It signs gh in (david as davidharrigan,
+- `just credentials` (run as david, also by `just bootstrap`) signs gh in (david as davidharrigan,
   agent as takohoncho; approve agent's device code in a browser signed in as
   takohoncho), uploads both SSH keys to GitHub, and creates the `agent` vault
   plus a read-only service account for it. Its token is saved in david's
@@ -79,4 +79,3 @@ desktop apps (e.g. Tauri) and a real browser need.
 - Login keychain unlocks with its GUI login; `sudo -u agent` shells don't get it.
 - Git identity comes from the shared git config (david's). Override it for
   agent if needed.
-- Install Oh My Zsh for it (see [nix.md](nix.md), fresh Mac).

@@ -29,6 +29,8 @@
 
   # Writes /etc/zshrc etc. so Nix paths are on PATH in zsh.
   programs.zsh.enable = true;
+  # ~/.zshrc runs compinit (through Oh My Zsh).
+  programs.zsh.enableGlobalCompInit = false;
 
   home-manager = {
     useGlobalPkgs = true;

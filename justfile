@@ -28,9 +28,14 @@ check:
 capture:
     ./baseline/capture.sh
 
+# Setup after the first apply: Oh My Zsh, the agent user's password, Screen
+# Sharing and FileVault, then credentials. -i also offers to redo done steps.
+bootstrap *args: && (credentials args)
+    ./bootstrap.sh {{args}}
+
 # gh sign-in, GitHub SSH keys and the agent's 1Password service account.
-credentials:
-    ./credentials.sh
+credentials *args:
+    ./credentials.sh {{args}}
 
 rollback:
     sudo darwin-rebuild --rollback

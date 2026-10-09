@@ -2,9 +2,17 @@
 
 # Post-install credentials: gh sign-in and GitHub SSH keys for david and agent,
 # plus a 1Password service account that gives agent read access to the agent vault.
-# Run as david. Safe to re-run; each step skips what's already done.
+# Run as david. Safe to re-run; each step skips what's already done, so it only
+# asks for input it needs. -i/--interactive also offers to redo done steps.
 
 set -euo pipefail
+
+INTERACTIVE=false
+case "${1:-}" in
+  -i | --interactive) INTERACTIVE=true ;;
+  "") ;;
+  *) echo "usage: $0 [-i|--interactive]" >&2; exit 2 ;;
+esac
 
 DAVID_LOGIN="davidharrigan"
 AGENT_LOGIN="takohoncho"
@@ -48,6 +56,14 @@ as_agent() {
   sudo -u agent -H "$@"
 }
 
+# confirm <question>: with -i, ask; otherwise no.
+confirm() {
+  $INTERACTIVE || return 1
+  local answer
+  read -r -p "$1 [y/N] " answer
+  [[ $answer =~ ^[Yy]$ ]]
+}
+
 # gh_login <login> <runner...>: sign in to github.com (device flow) as <login>
 # with the scope needed to upload SSH keys. <runner> is empty for david.
 gh_login() {
@@ -56,7 +72,7 @@ gh_login() {
   local storage=()
   [ $# -gt 0 ] && storage=(--insecure-storage)
 
-  if "$@" "$GH" auth status -h github.com &>/dev/null; then
+  if "$@" "$GH" auth status -h github.com &>/dev/null && ! confirm "gh: sign in again as $login?"; then
     success "gh: already signed in"
   else
     info "gh: sign in as $login (complete the device code in a browser signed in as $login)"
@@ -96,28 +112,8 @@ gh_ssh_key() {
 
 info "== david =="
 
-"$OP" whoami &>/dev/null || eval "$("$OP" signin)"
-
 gh_login "$DAVID_LOGIN"
 gh_ssh_key david "$HOME"
-
-if "$OP" vault get "$AGENT_VAULT" &>/dev/null; then
-  success "op: vault $AGENT_VAULT exists"
-else
-  info "op: creating vault $AGENT_VAULT"
-  "$OP" vault create "$AGENT_VAULT"
-fi
-
-if "$OP" item get "$SA_ITEM" --vault "$PRIVATE_VAULT" &>/dev/null; then
-  success "op: service account token already saved in $PRIVATE_VAULT"
-else
-  info "op: creating service account agent@$HOST"
-  # The token is only shown once; save it before anything else can fail.
-  token=$("$OP" service-account create "agent@$HOST" --vault "$AGENT_VAULT:read_items" --raw)
-  "$OP" item create --vault "$PRIVATE_VAULT" --category "API Credential" \
-    --title "$SA_ITEM" "credential=$token" >/dev/null
-  unset token
-fi
 
 if ! id agent &>/dev/null; then
   success "No agent user; done."
@@ -126,14 +122,40 @@ fi
 
 info "== agent =="
 
-"$OP" read "op://$PRIVATE_VAULT/$SA_ITEM/credential" |
-  as_agent sh -c "umask 077; mkdir -p ~/.config/op; chmod 700 ~/.config/op; cat > ~/$SA_TOKEN_FILE"
-success "op: token written to ~agent/$SA_TOKEN_FILE"
+# 1Password is only needed when agent's service account token is missing or broken.
+if as_agent sh -c "OP_SERVICE_ACCOUNT_TOKEN=\$(cat ~/$SA_TOKEN_FILE 2>/dev/null) '$OP' vault list" &>/dev/null &&
+  ! confirm "op: write agent's service account token again?"; then
+  success "op: agent's service account works"
+else
+  "$OP" whoami &>/dev/null || eval "$("$OP" signin)"
+
+  if "$OP" vault get "$AGENT_VAULT" &>/dev/null; then
+    success "op: vault $AGENT_VAULT exists"
+  else
+    info "op: creating vault $AGENT_VAULT"
+    "$OP" vault create "$AGENT_VAULT"
+  fi
+
+  if "$OP" item get "$SA_ITEM" --vault "$PRIVATE_VAULT" &>/dev/null; then
+    success "op: service account token already saved in $PRIVATE_VAULT"
+  else
+    info "op: creating service account agent@$HOST"
+    # The token is only shown once; save it before anything else can fail.
+    token=$("$OP" service-account create "agent@$HOST" --vault "$AGENT_VAULT:read_items" --raw)
+    "$OP" item create --vault "$PRIVATE_VAULT" --category "API Credential" \
+      --title "$SA_ITEM" "credential=$token" >/dev/null
+    unset token
+  fi
+
+  "$OP" read "op://$PRIVATE_VAULT/$SA_ITEM/credential" |
+    as_agent sh -c "umask 077; mkdir -p ~/.config/op; chmod 700 ~/.config/op; cat > ~/$SA_TOKEN_FILE"
+  success "op: token written to ~agent/$SA_TOKEN_FILE"
+
+  info "op: checking service account access"
+  as_agent sh -c "OP_SERVICE_ACCOUNT_TOKEN=\$(cat ~/$SA_TOKEN_FILE) '$OP' vault list"
+fi
 
 gh_login "$AGENT_LOGIN" as_agent
 gh_ssh_key agent /Users/agent as_agent
-
-info "op: checking service account access"
-as_agent sh -c "OP_SERVICE_ACCOUNT_TOKEN=\$(cat ~/$SA_TOKEN_FILE) '$OP' vault list"
 
 success "Done."
