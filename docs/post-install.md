@@ -82,47 +82,21 @@ session, which desktop apps (e.g. Tauri) and a real browser need.
 
 ### Hermes Agent
 
-Hermes runs as agent: a gateway (cron, kanban dispatch) and a backend for
-Hermes Desktop on `127.0.0.1:9119`. Profiles: `default` (chat),
-`orchestrator`, `coder` and `reviewer` (kanban). Config is in
-`modules/agent.nix`; settings shared by all profiles are pinned in
-`/etc/hermes/config.yaml`. Hermes refuses `hermes config set`, `hermes model`
-and `hermes update` here; change `modules/agent.nix` instead.
+Nix installs the `hermes` CLI for agent (pinned by the `hermes-agent` flake
+input) and runs two launchd agents in its GUI session: `hermes gateway` (cron,
+kanban dispatch) and `hermes serve` on `127.0.0.1:9119` for Hermes Desktop.
+Config and profiles are set up by hand as agent; restart the agents after
+changing them (`launchctl kickstart -k
+gui/$(id -u)/org.nix-community.home.hermes-gateway`, likewise
+`hermes-backend`). Logs: `~/Library/Logs/kit-hermes-*.log`.
 
-One-time, as agent with its GUI session logged in:
-
-1. `claude auth status`: the Claude CLI must be logged in (Opus needs 2.1.280+).
-2. `hermes auth add openai-codex`: approve the device code in a browser.
-3. `hermes model`: check the Codex slugs in `modules/agent.nix` (`codexTop`,
-   `codexSmall`) are listed; fix them and apply if not.
-4. `hermes doctor`.
-
-Repos the agent works on are listed in `repos.yaml`. `just sync-repos` (run as
-david) clones each to its workdir under `/Users/agent/src` (the
-language-server trust root), creates its kanban board with that default
-workdir, and binds a project to the board so each card gets a worktree at
-`<workdir>/.worktrees/<card>`. Safe to re-run after adding a repo.
-
-Cron jobs are runtime state; create them as agent. Script-only jobs
-(`--no-agent`) use no model. Useful ones:
-
-- An issue poller: `gh issue list --label ready`, then for each issue
-  `hermes kanban create … --assignee coder --workspace worktree
-  --completion-contract OWNER/REPO --idempotency-key gh-<repo>-<N>`.
-- A nightly backup: `hermes backup -o ~/backups/hermes.zip -k 7`.
-
-From the laptop (chainsaw has the `hermes-desktop` cask):
-
-1. `just hermes-tunnel` (forwards `127.0.0.1:9119` to power; Ctrl-C to stop)
-2. Hermes Desktop → Settings → Gateways → Add → Remote gateway:
-   `http://127.0.0.1:9119`, with the token from agent's
-   `~/.hermes/backend-session-token`.
-3. Keep the app at least at the backend's version.
+The backend's session token is the `hermes backend` item (field `password`)
+in the `agent` vault. The backend reads it at start. Chainsaw reads it on apply
+and writes Hermes Desktop's default connection (`~/Library/Application
+Support/Hermes/connection.json`, only when missing) to `http://127.0.0.1:9119`.
+Run `just hermes-tunnel` to forward that port to power (Ctrl-C to stop). Keep
+the app at least at the backend's version.
 
 Upgrades: bump the tag in `flake.nix`, `nix flake update hermes-agent`, run
 `hermes backup --quick` as agent, apply, then `hermes doctor`. The first build
-of each version is long (no binary cache). An apply that changes Hermes config
-restarts both launchd agents, which interrupts any turn in flight.
-
-Worktrees under `<repo>/.worktrees/` are kept after cards finish; prune them
-now and then.
+of each version is long (no binary cache).

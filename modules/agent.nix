@@ -1,6 +1,40 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 let
   cfg = config.kit.agent;
+
+  hermes = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
+
+  # A launchd agent for agent's GUI session that restarts if it exits; logs go
+  # to ~/Library/Logs/kit-<name>.*.log.
+  sessionAgent = name: args: {
+    enable = true;
+    config = {
+      ProgramArguments = args;
+      # launchd starts with a bare environment.
+      EnvironmentVariables = {
+        SHELL = "${pkgs.zsh}/bin/zsh";
+        PATH = "/etc/profiles/per-user/agent/bin:/run/current-system/sw/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin";
+        LANG = "en_US.UTF-8";
+      };
+      WorkingDirectory = "/Users/agent";
+      RunAtLoad = true;
+      KeepAlive = true;
+      StandardOutPath = "/Users/agent/Library/Logs/kit-${name}.out.log";
+      StandardErrorPath = "/Users/agent/Library/Logs/kit-${name}.err.log";
+    };
+  };
+
+  # Hermes Desktop's backend. Its session token comes from the agent vault at
+  # start, so it stays out of the Nix store.
+  hermesBackend = pkgs.writeShellScript "hermes-backend" ''
+    set -euo pipefail
+    OP_SERVICE_ACCOUNT_TOKEN=$(cat "$HOME/.config/op/service-account-token")
+    export OP_SERVICE_ACCOUNT_TOKEN
+    HERMES_DASHBOARD_SESSION_TOKEN=$(/opt/homebrew/bin/op read "op://agent/hermes backend/password")
+    export HERMES_DASHBOARD_SESSION_TOKEN
+    unset OP_SERVICE_ACCOUNT_TOKEN
+    exec ${hermes}/bin/hermes serve --host 127.0.0.1 --port 9119 --no-open
+  '';
 
   # Claude Code settings, with home paths pointed at agent's.
   claudeSettings = builtins.fromJSON (
@@ -40,8 +74,6 @@ let
   '';
 in
 {
-  imports = [ ./hermes.nix ];
-
   options.kit.agent.enable = lib.mkEnableOption "an `agent` user";
 
   config = lib.mkIf cfg.enable {
@@ -91,6 +123,9 @@ in
         export PATH="/opt/homebrew/bin:$PATH"
       '';
 
+      # Hermes Agent CLI. Its config and profiles are set up by hand.
+      home.packages = [ hermes ];
+
       home.file.".claude/settings.json" = lib.mkForce {
         text = builtins.toJSON agentClaudeSettings;
       };
@@ -102,26 +137,20 @@ in
       # in to a GUI session (needed for desktop apps and a real browser), and
       # restarts if it exits. Attach with `herdr --remote agent@<host>` or
       # `ssh -t agent@<host> herdr`.
-      launchd.agents.herdr = {
-        enable = true;
-        config = {
-          ProgramArguments = [
-            "/opt/homebrew/bin/herdr"
-            "server"
-          ];
-          # launchd starts with a bare environment; panes are login shells.
-          EnvironmentVariables = {
-            SHELL = "${pkgs.zsh}/bin/zsh";
-            PATH = "/etc/profiles/per-user/agent/bin:/run/current-system/sw/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin";
-            LANG = "en_US.UTF-8";
-          };
-          WorkingDirectory = "/Users/agent";
-          RunAtLoad = true;
-          KeepAlive = true;
-          StandardOutPath = "/Users/agent/Library/Logs/kit-herdr.out.log";
-          StandardErrorPath = "/Users/agent/Library/Logs/kit-herdr.err.log";
-        };
-      };
+      launchd.agents.herdr = sessionAgent "herdr" [
+        "/opt/homebrew/bin/herdr"
+        "server"
+      ];
+
+      # Hermes: the gateway (cron, kanban dispatch) and the backend Hermes
+      # Desktop connects to on 127.0.0.1:9119 (`just hermes-tunnel` from a laptop).
+      # Restart them after config changes with `launchctl kickstart -k
+      # gui/$(id -u)/org.nix-community.home.hermes-gateway` (or hermes-backend).
+      launchd.agents.hermes-gateway = sessionAgent "hermes-gateway" [
+        "${hermes}/bin/hermes"
+        "gateway"
+      ];
+      launchd.agents.hermes-backend = sessionAgent "hermes-backend" [ "${hermesBackend}" ];
     };
   };
 }

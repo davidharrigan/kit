@@ -37,10 +37,6 @@ bootstrap *args: && (credentials args)
 credentials *args:
     ./scripts/credentials.sh {{args}}
 
-# Clone repos.yaml's repos as agent and set up their Hermes boards and projects.
-sync-repos:
-    ./scripts/sync-repos.sh
-
 rollback:
     sudo darwin-rebuild --rollback
 
@@ -49,4 +45,4 @@ generations:
 
 # Forward power's Hermes backend to localhost:9119 for Hermes Desktop. Ctrl-C to stop.
 hermes-tunnel:
-    ssh -N -L 9119:127.0.0.1:9119 agent@power.local
+    ssh -N -L 9119:127.0.0.1:9119 agent@power.lan
