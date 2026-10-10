@@ -9,6 +9,7 @@
   ];
   kit.alwaysOn.enable = true;
   kit.agent.enable = true;
+  kit.hermesDesktop.enable = true;
 
   environment.systemPackages = [ pkgs.nodejs ];
 

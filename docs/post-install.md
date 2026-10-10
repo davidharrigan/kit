@@ -91,11 +91,12 @@ gui/$(id -u)/org.nix-community.home.hermes-gateway`, likewise
 `hermes-backend`). Logs: `~/Library/Logs/kit-hermes-*.log`.
 
 The backend's session token is the `hermes backend` item (field `password`)
-in the `agent` vault. The backend reads it at start. Chainsaw reads it on apply
-and writes Hermes Desktop's default connection (`~/Library/Application
-Support/Hermes/connection.json`, only when missing) to `http://127.0.0.1:9119`.
-Run `just hermes-tunnel` to forward that port to power (Ctrl-C to stop). Keep
-the app at least at the backend's version.
+in the `agent` vault. The backend reads it at start. Hosts with
+`kit.hermesDesktop.enable` read it on apply and write Hermes Desktop's default
+connection (`~/Library/Application Support/Hermes/connection.json`, only when
+missing) to `http://127.0.0.1:9119`. On power the app reaches the backend
+directly; elsewhere run `just hermes-tunnel` to forward that port to power
+(Ctrl-C to stop). Keep the app at least at the backend's version.
 
 Upgrades: bump the tag in `flake.nix`, `nix flake update hermes-agent`, run
 `hermes backup --quick` as agent, apply, then `hermes doctor`. The first build

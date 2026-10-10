@@ -45,6 +45,7 @@
             ./modules/ssh.nix
             ./modules/always-on.nix
             ./modules/agent.nix
+            ./modules/hermes-desktop.nix
             ./hosts/${host}.nix
           ];
         };
