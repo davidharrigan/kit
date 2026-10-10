@@ -27,6 +27,15 @@ let
     };
   };
 
+  # Hermes gateway (cron, kanban dispatch). Exports the 1Password service
+  # account token so Hermes' op:// secret lookups work, same as the backend.
+  hermesGateway = pkgs.writeShellScript "hermes-gateway" ''
+    set -euo pipefail
+    OP_SERVICE_ACCOUNT_TOKEN=$(cat "$HOME/.config/op/service-account-token")
+    export OP_SERVICE_ACCOUNT_TOKEN
+    exec ${hermes} gateway
+  '';
+
   # Hermes Desktop's backend. Its session token comes from the agent vault at
   # start, so it stays out of the Nix store. OP_SERVICE_ACCOUNT_TOKEN stays
   # exported for Hermes' own 1Password secret lookups.
@@ -146,10 +155,7 @@ in
       # Desktop connects to on 127.0.0.1:9119 (`just hermes-tunnel` from a laptop).
       # Restart them after config changes with `launchctl kickstart -k
       # gui/$(id -u)/org.nix-community.home.hermes-gateway` (or hermes-backend).
-      launchd.agents.hermes-gateway = sessionAgent "hermes-gateway" [
-        hermes
-        "gateway"
-      ];
+      launchd.agents.hermes-gateway = sessionAgent "hermes-gateway" [ "${hermesGateway}" ];
       launchd.agents.hermes-backend = sessionAgent "hermes-backend" [ "${hermesBackend}" ];
     };
   };
