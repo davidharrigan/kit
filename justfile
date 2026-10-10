@@ -31,15 +31,15 @@ capture:
 # Setup after the first apply: Oh My Zsh, the agent user's password, Screen
 # Sharing and FileVault, then credentials. -i also offers to redo done steps.
 bootstrap *args: && (credentials args)
-    ./bootstrap.sh {{args}}
+    ./scripts/bootstrap.sh {{args}}
 
 # gh sign-in, GitHub SSH keys and the agent's 1Password service account.
 credentials *args:
-    ./credentials.sh {{args}}
+    ./scripts/credentials.sh {{args}}
 
 # Clone repos.yaml's repos as agent and set up their Hermes boards and projects.
 sync-repos:
-    ./sync-repos.sh
+    ./scripts/sync-repos.sh
 
 rollback:
     sudo darwin-rebuild --rollback

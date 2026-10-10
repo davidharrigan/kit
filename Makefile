@@ -2,7 +2,7 @@ LOAD_ENV := . dots/.env/*.env &&
 
 .PHONY: install
 install:
-	./install.sh
+	./scripts/install.sh
 
 .PHONY: clean/backups
 clean:

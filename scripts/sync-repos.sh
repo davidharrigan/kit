@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-REPOS_FILE="${1:-$(dirname "$0")/repos.yaml}"
+REPOS_FILE="${1:-$(dirname "$0")/../repos.yaml}"
 AGENT_HOME="/Users/agent"
 
 BLUE=34
