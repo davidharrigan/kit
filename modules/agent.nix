@@ -63,6 +63,20 @@ let
     remoteControlAtStartup = true;
   };
 
+  # Commits are authored as takohoncho, except in the repos that run gh as
+  # davidharrigan (kit, home-ops). Appended after the shared git config, so these
+  # values win.
+  agentGitConfig = ''
+
+    [user]
+      name = takohoncho
+      email = 317447273+takohoncho@users.noreply.github.com
+    [includeIf "hasconfig:remote.*.url:git@github.com:davidharrigan/kit.git"]
+      path = david.config
+    [includeIf "hasconfig:remote.*.url:git@github.com:davidharrigan/home-ops.git"]
+      path = david.config
+  '';
+
   agentClaudeMd = ''
 
     ## Agent environment
@@ -143,6 +157,15 @@ in
       # installer's commands) on PATH there.
       home.file.".zshenv".text = ''
         export PATH="$HOME/.local/bin:/opt/homebrew/bin:$PATH"
+      '';
+
+      home.file.".config/git/config" = lib.mkForce {
+        text = builtins.readFile ../dots/.config/git/config + agentGitConfig;
+      };
+      home.file.".config/git/david.config".text = ''
+        [user]
+          name = David Harrigan
+          email = davidharrigan@users.noreply.github.com
       '';
 
       home.file.".claude/settings.json" = lib.mkForce {
