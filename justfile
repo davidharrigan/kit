@@ -37,6 +37,10 @@ bootstrap *args: && (credentials args)
 credentials *args:
     ./credentials.sh {{args}}
 
+# Clone repos.yaml's repos as agent and set up their Hermes boards and projects.
+sync-repos:
+    ./sync-repos.sh
+
 rollback:
     sudo darwin-rebuild --rollback
 

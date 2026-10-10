@@ -97,13 +97,11 @@ One-time, as agent with its GUI session logged in:
    `codexSmall`) are listed; fix them and apply if not.
 4. `hermes doctor`.
 
-Per repo the agent works on:
-
-1. Clone it to `/Users/agent/src/<repo>` (the language-server trust root).
-2. `hermes kanban boards create <repo>`
-3. `hermes kanban boards set-default-workdir <repo> /Users/agent/src/<repo>`
-4. `hermes project create …` and `hermes project bind-board …` so each card
-   gets a worktree at `<repo>/.worktrees/<card>`.
+Repos the agent works on are listed in `repos.yaml`. `just sync-repos` (run as
+david) clones each to its workdir under `/Users/agent/src` (the
+language-server trust root), creates its kanban board with that default
+workdir, and binds a project to the board so each card gets a worktree at
+`<workdir>/.worktrees/<card>`. Safe to re-run after adding a repo.
 
 Cron jobs are runtime state; create them as agent. Script-only jobs
 (`--no-agent`) use no model. Useful ones:

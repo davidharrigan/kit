@@ -1,0 +1,7 @@
+# Repos the Hermes agent works on. `just sync-repos` clones each one over SSH as
+# agent and sets up its kanban board and project. name is the board and project
+# slug and repo is HOST/OWNER/REPO. workdir defaults to $HOME/src/<name>, under
+# agent's ~/src (the language-server trust root); $HOME is agent's home.
+repos:
+  - name: kit
+    repo: github.com/davidharrigan/kit
