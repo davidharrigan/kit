@@ -45,4 +45,4 @@ generations:
 
 # Forward power's Hermes backend to localhost:9119 for Hermes Desktop. Ctrl-C to stop.
 hermes-tunnel:
-    ssh -N -L 9119:127.0.0.1:9119 agent@power.lan
+    ssh -N -L 9119:127.0.0.1:9119 agent@power.local
