@@ -77,6 +77,10 @@ let
     };
   };
 
+  # Default profile's .env. Routed profiles drop these vars, so only the default
+  # profile's gh uses this login; the others keep agent's ~/.config/gh.
+  hermesEnvironment.GH_CONFIG_DIR = "/Users/agent/.config/gh-david";
+
   # Kanban profiles, written to ~/.hermes/profiles/<name>/.
   hermesProfiles = {
     orchestrator = {
@@ -188,6 +192,7 @@ let
     builtins.toJSON [
       hermesManaged
       hermesSettings
+      hermesEnvironment
       hermesProfiles
     ]
   );
@@ -266,6 +271,7 @@ in
         ];
         extraPlugins = [ directsdk ];
         settings = hermesSettings;
+        environment = hermesEnvironment;
         hermesHomeFiles = lib.concatMapAttrs (name: p: {
           "profiles/${name}/config.yaml" = builtins.toJSON p.config;
           "profiles/${name}/SOUL.md" = p.soul;
