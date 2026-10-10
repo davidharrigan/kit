@@ -25,14 +25,14 @@ let
   };
 
   # Hermes Desktop's backend. Its session token comes from the agent vault at
-  # start, so it stays out of the Nix store.
+  # start, so it stays out of the Nix store. OP_SERVICE_ACCOUNT_TOKEN stays
+  # exported for Hermes' own 1Password secret lookups.
   hermesBackend = pkgs.writeShellScript "hermes-backend" ''
     set -euo pipefail
     OP_SERVICE_ACCOUNT_TOKEN=$(cat "$HOME/.config/op/service-account-token")
     export OP_SERVICE_ACCOUNT_TOKEN
     HERMES_DASHBOARD_SESSION_TOKEN=$(/opt/homebrew/bin/op read "op://agent/hermes backend/password")
     export HERMES_DASHBOARD_SESSION_TOKEN
-    unset OP_SERVICE_ACCOUNT_TOKEN
     exec ${hermes}/bin/hermes serve --host 127.0.0.1 --port 9119 --no-open
   '';
 
