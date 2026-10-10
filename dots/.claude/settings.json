@@ -1,7 +1,4 @@
 {
-  "env": {
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-8[1m]"
-  },
   "permissions": {
     "allow": [
       "Bash(* --help)",
@@ -21,6 +18,7 @@
       "Bash(docker logs:*)",
       "Bash(docker ps:*)",
       "Bash(du:*)",
+      "Bash(echo:*)",
       "Bash(egrep:*)",
       "Bash(fgrep:*)",
       "Bash(find:*)",
@@ -101,46 +99,7 @@
       "Read(//private/tmp/**)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "WebSearch",
-      "Bash(rtk diff:*)",
-      "Bash(rtk docker images:*)",
-      "Bash(rtk docker logs:*)",
-      "Bash(rtk docker ps:*)",
-      "Bash(rtk du:*)",
-      "Bash(rtk find:*)",
-      "Bash(rtk gh api:*)",
-      "Bash(rtk gh issue list:*)",
-      "Bash(rtk gh issue view:*)",
-      "Bash(rtk gh pr checks:*)",
-      "Bash(rtk gh pr diff:*)",
-      "Bash(rtk gh pr list:*)",
-      "Bash(rtk gh pr view:*)",
-      "Bash(rtk gh release list:*)",
-      "Bash(rtk gh release view:*)",
-      "Bash(rtk gh repo view:*)",
-      "Bash(rtk gh run list:*)",
-      "Bash(rtk gh run view:*)",
-      "Bash(rtk git add:*)",
-      "Bash(rtk git branch:*)",
-      "Bash(rtk git commit --amend:*)",
-      "Bash(rtk git commit -am:*)",
-      "Bash(rtk git commit -m:*)",
-      "Bash(rtk git diff:*)",
-      "Bash(rtk git fetch:*)",
-      "Bash(rtk git log:*)",
-      "Bash(rtk git pull:*)",
-      "Bash(rtk git show:*)",
-      "Bash(rtk git stash:*)",
-      "Bash(rtk git status:*)",
-      "Bash(rtk git worktree:*)",
-      "Bash(rtk grep:*)",
-      "Bash(rtk jq:*)",
-      "Bash(rtk just:*)",
-      "Bash(rtk ls:*)",
-      "Bash(rtk read:*)",
-      "Bash(rtk rg:*)",
-      "Bash(rtk tree:*)",
-      "Bash(rtk wc:*)"
+      "WebSearch"
     ],
     "deny": [
       "Bash(* ~/.aws/*)",
@@ -182,44 +141,16 @@
       "Read(~/.config/gcloud/**)",
       "Read(~/.gnupg/**)",
       "Read(~/.kube/config)",
-      "Read(~/.ssh/id_*)",
-      "Bash(rtk bash -i >& /dev/tcp/*)",
-      "Bash(rtk csrutil:*)",
-      "Bash(rtk dd if=/dev/random of=/dev/*)",
-      "Bash(rtk dd if=/dev/zero of=/dev/*)",
-      "Bash(rtk diskutil eraseDisk:*)",
-      "Bash(rtk diskutil eraseVolume:*)",
-      "Bash(rtk doas:*)",
-      "Bash(rtk docker run --privileged *)",
-      "Bash(rtk docker run -v /:/host *)",
-      "Bash(rtk docker run -v /var/run/docker.sock:/var/run/docker.sock *)",
-      "Bash(rtk exec 3<>/dev/tcp/*)",
-      "Bash(rtk exec < /dev/tcp/*)",
-      "Bash(rtk exec > /dev/tcp/*)",
-      "Bash(rtk fdisk:*)",
-      "Bash(rtk halt:*)",
-      "Bash(rtk masscan:*)",
-      "Bash(rtk mkfs:*)",
-      "Bash(rtk nc -l:*)",
-      "Bash(rtk netcat -l:*)",
-      "Bash(rtk passwd:*)",
-      "Bash(rtk reboot:*)",
-      "Bash(rtk rm -rf /*)",
-      "Bash(rtk rm -rf /:*)",
-      "Bash(rtk sh -i >& /dev/tcp/*)",
-      "Bash(rtk shutdown:*)",
-      "Bash(rtk socat:*)",
-      "Bash(rtk spctl:*)",
-      "Bash(rtk sudo:*)"
+      "Read(~/.ssh/id_*)"
     ],
     "ask": [
+      "Bash(Bash(rm -rf $HOME*)",
+      "Bash(Bash(rm -rf ..*)",
       "Bash(bash:*)",
       "Bash(csplit:*)",
       "Bash(env | base64*)",
       "Bash(eval:*)",
       "Bash(gh pr close:*)",
-      "Bash(gh pr create:*)",
-      "Bash(gh pr merge:*)",
       "Bash(gh pr review:*)",
       "Bash(git branch -D:*)",
       "Bash(git branch -d:*)",
@@ -237,79 +168,106 @@
       "Bash(git push origin master:*)",
       "Bash(git push upstream main:*)",
       "Bash(git reset:*)",
-      "Bash(herdr agent prompt:*)",
-      "Bash(herdr agent rename:*)",
-      "Bash(herdr agent send-keys:*)",
-      "Bash(herdr agent start:*)",
       "Bash(kill:*)",
       "Bash(killall:*)",
       "Bash(nmap:*)",
       "Bash(pkill:*)",
       "Bash(printenv | base64*)",
-      "Bash(rm:*)",
+      "Bash(rm -rf .git*)",
+      "Bash(rm -rf ~*)",
       "Bash(set | base64*)",
       "Bash(sh:*)",
       "Bash(split:*)",
       "Bash(tee:*)",
-      "Bash(zsh:*)",
-      "Bash(rtk gh pr close:*)",
-      "Bash(rtk gh pr create:*)",
-      "Bash(rtk gh pr merge:*)",
-      "Bash(rtk gh pr review:*)",
-      "Bash(rtk git branch -D:*)",
-      "Bash(rtk git branch -d:*)",
-      "Bash(rtk git push * main*)",
-      "Bash(rtk git push * master*)",
-      "Bash(rtk git push --force origin main:*)",
-      "Bash(rtk git push --force origin master:*)",
-      "Bash(rtk git push --force-with-lease origin main:*)",
-      "Bash(rtk git push --force-with-lease origin master:*)",
-      "Bash(rtk git push -f origin main:*)",
-      "Bash(rtk git push -f origin master:*)",
-      "Bash(rtk git push origin main:*)",
-      "Bash(rtk git push origin master:*)",
-      "Bash(rtk git push upstream main:*)"
+      "Bash(zsh:*)"
     ]
   },
   "model": "opus",
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "rtk hook claude"
-          }
-        ]
-      }
-    ],
     "SessionStart": [
       {
         "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "bash '/Users/david/.claude/hooks/herdr-agent-state.sh' session",
+            "command": "bash $HOME/.claude/hooks/herdr-agent-state.sh session",
             "timeout": 10
           }
         ]
       }
     ]
   },
+  "worktree": {
+    "baseRef": "fresh"
+  },
   "statusLine": {
     "type": "command",
-    "command": "bash /Users/david/.claude/statusline-command.sh"
+    "command": "bash ~/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
-    "gopls-lsp@claude-plugins-official": false,
+    "gopls-lsp@claude-plugins-official": true,
     "superpowers@claude-plugins-official": false,
-    "rust-analyzer-lsp@claude-plugins-official": true
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "crit@crit": true,
+    "cowork-plugin-management@synced": false,
+    "context7@claude-plugins-official": true
   },
-  "effortLevel": "medium",
+  "extraKnownMarketplaces": {
+    "crit": {
+      "source": {
+        "source": "github",
+        "repo": "tomasz-tomczyk/crit"
+      }
+    }
+  },
+  "effortLevel": "high",
+  "modelSettings": {
+    "claude-fable-5-1": {
+      "effortLevel": "high"
+    },
+    "claude-opus-5-5": {
+      "effortLevel": "medium"
+    },
+    "claude-opus-4-8": {
+      "effortLevel": "medium"
+    },
+    "claude-sonnet-5": {
+      "effortLevel": "medium"
+    }
+  },
+  "promptSuggestionEnabled": false,
   "tui": "fullscreen",
+  "skipWorkflowUsageWarning": true,
   "theme": "auto",
   "editorMode": "vim",
   "autoCompactEnabled": false,
-  "remoteControlAtStartup": false
+  "remoteControlAtStartup": false,
+  "agentPushNotifEnabled": true,
+  "autoMode": {
+    "environment": [
+      "### Org-wide",
+      "**Organization**: None configured",
+      "**Cloud provider(s)**: None configured",
+      "**Repository visibility**: private (davidharrigan/engram, confirmed via gh)",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: None configured",
+      "**Default / protected branches**: `main` (default; ruleset active, protected)",
+      "**CI/CD deploy targets**: None configured",
+      "**Network posture**: None configured",
+      "**Source control**: The trusted repo (davidharrigan/engram, github.com:davidharrigan/engram.git) and its remote(s) only",
+      "**Trusted internal domains**: None configured",
+      "**Trusted cloud buckets**: None configured — bucket scan failed, treat as unavailable, not absent",
+      "**Key internal services**: None configured",
+      "**Internal package registry**: None configured",
+      "**Sensitive data locations & audiences**: any file or store holding personal data, confidential business data, credentials, regulated data, or similarly sensitive material; preserve exact handles when known and share only with audiences cleared at the [named+specifics] bar — note: .env, .env.* (excluding .env.example) are gitignored in this repo, treat as secret-bearing",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
+      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
+      "### User-specific",
+      "**Primary use of Claude Code**: software development (Tauri/Rust + SvelteKit desktop app, engram)",
+      "**Trusted repo**: /Users/david/src/engram (davidharrigan/engram, private) and its remote origin (github.com:davidharrigan/engram.git) — confidential material is fine to commit here, but content ported or repointed from outside this repo is not this repo's own work",
+      "**Org-specific CLIs**: None configured — `hack` and `herdr` appear frequently in this project's usage but no org/CLI documentation was found to characterize them"
+    ]
+  }
 }

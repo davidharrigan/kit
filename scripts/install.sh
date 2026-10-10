@@ -2,7 +2,7 @@
 
 set -e
 
-ROOT=$(cd "$(dirname $0)" && pwd)
+ROOT=$(cd "$(dirname "$0")/.." && pwd)
 
 STOW_DIR="./dots"
 BACKUP_DIR="$ROOT/backup"

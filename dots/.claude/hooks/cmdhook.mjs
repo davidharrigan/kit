@@ -1,8 +1,7 @@
 #!/usr/bin/env node
-// cmdhook — a Bash PreToolUse policy hook that runs ALONGSIDE `rtk hook claude`
-// as a second, parallel hook. It only ever emits `deny` or `ask` (never a
-// rewrite / `updatedInput`), so it merges cleanly with rtk (most-restrictive
-// wins) and can't collide with rtk's rewrites (cf. claude-code#15897).
+// cmdhook — a Bash PreToolUse policy hook. It only ever emits `deny` or `ask`
+// (never a rewrite / `updatedInput`), so it merges cleanly with any other
+// PreToolUse hooks (most-restrictive wins).
 //
 // Policies:
 //   - sed-coercion: `sed -i FILE` -> deny (use Edit); `sed` file-paging -> deny
@@ -11,9 +10,9 @@
 //     allow-listed for this repo (per-project .claude/cmdhook.toml). Reads and
 //     allowed endpoints -> silent. Fail-closed (parse uncertainty -> ask).
 //
-// cd handling lives entirely in the static allow-list: with `cd` allowed, rtk
-// already auto-allows `cd DIR && <allow-listed cmd>` compounds, so no rewrite
-// is needed here.
+// cd handling lives entirely in the static allow-list: with `cd` allowed,
+// `cd DIR && <allow-listed cmd>` compounds are already auto-allowed, so no
+// rewrite is needed here.
 //
 // Fail-safe: any error / unknown shape -> emit nothing (defer). Never crashes.
 
@@ -106,7 +105,7 @@ function sedCoercion(command, cfg) {
 
 // gh api writes -> ask unless the endpoint is allow-listed for this repo.
 function ghApiGate(command, cfg) {
-  const m = command.match(/^\s*(?:rtk\s+)?gh\s+api\s+(.*)$/s);
+  const m = command.match(/^\s*gh\s+api\s+(.*)$/s);
   if (!m) return;
   let write = false;
   let endpoint = null;

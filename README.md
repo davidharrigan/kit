@@ -18,24 +18,38 @@ This is my dev kit.  It install config I need to stay productive on any machine.
 └── terminal                 # terminal utilities
 ```
 
-## Codex
+## Nix (nix-darwin)
 
-`dots/.codex/` contains the non-sensitive parts of the current Codex setup:
-model and UI preferences, plugin toggles, the public Datadog MCP endpoint,
-keybindings, and the Herdr session hook. The hook uses `CODEX_HOME` (falling back
-to `~/.codex`) instead of a machine-specific path; its helper is managed by Herdr.
+Macs are managed by a flake: nix-darwin (system settings, fonts, SSH, launchd),
+home-manager (dotfiles and CLI tools) and nix-homebrew (Homebrew itself, casks,
+and the few formulae missing from nixpkgs). Machines without Nix use
+`make install` (GNU Stow).
 
-These files use the existing `make install` / GNU Stow workflow, targeting
-`~/.codex`, Codex's [user configuration directory](https://learn.chatgpt.com/docs/config-file/config-basic).
-Installation backs up conflicting files under `backup/` and replaces them with
-symlinks; it does not merge local settings. This snapshot has not been installed.
+```
+flake.nix              list of hosts
+hosts/<name>.nix       hostname, feature toggles (kit.*), host-only apps
+modules/               shared by every host
+  packages.nix         apps and tools: CLI (nixpkgs), fonts, brews, casks
+  macos.nix            macOS defaults, applied to every user
+  system.nix           Nix, users, Touch ID, Homebrew setup
+  home.nix             links everything in dots/ into $HOME
+  ssh.nix              optional features, off unless a host enables them
+  always-on.nix
+  agent.nix
+docs/
+  nix.md               install Nix, bootstrap a Mac, rollback
+  post-install.md      steps to do by hand after the first apply
+```
 
-Credentials and HTTP headers, project trust entries, command approval rules,
-hook trust hashes, app-managed computer-use and marketplace paths, versioned
-skill paths, caches, sessions, history, and databases are intentionally omitted.
-Set up integrations and authentication locally after restoring; plugin toggles
-do not install plugins. The empty local `AGENTS.md` is also omitted.
+Host-specific things go in `hosts/<name>.nix`; everything else goes in the
+matching file in `modules/`. Dotfiles go in `dots/`. A new host: add
+`hosts/<name>.nix` and its name in `flake.nix`.
 
-The root `.gitignore` allows only the reviewed Codex files. Review changes to
-tracked configuration before committing: Codex can write local settings back
-into those files, and Git ignore rules do not filter their contents.
+Every git-tracked file in `dots/` is symlinked into `$HOME`, pointing at this
+checkout, so edits apply immediately. A new file needs a `just apply`, except
+inside the directories listed in `wholeDirs` in `modules/home.nix`, which are
+linked as a whole.
+
+Flakes only see files tracked by git: `git add` new files before building.
+
+Setup: [docs/nix.md](docs/nix.md). Then [docs/post-install.md](docs/post-install.md).
