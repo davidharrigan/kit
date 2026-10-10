@@ -69,6 +69,10 @@ let
     fallback_providers = codexFallback;
     approvals.mode = "smart";
     memory.write_approval = true;
+    secrets.onepassword = {
+      enabled = true;
+      env.GITHUB_TOKEN = "op://agent/github-token/credential";
+    };
     kanban = {
       review_dispatch = true;
       auto_decompose = false;
@@ -77,9 +81,8 @@ let
     };
   };
 
-  # Default profile's .env. Routed profiles drop these vars, so only the default
-  # profile's gh uses this login; the others keep agent's ~/.config/gh.
-  hermesEnvironment.GH_CONFIG_DIR = "/Users/agent/.config/gh-david";
+  # Default profile's .env.
+  hermesEnvironment = { };
 
   # Kanban profiles, written to ~/.hermes/profiles/<name>/.
   hermesProfiles = {
