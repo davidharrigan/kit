@@ -16,10 +16,6 @@
 
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
 
-    # Pinned to a release tag; main can run ahead of any release. Builds against
-    # its own pinned nixpkgs.
-    hermes-agent.url = "github:NousResearch/hermes-agent/v0.21.6";
-
     # Homebrew taps pinned by flake.lock (plain git repos, not flakes).
     homebrew-core = {
       url = "github:homebrew/homebrew-core";

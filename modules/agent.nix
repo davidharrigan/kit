@@ -2,7 +2,10 @@
 let
   cfg = config.kit.agent;
 
-  hermes = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  # Hermes Agent is installed by its official installer (into
+  # ~/.hermes/hermes-agent, command at ~/.local/bin/hermes) and updates itself
+  # with `hermes update`. Nix only runs the services.
+  hermes = "/Users/agent/.local/bin/hermes";
 
   # A launchd agent for agent's GUI session that restarts if it exits; logs go
   # to ~/Library/Logs/kit-<name>.*.log.
@@ -13,7 +16,7 @@ let
       # launchd starts with a bare environment.
       EnvironmentVariables = {
         SHELL = "${pkgs.zsh}/bin/zsh";
-        PATH = "/etc/profiles/per-user/agent/bin:/run/current-system/sw/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin";
+        PATH = "/Users/agent/.local/bin:/etc/profiles/per-user/agent/bin:/run/current-system/sw/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin";
         LANG = "en_US.UTF-8";
       };
       WorkingDirectory = "/Users/agent";
@@ -33,7 +36,7 @@ let
     export OP_SERVICE_ACCOUNT_TOKEN
     HERMES_DASHBOARD_SESSION_TOKEN=$(/opt/homebrew/bin/op read "op://agent/hermes backend/password")
     export HERMES_DASHBOARD_SESSION_TOKEN
-    exec ${hermes}/bin/hermes serve --host 127.0.0.1 --port 9119 --no-open
+    exec ${hermes} serve --host 127.0.0.1 --port 9119 --no-open
   '';
 
   # Claude Code settings, with home paths pointed at agent's.
@@ -123,9 +126,6 @@ in
         export PATH="/opt/homebrew/bin:$PATH"
       '';
 
-      # Hermes Agent CLI. Its config and profiles are set up by hand.
-      home.packages = [ hermes ];
-
       home.file.".claude/settings.json" = lib.mkForce {
         text = builtins.toJSON agentClaudeSettings;
       };
@@ -147,7 +147,7 @@ in
       # Restart them after config changes with `launchctl kickstart -k
       # gui/$(id -u)/org.nix-community.home.hermes-gateway` (or hermes-backend).
       launchd.agents.hermes-gateway = sessionAgent "hermes-gateway" [
-        "${hermes}/bin/hermes"
+        hermes
         "gateway"
       ];
       launchd.agents.hermes-backend = sessionAgent "hermes-backend" [ "${hermesBackend}" ];
