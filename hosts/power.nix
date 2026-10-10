@@ -1,4 +1,5 @@
 # Host-specific settings: hostname, optional features, host-only apps.
+{ pkgs, ... }:
 {
   networking.hostName = "power";
 
@@ -8,6 +9,8 @@
   ];
   kit.alwaysOn.enable = true;
   kit.agent.enable = true;
+
+  environment.systemPackages = [ pkgs.nodejs ];
 
   homebrew.casks = [
     "ollama-app"
