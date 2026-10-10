@@ -130,9 +130,10 @@ in
       kit.home.liveLinks = false;
 
       # Non-interactive SSH commands (`herdr --remote` looks up `herdr` this way)
-      # read only .zshenv, so put Homebrew on PATH there.
+      # read only .zshenv, so put Homebrew and ~/.local/bin (the Hermes
+      # installer's commands) on PATH there.
       home.file.".zshenv".text = ''
-        export PATH="/opt/homebrew/bin:$PATH"
+        export PATH="$HOME/.local/bin:/opt/homebrew/bin:$PATH"
       '';
 
       home.file.".claude/settings.json" = lib.mkForce {

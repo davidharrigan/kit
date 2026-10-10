@@ -82,8 +82,9 @@ session, which desktop apps (e.g. Tauri) and a real browser need.
 
 ### Hermes Agent
 
-Nix installs the `hermes` CLI for agent (pinned by the `hermes-agent` flake
-input) and runs two launchd agents in its GUI session: `hermes gateway` (cron,
+Hermes is installed by its official installer as agent (checkout in
+`~/.hermes/hermes-agent`, command at `~/.local/bin/hermes`), not by Nix. Nix
+runs two launchd agents in its GUI session: `hermes gateway` (cron,
 kanban dispatch) and `hermes serve` on `127.0.0.1:9119` for Hermes Desktop.
 Config and profiles are set up by hand as agent; restart the agents after
 changing them (`launchctl kickstart -k
@@ -98,6 +99,12 @@ missing) to `http://127.0.0.1:9119`. On power the app reaches the backend
 directly; elsewhere run `just hermes-tunnel` to forward that port to power
 (Ctrl-C to stop). Keep the app at least at the backend's version.
 
-Upgrades: bump the tag in `flake.nix`, `nix flake update hermes-agent`, run
-`hermes backup --quick` as agent, apply, then `hermes doctor`. The first build
-of each version is long (no binary cache).
+Install (once, as agent):
+`curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash -s -- --non-interactive`.
+Run it from a clean shell, not from inside a Hermes session: inherited
+`HERMES_*` variables make it skip publishing the `hermes` command.
+
+Upgrades: `hermes update` as agent, then restart both launchd agents and run
+`hermes doctor`. Model-provider plugins live per profile under
+`~/.hermes[/profiles/<name>]/plugins/`; update them with
+`hermes [-p <name>] plugins update <plugin>`.
