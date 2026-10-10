@@ -4,9 +4,7 @@ let
 
   # Claude Code settings, with home paths pointed at agent's.
   claudeSettings = builtins.fromJSON (
-    builtins.replaceStrings [ "/Users/david/" ] [ "/Users/agent/" ] (
-      builtins.readFile ../dots/.claude/settings.json
-    )
+    builtins."readFile" ../dots/.claude/settings.json
   );
 
   # agent runs unattended, so no permission prompts. Remote Control makes each

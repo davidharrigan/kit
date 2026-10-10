@@ -190,7 +190,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash '/Users/david/.claude/hooks/herdr-agent-state.sh' session",
+            "command": "bash '~/.claude/hooks/herdr-agent-state.sh' session",
             "timeout": 10
           }
         ]
@@ -202,7 +202,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bash /Users/david/.claude/statusline-command.sh"
+    "command": "bash ~/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true,
