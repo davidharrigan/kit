@@ -57,9 +57,9 @@ affects the pre-unlock prompt.
 ### Agent user
 
 nix-darwin creates `agent` as a standard user (no admin, no sudo)
-without a password or SecureToken, so it can't unlock FileVault. Its job
-(`launchd.agents.agent` in `modules/agent.nix`) runs inside its GUI session, which
-desktop apps (e.g. Tauri) and a real browser need.
+without a password or SecureToken, so it can't unlock FileVault. Its jobs
+(the Herdr and Hermes launchd agents in `modules/agent.nix`) run inside its GUI
+session, which desktop apps (e.g. Tauri) and a real browser need.
 
 - `just bootstrap` enables Screen Sharing, installs Oh My Zsh and runs
   `just credentials` (below). `just bootstrap -i` also sets its password.
@@ -79,3 +79,52 @@ desktop apps (e.g. Tauri) and a real browser need.
 - Login keychain unlocks with its GUI login; `sudo -u agent` shells don't get it.
 - Git identity comes from the shared git config (david's). Override it for
   agent if needed.
+
+### Hermes Agent
+
+Hermes runs as agent: a gateway (cron, kanban dispatch) and a backend for
+Hermes Desktop on `127.0.0.1:9119`. Profiles: `default` (chat),
+`orchestrator`, `coder` and `reviewer` (kanban). Config is in
+`modules/agent.nix`; settings shared by all profiles are pinned in
+`/etc/hermes/config.yaml`. Hermes refuses `hermes config set`, `hermes model`
+and `hermes update` here; change `modules/agent.nix` instead.
+
+One-time, as agent with its GUI session logged in:
+
+1. `claude auth status`: the Claude CLI must be logged in (Opus needs 2.1.280+).
+2. `hermes auth add openai-codex`: approve the device code in a browser.
+3. `hermes model`: check the Codex slugs in `modules/agent.nix` (`codexTop`,
+   `codexSmall`) are listed; fix them and apply if not.
+4. `hermes doctor`.
+
+Per repo the agent works on:
+
+1. Clone it to `/Users/agent/src/<repo>` (the language-server trust root).
+2. `hermes kanban boards create <repo>`
+3. `hermes kanban boards set-default-workdir <repo> /Users/agent/src/<repo>`
+4. `hermes project create …` and `hermes project bind-board …` so each card
+   gets a worktree at `<repo>/.worktrees/<card>`.
+
+Cron jobs are runtime state; create them as agent. Script-only jobs
+(`--no-agent`) use no model. Useful ones:
+
+- An issue poller: `gh issue list --label ready`, then for each issue
+  `hermes kanban create … --assignee coder --workspace worktree
+  --completion-contract OWNER/REPO --idempotency-key gh-<repo>-<N>`.
+- A nightly backup: `hermes backup -o ~/backups/hermes.zip -k 7`.
+
+From the laptop (chainsaw has the `hermes-desktop` cask):
+
+1. `just hermes-tunnel` (forwards `127.0.0.1:9119` to power; Ctrl-C to stop)
+2. Hermes Desktop → Settings → Gateways → Add → Remote gateway:
+   `http://127.0.0.1:9119`, with the token from agent's
+   `~/.hermes/backend-session-token`.
+3. Keep the app at least at the backend's version.
+
+Upgrades: bump the tag in `flake.nix`, `nix flake update hermes-agent`, run
+`hermes backup --quick` as agent, apply, then `hermes doctor`. The first build
+of each version is long (no binary cache). An apply that changes Hermes config
+restarts both launchd agents, which interrupts any turn in flight.
+
+Worktrees under `<repo>/.worktrees/` are kept after cards finish; prune them
+now and then.

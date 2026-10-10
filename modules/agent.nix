@@ -2,7 +2,7 @@
 let
   cfg = config.kit.agent;
 
-  # david's Claude Code settings, with home paths pointed at agent's.
+  # Claude Code settings, with home paths pointed at agent's.
   claudeSettings = builtins.fromJSON (
     builtins.replaceStrings [ "/Users/david/" ] [ "/Users/agent/" ] (
       builtins.readFile ../dots/.claude/settings.json
@@ -42,6 +42,8 @@ let
   '';
 in
 {
+  imports = [ ./hermes.nix ];
+
   options.kit.agent.enable = lib.mkEnableOption "an `agent` user";
 
   config = lib.mkIf cfg.enable {

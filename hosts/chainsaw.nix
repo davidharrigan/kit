@@ -8,5 +8,6 @@
 
   homebrew.casks = [
     "bartender"
+    "hermes-desktop" # connects to power's Hermes backend over an SSH tunnel
   ];
 }
