@@ -129,6 +129,15 @@ in
       # agent has no checkout of kit, so dotfiles are copies in the Nix store.
       kit.home.liveLinks = false;
 
+      # Stable Rust toolchain for agent's Rust projects (cargo fmt/clippy/test).
+      home.packages = with pkgs; [
+        cargo
+        clippy
+        rust-analyzer
+        rustc
+        rustfmt
+      ];
+
       # Non-interactive SSH commands (`herdr --remote` looks up `herdr` this way)
       # read only .zshenv, so put Homebrew and ~/.local/bin (the Hermes
       # installer's commands) on PATH there.
