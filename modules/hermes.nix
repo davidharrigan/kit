@@ -7,6 +7,8 @@ let
   claudeProvider = "claude-subscription-directsdk-experimental";
   codexTop = "gpt-6.1-sol";
   codexSmall = "gpt-5.6-luna";
+  opus = "claude-opus-5-5[1m]";
+  sonnet = "claude-sonnet-5-5[1m]";
 
   # Claude subscription provider: drives agent's logged-in `claude` CLI
   # (/opt/homebrew/bin/claude, found without PATH changes).
@@ -62,7 +64,7 @@ let
   hermesSettings = {
     model = {
       provider = claudeProvider;
-      default = "opus";
+      default = opus;
     };
     fallback_providers = codexFallback;
     approvals.mode = "smart";
@@ -81,7 +83,7 @@ let
       config = {
         model = {
           provider = claudeProvider;
-          default = "opus";
+          default = opus;
         };
         fallback_providers = codexFallback;
         platform_toolsets.cli = [
@@ -107,7 +109,7 @@ let
       config = {
         model = {
           provider = claudeProvider;
-          default = "sonnet";
+          default = sonnet;
         };
         fallback_providers = codexFallback;
         agent = {
@@ -152,7 +154,7 @@ let
         fallback_providers = [
           {
             provider = claudeProvider;
-            model = "opus";
+            model = opus;
           }
         ];
         agent = {
