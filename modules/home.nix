@@ -1,5 +1,5 @@
-# Dotfiles (a home-manager module, used by system.nix and agent.nix): links
-# everything in dots/ into $HOME.
+# Dotfiles (a home-manager module, used by system.nix and agent.nix): links or
+# copies everything in dots/ into $HOME.
 { config, lib, ... }:
 let
   dots = ../dots;
@@ -25,15 +25,27 @@ let
   ];
 
   # Live links point at the checkout in ~/src/kit, so edits apply without a
-  # rebuild. Otherwise the file is copied into the Nix store at build time.
-  link =
-    rel:
-    if config.kit.home.liveLinks then
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/src/kit/dots/${rel}"
-    else
-      dots + "/${rel}";
+  # rebuild.
+  link = rel: config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/src/kit/dots/${rel}";
 
-  # Paths under dots/ to link. The flake only sees git-tracked files.
+  # Copies are real, writable files, overwritten on every switch. Symlinks
+  # inside dots/ are copied as what they point to.
+  copy = rel: ''
+    dest="$HOME/${rel}"
+    if [ -L "$dest" ]; then run rm "$dest"; fi
+    run mkdir -p "$(dirname "$dest")"
+  '' + (
+    if lib.elem rel wholeDirs then ''
+      run mkdir -p "$dest"
+      run cp -RLf "${dots}/${rel}/." "$dest/"
+    '' else ''
+      run cp -Lf "${dots}/${rel}" "$dest"
+    ''
+  ) + ''
+    run chmod -R u+w "$dest"
+  '';
+
+  # Paths under dots/ to link or copy. The flake only sees git-tracked files.
   walk =
     dir:
     lib.concatLists (
@@ -55,14 +67,22 @@ in
   options.kit.home.liveLinks = lib.mkOption {
     type = lib.types.bool;
     default = true;
-    description = "Link dotfiles to ~/src/kit instead of the Nix store.";
+    description = "Link dotfiles to ~/src/kit instead of copying them into $HOME.";
   };
 
-  config = {
-    home.file = lib.genAttrs (walk "") (rel: {
-      source = link rel;
-    });
+  config = lib.mkMerge [
+    (lib.mkIf config.kit.home.liveLinks {
+      home.file = lib.genAttrs (walk "") (rel: {
+        source = link rel;
+      });
+    })
 
-    home.stateVersion = "26.05";
-  };
+    (lib.mkIf (!config.kit.home.liveLinks) {
+      home.activation.copyDots = lib.hm.dag.entryAfter [ "linkGeneration" ] (
+        lib.concatMapStrings copy (walk "")
+      );
+    })
+
+    { home.stateVersion = "26.05"; }
+  ];
 }

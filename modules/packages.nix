@@ -7,6 +7,8 @@
     age
     ast-grep
     bat
+    cargo
+    clippy
     d2
     direnv
     fd
@@ -32,6 +34,9 @@
     qemu
     rclone
     ripgrep
+    rust-analyzer
+    rustc
+    rustfmt
     sops
     tilt
     tree-sitter
@@ -79,6 +84,7 @@
     "docker-desktop"
     "firefox"
     "ghostty"
+    "google-chrome"
     "obsidian"
     "rectangle"
     "visual-studio-code"
