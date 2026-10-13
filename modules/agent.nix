@@ -123,10 +123,11 @@ in
       serviceConfig.RunAtLoad = true;
     };
 
-    home-manager.users.agent = {
+    home-manager.users.agent = { lib, ... }: {
       imports = [ ./home.nix ];
 
-      # agent has no checkout of kit, so dotfiles are copies in the Nix store.
+      # agent has no checkout of kit, so dotfiles are copied into its home as
+      # writable files (Claude Code, for one, rewrites its settings.json).
       kit.home.liveLinks = false;
 
       # Non-interactive SSH commands (`herdr --remote` looks up `herdr` this way)
@@ -136,12 +137,13 @@ in
         export PATH="$HOME/.local/bin:/opt/homebrew/bin:$PATH"
       '';
 
-      home.file.".claude/settings.json" = lib.mkForce {
-        text = builtins.toJSON agentClaudeSettings;
-      };
-      home.file.".claude/CLAUDE.md" = lib.mkForce {
-        text = builtins.readFile ../dots/.claude/CLAUDE.md + agentClaudeMd;
-      };
+      # Replace the copied Claude Code files with agent's versions.
+      home.activation.agentClaude = lib.hm.dag.entryAfter [ "copyDots" ] ''
+        run install -m 644 ${pkgs.writeText "settings.json" (builtins.toJSON agentClaudeSettings)} "$HOME/.claude/settings.json"
+        run install -m 644 ${
+          pkgs.writeText "CLAUDE.md" (builtins.readFile ../dots/.claude/CLAUDE.md + agentClaudeMd)
+        } "$HOME/.claude/CLAUDE.md"
+      '';
 
       # Headless Herdr server for agent's default session. Starts when agent logs
       # in to a GUI session (needed for desktop apps and a real browser), and
