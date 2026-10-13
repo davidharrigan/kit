@@ -84,6 +84,7 @@
     "docker-desktop"
     "firefox"
     "ghostty"
+    "google-chrome"
     "obsidian"
     "rectangle"
     "visual-studio-code"
