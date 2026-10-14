@@ -19,6 +19,10 @@ let
 
   link = rel: config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/src/kit/modules/dots/claude/${rel}";
 
+  # Copies come from the whole checkout, since some entries here are symlinks
+  # into dots/ (CLAUDE.md, a couple of skills).
+  src = "${../../..}/modules/dots/claude";
+
   copy = rel: ''
     dest="$HOME/.claude/${rel}"
     if [ -L "$dest" ]; then run rm "$dest"; fi
@@ -26,9 +30,9 @@ let
   '' + (
     if lib.pathIsDirectory (./. + "/${rel}") then ''
       run mkdir -p "$dest"
-      run cp -RLf "${./.}/${rel}/." "$dest/"
+      run cp -RLf "${src}/${rel}/." "$dest/"
     '' else ''
-      run cp -Lf "${./.}/${rel}" "$dest"
+      run cp -Lf "${src}/${rel}" "$dest"
     ''
   ) + ''
     run chmod -R u+w "$dest"
