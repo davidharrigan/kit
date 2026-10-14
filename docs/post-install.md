@@ -77,8 +77,8 @@ session, which desktop apps (e.g. Tauri) and a real browser need.
   `OP_SERVICE_ACCOUNT_TOKEN`. Secrets added to the `agent` vault are then
   readable by agent with `op read op://agent/<item>/<field>`.
 - Login keychain unlocks with its GUI login; `sudo -u agent` shells don't get it.
-- Git identity comes from the shared git config (david's). Override it for
-  agent if needed.
+- Git commits as takohoncho: agent's `~/.gitconfig` sets its name and
+  noreply email on top of the shared git config.
 
 ### Hermes Agent
 

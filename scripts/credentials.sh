@@ -156,6 +156,16 @@ else
 fi
 
 gh_login "$AGENT_LOGIN" as_agent
+
+# gh keeps every account that signed in; drop all but agent's own (e.g. david's
+# token from a device code approved in the wrong browser).
+as_agent "$GH" auth status --json hosts --jq '.hosts["github.com"][].login' |
+  while read -r other; do
+    [ "$other" = "$AGENT_LOGIN" ] && continue
+    info "gh: signing agent out of $other"
+    as_agent "$GH" auth logout -h github.com -u "$other" </dev/null
+  done
+
 gh_ssh_key agent /Users/agent as_agent
 
 success "Done."

@@ -151,6 +151,14 @@ in
         export PATH="$HOME/.local/bin:/opt/homebrew/bin:$PATH"
       '';
 
+      # Commit as takohoncho, the account gh and git push as. Git reads
+      # ~/.gitconfig after the shared ~/.config/git/config, so this wins.
+      home.file.".gitconfig".text = ''
+        [user]
+          name = takohoncho
+          email = 317447273+takohoncho@users.noreply.github.com
+      '';
+
       # Replace the copied Claude Code files with agent's versions.
       home.activation.agentClaude = lib.hm.dag.entryAfter [ "copyDots" ] ''
         run install -m 644 ${pkgs.writeText "settings.json" (builtins.toJSON agentClaudeSettings)} "$HOME/.claude/settings.json"
