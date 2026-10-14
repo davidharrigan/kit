@@ -36,16 +36,30 @@ let
     exec ${hermes} gateway
   '';
 
-  # Hermes Desktop's backend. Its session token comes from the agent vault at
-  # start, so it stays out of the Nix store. OP_SERVICE_ACCOUNT_TOKEN stays
-  # exported for Hermes' own 1Password secret lookups.
+  # Hermes Desktop's backend, also serving the web UI dashboard. Its session
+  # token comes from the agent vault at start, so it stays out of the Nix
+  # store. OP_SERVICE_ACCOUNT_TOKEN stays exported for Hermes' own 1Password
+  # secret lookups.
   hermesBackend = pkgs.writeShellScript "hermes-backend" ''
     set -euo pipefail
     OP_SERVICE_ACCOUNT_TOKEN=$(cat "$HOME/.config/op/service-account-token")
     export OP_SERVICE_ACCOUNT_TOKEN
     HERMES_DASHBOARD_SESSION_TOKEN=$(/opt/homebrew/bin/op read "op://agent/hermes backend/password")
     export HERMES_DASHBOARD_SESSION_TOKEN
-    exec ${hermes} serve --host 127.0.0.1 --port 9119 --no-open
+    exec ${hermes} dashboard --host 127.0.0.1 --port 9119 --no-open
+  '';
+
+  # Restarts the Hermes launchd agents: `hermes-restart {backend|gateway|all}`.
+  hermesRestart = pkgs.writeShellScriptBin "hermes-restart" ''
+    set -euo pipefail
+    case "''${1:-}" in
+      all) names="backend gateway" ;;
+      backend|gateway) names="$1" ;;
+      *) echo "usage: hermes-restart {backend|gateway|all}" >&2; exit 1 ;;
+    esac
+    for n in $names; do
+      launchctl kickstart -k "gui/$(id -u)/org.nix-community.home.hermes-$n"
+    done
   '';
 
   # Claude Code settings, with home paths pointed at agent's.
@@ -155,9 +169,10 @@ in
       ];
 
       # Hermes: the gateway (cron, kanban dispatch) and the backend Hermes
-      # Desktop connects to on 127.0.0.1:9119 (`just hermes-tunnel` from a laptop).
-      # Restart them after config changes with `launchctl kickstart -k
-      # gui/$(id -u)/org.nix-community.home.hermes-gateway` (or hermes-backend).
+      # Desktop and the web dashboard use on 127.0.0.1:9119 (`just
+      # hermes-tunnel` from a laptop).
+      # Restart them after config changes with `hermes-restart`.
+      home.packages = [ hermesRestart ];
       launchd.agents.hermes-gateway = sessionAgent "hermes-gateway" [ "${hermesGateway}" ];
       launchd.agents.hermes-backend = sessionAgent "hermes-backend" [ "${hermesBackend}" ];
     };

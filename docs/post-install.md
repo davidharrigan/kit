@@ -85,11 +85,11 @@ session, which desktop apps (e.g. Tauri) and a real browser need.
 Hermes is installed by its official installer as agent (checkout in
 `~/.hermes/hermes-agent`, command at `~/.local/bin/hermes`), not by Nix. Nix
 runs two launchd agents in its GUI session: `hermes gateway` (cron,
-kanban dispatch) and `hermes serve` on `127.0.0.1:9119` for Hermes Desktop.
+kanban dispatch) and `hermes dashboard` on `127.0.0.1:9119`, the backend for
+Hermes Desktop and the web UI dashboard (open `http://127.0.0.1:9119`).
 Config and profiles are set up by hand as agent; restart the agents after
-changing them (`launchctl kickstart -k
-gui/$(id -u)/org.nix-community.home.hermes-gateway`, likewise
-`hermes-backend`). Logs: `~/Library/Logs/kit-hermes-*.log`.
+changing them with `hermes-restart {backend|gateway|all}`, run as agent.
+Logs: `~/Library/Logs/kit-hermes-*.log`.
 
 The backend's session token is the `hermes backend` item (field `password`)
 in the `agent` vault. The backend reads it at start. Hosts with
