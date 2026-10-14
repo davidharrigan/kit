@@ -64,7 +64,7 @@ let
 
   # Claude Code settings, with home paths pointed at agent's.
   claudeSettings = builtins.fromJSON (
-    builtins."readFile" ../dots/.claude/settings.json
+    builtins."readFile" ./dots/claude/settings.pinned.json
   );
 
   # agent runs unattended, so no permission prompts. Remote Control makes each
@@ -160,10 +160,10 @@ in
       '';
 
       # Replace the copied Claude Code files with agent's versions.
-      home.activation.agentClaude = lib.hm.dag.entryAfter [ "copyDots" ] ''
+      home.activation.agentClaude = lib.hm.dag.entryAfter [ "copyDots" "copyClaude" ] ''
         run install -m 644 ${pkgs.writeText "settings.json" (builtins.toJSON agentClaudeSettings)} "$HOME/.claude/settings.json"
         run install -m 644 ${
-          pkgs.writeText "CLAUDE.md" (builtins.readFile ../dots/.claude/CLAUDE.md + agentClaudeMd)
+          pkgs.writeText "CLAUDE.md" (builtins.readFile ./dots/claude/CLAUDE.md + agentClaudeMd)
         } "$HOME/.claude/CLAUDE.md"
       '';
 

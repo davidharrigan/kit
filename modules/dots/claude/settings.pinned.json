@@ -230,21 +230,6 @@
       }
     }
   },
-  "effortLevel": "high",
-  "modelSettings": {
-    "claude-fable-5-1": {
-      "effortLevel": "high"
-    },
-    "claude-opus-5-5": {
-      "effortLevel": "medium"
-    },
-    "claude-opus-4-8": {
-      "effortLevel": "medium"
-    },
-    "claude-sonnet-5": {
-      "effortLevel": "medium"
-    }
-  },
   "promptSuggestionEnabled": false,
   "tui": "fullscreen",
   "skipWorkflowUsageWarning": true,
@@ -252,32 +237,5 @@
   "editorMode": "vim",
   "autoCompactEnabled": false,
   "remoteControlAtStartup": false,
-  "agentPushNotifEnabled": true,
-  "autoMode": {
-    "environment": [
-      "### Org-wide",
-      "**Organization**: None configured",
-      "**Cloud provider(s)**: None configured",
-      "**Repository visibility**: private (davidharrigan/engram, confirmed via gh)",
-      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
-      "**Secrets management**: None configured",
-      "**Default / protected branches**: `main` (default; ruleset active, protected)",
-      "**CI/CD deploy targets**: None configured",
-      "**Network posture**: None configured",
-      "**Source control**: The trusted repo (davidharrigan/engram, github.com:davidharrigan/engram.git) and its remote(s) only",
-      "**Trusted internal domains**: None configured",
-      "**Trusted cloud buckets**: None configured — bucket scan failed, treat as unavailable, not absent",
-      "**Key internal services**: None configured",
-      "**Internal package registry**: None configured",
-      "**Sensitive data locations & audiences**: any file or store holding personal data, confidential business data, credentials, regulated data, or similarly sensitive material; preserve exact handles when known and share only with audiences cleared at the [named+specifics] bar — note: .env, .env.* (excluding .env.example) are gitignored in this repo, treat as secret-bearing",
-      "**Data retention / declassification**: None configured",
-      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
-      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
-      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
-      "### User-specific",
-      "**Primary use of Claude Code**: software development (Tauri/Rust + SvelteKit desktop app, engram)",
-      "**Trusted repo**: /Users/david/src/engram (davidharrigan/engram, private) and its remote origin (github.com:davidharrigan/engram.git) — confidential material is fine to commit here, but content ported or repointed from outside this repo is not this repo's own work",
-      "**Org-specific CLIs**: None configured — `hack` and `herdr` appear frequently in this project's usage but no org/CLI documentation was found to characterize them"
-    ]
-  }
+  "agentPushNotifEnabled": true
 }

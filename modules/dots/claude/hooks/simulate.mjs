@@ -25,7 +25,7 @@ import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const CMDHOOK = join(HERE, "cmdhook.mjs");
-const SETTINGS = join(HERE, "..", "settings.json"); // dots/.claude/settings.json
+const SETTINGS = join(HERE, "..", "settings.pinned.json"); // modules/dots/claude/settings.pinned.json
 
 const SEP = /&&|\|\||[;&|]/;
 

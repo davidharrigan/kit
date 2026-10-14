@@ -1,0 +1,1 @@
+../../../dots/.agents/AGENTS.md

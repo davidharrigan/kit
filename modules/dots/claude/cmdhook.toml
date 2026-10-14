@@ -1,6 +1,6 @@
 # Per-project overrides for cmdhook.mjs. Copy to <repo>/.claude/cmdhook.toml.
 # The hook reads <project-root>/.claude/cmdhook.toml (resolved via git). This
-# file in dots/.claude/ is only a reference — it is NOT read globally.
+# file in modules/dots/claude/ is only a reference — it is NOT read globally.
 #
 # Minimal sectioned TOML: [section] headers, `key = value` (bool / "string" /
 # ["array","of","strings"]).

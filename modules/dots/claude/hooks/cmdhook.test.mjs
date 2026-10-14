@@ -1,4 +1,4 @@
-// Tests for cmdhook.mjs — run with:  node --test dots/.claude/hooks/
+// Tests for cmdhook.mjs — run with:  node --test modules/dots/claude/hooks/
 //
 // Integration style: spawn the real hook with a stdin payload and assert on its
 // stdout JSON, exercising the actual PreToolUse contract (no internal mocking).

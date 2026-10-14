@@ -1,5 +1,6 @@
 # Dotfiles (a home-manager module, used by system.nix and agent.nix): links or
-# copies everything in dots/ into $HOME.
+# copies everything in dots/ into $HOME, plus the per-tool modules in
+# modules/dots/.
 { config, lib, ... }:
 let
   dots = ../dots;
@@ -7,7 +8,6 @@ let
   # Not linked into $HOME.
   skip = [
     ".homebrew"
-    ".codex"
   ];
 
   # Linked as whole directories: new files show up without a switch. Everything
@@ -18,10 +18,6 @@ let
     ".env"
     ".completion"
     ".config/nvim"
-    ".claude/agents"
-    ".claude/commands"
-    ".claude/hooks"
-    ".claude/skills"
   ];
 
   # Live links point at the checkout in ~/src/kit, so edits apply without a
@@ -64,6 +60,11 @@ let
     );
 in
 {
+  imports = [
+    ./dots/claude
+    ./dots/codex
+  ];
+
   options.kit.home.liveLinks = lib.mkOption {
     type = lib.types.bool;
     default = true;
