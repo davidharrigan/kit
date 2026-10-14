@@ -16,7 +16,7 @@ brew/install:
 brew/install/%:
 	$(LOAD_ENV) brew bundle --file=./dots/.homebrew/Brewfile.$*
 
-PERMGEN := cd tools/permgen && go run . -config permissions.yaml -claude ../../dots/.claude/settings.json
+PERMGEN := cd tools/permgen && go run . -config permissions.yaml -claude ../../modules/dots/claude/settings.pinned.json
 
 .PHONY: perms/generate
 perms/generate:

@@ -1,11 +1,11 @@
 # permgen
 
-Generates the `permissions` block of `dots/.claude/settings.json` from a single
+Generates the `permissions` block of `modules/dots/claude/settings.pinned.json` from a single
 tool-agnostic source of truth (`permissions.yaml`).
 
 ## Why
 
-Maintaining `dots/.claude/settings.json`'s `permissions` block by hand means
+Maintaining `modules/dots/claude/settings.pinned.json`'s `permissions` block by hand means
 juggling the `Bash(...)`/`Read(...)` wrapper syntax and `:*` suffix rules
 directly in JSON. `permgen` keeps a single tool-agnostic source of truth
 (`permissions.yaml`) and derives the wrapped Claude permission strings from it.

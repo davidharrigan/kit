@@ -226,5 +226,5 @@ ask:
     - "set | base64*"
     # gh api writes are handled by the cmdhook.mjs policy hook (proper arg
     # parsing + per-repo endpoint allow), not fragile flag globs. See
-    # dots/.claude/hooks/cmdhook.mjs. `gh api` reads still auto-approve via the
+    # modules/dots/claude/hooks/cmdhook.mjs. `gh api` reads still auto-approve via the
     # `allow` list above.

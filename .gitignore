@@ -2,11 +2,12 @@ backup
 
 # Codex stores credentials and runtime state alongside its configuration.
 # Only these reviewed configuration files belong in the repository.
-/dots/.codex/*
-!/dots/.codex/config.toml
-!/dots/.codex/hooks.json
-!/dots/.codex/keybindings.json
-!/dots/.codex/herdr-agent-state.sh
+/modules/dots/codex/*
+!/modules/dots/codex/default.nix
+!/modules/dots/codex/config.pinned.toml
+!/modules/dots/codex/hooks.json
+!/modules/dots/codex/keybindings.json
+!/modules/dots/codex/herdr-agent-state.sh
 
 # nix build output
 result
@@ -14,4 +15,4 @@ result
 # machine capture output (local only; capture.sh is tracked)
 baseline/*/
 
-/dots/.claude/skills/synced
+/modules/dots/claude/skills/synced

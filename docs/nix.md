@@ -27,7 +27,7 @@ curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install --enable
    find ~ -maxdepth 4 \( -path ~/Library -o -path ~/src -o -path ~/.Trash \) -prune \
      -o -type l -lname '*src/kit/dots*' -print -delete
    # git-ignored, so not linked by Nix; keep it as a plain local file
-   cp dots/.claude/settings.local.json ~/.claude/
+   cp modules/dots/claude/settings.local.json ~/.claude/
    ```
 
 3. Apps installed by hand that are also in a cask list make `brew bundle`
