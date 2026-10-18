@@ -17,3 +17,5 @@ __projects/
 **/*.local.env
 **/*.local.config
 **/.scratch
+
+**/.claude/.cc-writes/

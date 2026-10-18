@@ -62,35 +62,14 @@ onboarding = false
 # Most reliable direct bindings are ctrl+letter, function keys, and explicit modified chords.
 # alt+..., cmd/super, and punctuation-with-modifiers may depend on your terminal/tmux setup.
 prefix = "ctrl+space"
-
-[[keys.command]]
-key = "prefix+f"
-type = "plugin_action"
-command = "herdr-file-viewer.open-file-viewer"
-description = "open file viewer in split"
-
-[[keys.command]]
-key = "prefix+shift+f"
-type = "plugin_action"
-command = "herdr-file-viewer.open-file-viewer-tab"
-description = "open file viewer in tab"
-
-[[keys.command]]
-key = "prefix+e"
-type = "plugin_action"
-command = "chmarax.herdr-nvim.toggle"
-description = "nvim sidebar"
+cycle_pane_previous = "ctrl+h"
+cycle_pane_next = "ctrl+l"
 
 [[keys.command]]
 key = "prefix+o"
 type = "plugin_action"
 command = "chmarax.herdr-nvim.pick-file"
 description = "open file from agent output"
-
-[[keys.command]]
-key = "prefix+r"
-type = "plugin_action"
-command = "persiyanov.reviewr.toggle"   # <plugin_id>.<action_id> — note the id, not the name
 
 # Prefix-mode actions
 # help = "prefix+?"
@@ -168,6 +147,13 @@ command = "persiyanov.reviewr.toggle"   # <plugin_id>.<action_id> — note the i
 # directory = "~/.herdr/worktrees"
 
 [ui]
+tab_bar_right = [
+  { type = "hostname" },
+  { type = "datetime", format = "%H:%M" },
+  # { type = "text", text = "prod" },
+  # { type = "command", command = "~/.config/herdr/status.sh", interval_seconds = 5, timeout_seconds = 2 },
+]
+tab_bar_right_separator = " · "
 # Sidebar width (auto-scaled based on workspace names, this sets the default)
 # sidebar_width = 26
 
@@ -222,7 +208,7 @@ command = "persiyanov.reviewr.toggle"   # <plugin_id>.<action_id> — note the i
 # prompt_new_tab_name = true
 
 # Ask for a workspace name before interactive creation.
-# prompt_new_workspace_name = false
+prompt_new_workspace_name = true
 
 # Draw borders around split panes.
 # pane_borders = true
@@ -253,10 +239,13 @@ command = "persiyanov.reviewr.toggle"   # <plugin_id>.<action_id> — note the i
 # Custom values reported through pane metadata use a $name token.
 # A token occurrence may be styled with { token = "workspace", fg = "#89b4fa", bold = true, dim = false }.
 # Omitted style fields preserve the contextual default.
-# [ui.sidebar.agents]
+[ui.sidebar.agents]
 # Blank rows between agent entries. Set to 1 to restore the previous spacing.
-# row_gap = 0
-# rows = [["state_icon", "workspace", "tab"], ["agent"]]
+row_gap = 0
+rows = [
+  ["state_icon", "workspace", "tab"],
+  ["agent"],
+]
 # Optional canonical agent IDs replace the default rows for matching agents.
 # [ui.sidebar.agents.rows_by_agent]
 # claude = [["state_icon", "workspace", "tab"], ["terminal_title_stripped"], ["agent"]]
@@ -264,18 +253,22 @@ command = "persiyanov.reviewr.toggle"   # <plugin_id>.<action_id> — note the i
 # Expanded space rows. Built-ins are state_icon, state_text, workspace, branch, and git_status.
 # Custom values reported through workspace metadata use a $name token, for example $jj_status.
 # Inline token styles accept strict #RGB/#RRGGBB foregrounds plus bold and dim booleans.
-# [ui.sidebar.spaces]
+[ui.sidebar.spaces]
 # Blank rows between space entries. Set to 1 to restore the previous spacing.
-# row_gap = 0
-# rows = [["state_icon", "workspace"], ["branch", "git_status"]]
+row_gap = 0
+rows = [
+  ["state_icon", "workspace"],
+  ["branch", "git_status"],
+]
 
 # Accent color for highlights, borders, and navigation UI.
 # Accepts: hex (#89b4fa), named colors (cyan, blue, magenta), or rgb(r,g,b)
 # accent = "cyan"
 
 # Background notification popup delivery
-show_agent_labels_on_pane_borders = true
-agent_panel_sort = "spaces"
+# show_agent_labels_on_pane_borders = true
+# agent_panel_sort = "spaces"
+
 [ui.toast]
 # off = disable pop-up notifications
 # herdr = show in-app toasts

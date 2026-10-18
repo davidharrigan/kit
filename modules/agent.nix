@@ -78,22 +78,7 @@ let
   };
 
   agentClaudeMd = ''
-
     ## Agent environment
-    You run as the `agent` macOS user, usually unattended inside a Herdr
-    session. Permission prompts are off, so act carefully.
-
-    - **GitHub**: `gh` and git over SSH are signed in as `takohoncho`.
-    - **Secrets**: the 1Password CLI `op` is signed in with a service account
-      (`OP_SERVICE_ACCOUNT_TOKEN`, exported by ~/.zshrc). It has read-only
-      access to the `agent` vault, and nothing else.
-      - List: `op item list --vault agent`
-      - Read one field: `op read "op://agent/<item>/<field>"`
-      - Run with secrets in env: `op run --env-file=<file> -- <cmd>`, where the
-        file holds `NAME=op://agent/<item>/<field>` references.
-      - Pass secrets to commands through `op run` or `$(op read …)`. Never echo
-        them, write them to files, or commit them.
-      - If a credential you need isn't in the vault, stop and ask the user to add it.
     - **Network**: TCP/UDP to 192.168.0.0/16 is blocked; the local network is
       unreachable by design.
     - **Privileges**: agent is not an admin; `sudo` is unavailable.
@@ -151,7 +136,6 @@ in
         export PATH="$HOME/.local/bin:/opt/homebrew/bin:$PATH"
       '';
 
-      # Commit as takohoncho, the account gh and git push as. Git reads
       # ~/.gitconfig after the shared ~/.config/git/config, so this wins.
       home.file.".gitconfig".text = ''
         [user]

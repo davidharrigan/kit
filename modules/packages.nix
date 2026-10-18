@@ -74,7 +74,6 @@
     "1password"
     "1password-cli"
     "antigravity"
-    "aside"
     "autodesk-fusion"
     "bambu-studio"
     "blender"

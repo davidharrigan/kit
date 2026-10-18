@@ -16,3 +16,5 @@ result
 baseline/*/
 
 /modules/dots/claude/skills/synced
+
+/*/.env/*.env
