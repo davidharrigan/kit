@@ -1,5 +1,3 @@
-backup
-
 # Codex stores credentials and runtime state alongside its configuration.
 # Only these reviewed configuration files belong in the repository.
 /modules/dots/codex/*
@@ -17,4 +15,4 @@ baseline/*/
 
 /modules/dots/claude/skills/synced
 
-/*/.env/*.env
+/*/env/*.env

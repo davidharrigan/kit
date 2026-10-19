@@ -2,32 +2,16 @@
 
 This is my dev kit.  It install config I need to stay productive on any machine.
 
-## What's in it?
-```bash
-├── Makefile                 # for easy installation
-├── backup                   # any existinng config will be backed up here on install
-├── dots
-│   ├── aliases              # aliases, everything here will be sourced
-│   │   └── common.alias
-│   ├── config
-│   │   └── nvim
-│   │       └── init.vim
-│   ├── env                  # environment variables, everything here will be sourced
-│   │   └── common.env
-│   └── zshrc
-└── terminal                 # terminal utilities
-```
-
 ## Nix (nix-darwin)
 
 Macs are managed by a flake: nix-darwin (system settings, fonts, SSH, launchd),
 home-manager (dotfiles and CLI tools) and nix-homebrew (Homebrew itself, casks,
-and the few formulae missing from nixpkgs). Machines without Nix use
-`make install` (GNU Stow).
+and the few formulae missing from nixpkgs).
 
 ```
 flake.nix              list of hosts
 hosts/<name>.nix       hostname, feature toggles (kit.*), host-only apps
+dots/                  dotfiles, linked into $HOME
 modules/               shared by every host
   packages.nix         apps and tools: CLI (nixpkgs), fonts, brews, casks
   macos.nix            macOS defaults, applied to every user
@@ -46,7 +30,8 @@ matching file in `modules/`. Dotfiles go in `dots/`. A new host: add
 `hosts/<name>.nix` and its name in `flake.nix`.
 
 Every git-tracked file in `dots/` is symlinked into `$HOME`, pointing at this
-checkout, so edits apply immediately. A new file needs a `just apply`, except
+checkout, so edits apply immediately. Top-level names gain a leading dot:
+`dots/zshrc` becomes `~/.zshrc`. A new file needs a `just apply`, except
 inside the directories listed in `wholeDirs` in `modules/home.nix`, which are
 linked as a whole.
 

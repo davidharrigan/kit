@@ -1,23 +1,23 @@
 # Dotfiles (a home-manager module, used by system.nix and agent.nix): links or
 # copies everything in dots/ into $HOME, plus the per-tool modules in
-# modules/dots/.
+# modules/dots/. Top-level names gain a leading dot: dots/zshrc is ~/.zshrc.
 { config, lib, ... }:
 let
   dots = ../dots;
 
   # Not linked into $HOME.
   skip = [
-    ".homebrew"
+    "homebrew"
   ];
 
   # Linked as whole directories: new files show up without a switch. Everything
   # else is linked file by file, so real directories such as ~/.ssh, ~/.claude
-  # and ~/.config keep their local contents (like stow does).
+  # and ~/.config keep their local contents.
   wholeDirs = [
-    ".agents"
-    ".env"
-    ".completion"
-    ".config/nvim"
+    "agents"
+    "env"
+    "completion"
+    "config/nvim"
   ];
 
   # Live links point at the checkout in ~/src/kit, so edits apply without a
@@ -27,7 +27,7 @@ let
   # Copies are real, writable files, overwritten on every switch. Symlinks
   # inside dots/ are copied as what they point to.
   copy = rel: ''
-    dest="$HOME/${rel}"
+    dest="$HOME/.${rel}"
     if [ -L "$dest" ]; then run rm "$dest"; fi
     run mkdir -p "$(dirname "$dest")"
   '' + (
@@ -73,9 +73,9 @@ in
 
   config = lib.mkMerge [
     (lib.mkIf config.kit.home.liveLinks {
-      home.file = lib.genAttrs (walk "") (rel: {
-        source = link rel;
-      });
+      home.file = lib.listToAttrs (
+        map (rel: lib.nameValuePair ".${rel}" { source = link rel; }) (walk "")
+      );
     })
 
     (lib.mkIf (!config.kit.home.liveLinks) {
@@ -85,7 +85,7 @@ in
     })
 
     {
-      # Installs the plugins listed in dots/.config/herdr/plugins.list when
+      # Installs the plugins listed in dots/config/herdr/plugins.list when
       # missing. Herdr comes from Homebrew; a failed install doesn't fail the
       # switch.
       home.activation.herdrPlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
@@ -98,7 +98,7 @@ in
               run "$herdr" plugin install --yes ''${ref:+--ref "$ref"} "$plugin" \
                 || echo "herdr plugin $plugin failed to install" >&2
             fi
-          done < ${dots}/.config/herdr/plugins.list
+          done < ${dots}/config/herdr/plugins.list
         fi
       '';
 
