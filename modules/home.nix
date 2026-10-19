@@ -84,6 +84,25 @@ in
       );
     })
 
-    { home.stateVersion = "26.05"; }
+    {
+      # Installs the plugins listed in dots/.config/herdr/plugins.list when
+      # missing. Herdr comes from Homebrew; a failed install doesn't fail the
+      # switch.
+      home.activation.herdrPlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        herdr=/opt/homebrew/bin/herdr
+        if [ -x "$herdr" ]; then
+          installed="$("$herdr" plugin list 2>/dev/null || true)"
+          while read -r plugin ref; do
+            case "$plugin" in ""|"#"*) continue ;; esac
+            if ! printf '%s\n' "$installed" | grep -qiF "github:$plugin@"; then
+              run "$herdr" plugin install --yes ''${ref:+--ref "$ref"} "$plugin" \
+                || echo "herdr plugin $plugin failed to install" >&2
+            fi
+          done < ${dots}/.config/herdr/plugins.list
+        fi
+      '';
+
+      home.stateVersion = "26.05";
+    }
   ];
 }
