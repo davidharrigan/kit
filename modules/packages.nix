@@ -85,6 +85,7 @@
     "firefox"
     "ghostty"
     "google-chrome"
+    "herdr-app"
     "obsidian"
     "rectangle"
     "visual-studio-code"
