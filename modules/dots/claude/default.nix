@@ -14,8 +14,11 @@ let
     "agents"
     "commands"
     "hooks"
-    "skills"
-  ];
+  ] ++ skills;
+
+  # Each skill is linked on its own so ~/.claude/skills stays a real directory
+  # that also holds skills kept outside the repo.
+  skills = map (s: "skills/${s}") (lib.attrNames (builtins.readDir ./skills));
 
   link = rel: config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/src/kit/modules/dots/claude/${rel}";
 
@@ -27,14 +30,12 @@ let
     dest="$HOME/.claude/${rel}"
     if [ -L "$dest" ]; then run rm "$dest"; fi
     run mkdir -p "$(dirname "$dest")"
-  '' + (
-    if lib.pathIsDirectory (./. + "/${rel}") then ''
+    if [ -d "${src}/${rel}" ]; then
       run mkdir -p "$dest"
       run cp -RLf "${src}/${rel}/." "$dest/"
-    '' else ''
+    else
       run cp -Lf "${src}/${rel}" "$dest"
-    ''
-  ) + ''
+    fi
     run chmod -R u+w "$dest"
   '';
 
