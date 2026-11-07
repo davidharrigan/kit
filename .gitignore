@@ -16,3 +16,4 @@ baseline/*/
 /modules/dots/claude/skills/synced
 
 /*/env/*.env
+*.local.json
