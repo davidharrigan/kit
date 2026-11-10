@@ -87,7 +87,6 @@
     "google-chrome"
     "herdr-app"
     "obsidian"
-    "rectangle"
     "visual-studio-code"
     # Not in nixpkgs; other fonts are in fonts.packages above.
     "font-ioskeley-mono"

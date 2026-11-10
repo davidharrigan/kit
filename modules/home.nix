@@ -61,8 +61,10 @@ let
 in
 {
   imports = [
+    ./dots/aerospace
     ./dots/claude
     ./dots/codex
+    ./dots/rex
   ];
 
   options.kit.home.liveLinks = lib.mkOption {

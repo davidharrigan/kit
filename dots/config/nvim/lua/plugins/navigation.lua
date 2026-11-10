@@ -76,6 +76,12 @@ return {
             require("fzf-lua").register_ui_select()
         end
     },
+    -- Project-wide search and replace
+    {
+        "MagicDuck/grug-far.nvim",
+        cmd = { "GrugFar", "GrugFarWithin" },
+        opts = { headerMaxWidth = 80 }
+    },
     -- Code outline window showing symbols (functions, classes, etc.)
     {
         "stevearc/aerial.nvim",

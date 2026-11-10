@@ -13,6 +13,14 @@ keymap("n", "<leader>fS", "<cmd>FzfLua lsp_live_workspace_symbols<cr>", { desc =
 keymap("n", "<leader>fd", "<cmd>FzfLua git_diff<cr>", { desc = "Diff", nowait = true })
 keymap("n", "<leader>fc", "<cmd>FzfLua git_bcommits<cr>", { desc = "Git commits (branch)" })
 keymap("n", "<leader>fC", "<cmd>FzfLua git_commits<cr>", { desc = "Git commits" })
+keymap({ "n", "x" }, "<leader>sr", function ()
+    local ext = vim.bo.buftype == "" and vim.fn.expand("%:e")
+    require("grug-far").open({
+        transient = true,
+        prefills = { filesFilter = ext and ext ~= "" and "*." .. ext or nil }
+    })
+end, { desc = "Search and Replace" }
+)
 
 -- ============================================================================
 -- Buffers

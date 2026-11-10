@@ -8,7 +8,7 @@ Things nix-darwin can't declare. Redo them after a fresh install.
 
 System Settings → Privacy & Security:
 
-- **Accessibility**: Rectangle, Bartender.
+- **Accessibility**: Rectangle, Bartender, AeroSpace.
 - **Full Disk Access**: Ghostty, if a shell needs protected folders.
 - **Screen Recording**: screenshot and screen-recording tools.
 

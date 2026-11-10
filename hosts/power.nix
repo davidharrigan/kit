@@ -15,5 +15,6 @@
 
   homebrew.casks = [
     "ollama-app"
+    "rectangle"
   ];
 }

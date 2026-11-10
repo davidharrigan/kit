@@ -107,7 +107,9 @@ in
     };
 
     # Auto-hiding dock on the left, scale minimize effect, no recent apps.
+    # Grouping by app keeps windows readable in Mission Control under AeroSpace.
     "com.apple.dock" = {
+      expose-group-apps = true;
       autohide = true;
       orientation = "left";
       mineffect = "scale";
