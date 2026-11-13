@@ -19,8 +19,8 @@ opt.softtabstop = 4 -- Number of spaces tabs count for
 opt.tabstop = 4 -- Number of spaces in a tab
 opt.smartindent = true -- Insert indents automatically
 
-opt.colorcolumn = "80" -- Highlight column 80
-opt.textwidth = 80 -- Wrap text at 120 columns (used by gq)
+opt.colorcolumn = "100" -- Highlight column 80
+opt.textwidth = 100 -- Wrap text at 120 columns (used by gq)
 --opt.signcolumn = "yes:1" -- Always show sign column
 opt.termguicolors = true -- Enable true colors
 opt.ignorecase = true -- Ignore case in search

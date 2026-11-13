@@ -10,10 +10,6 @@
   the orchestrating model. List each model when several contributed.
 
 ## Planning
-Propose the smallest viable plan that meets the stated intent. Do not add test
-scaffolds (integration tests, fixtures, golden files), extra folders, or
-features unless asked.
-
 If an approach or convention is ambiguous, ask one concise question before
 implementing. Ask conversationally, not with the `AskUserQuestion` tool.
 
@@ -29,8 +25,9 @@ implementing. Ask conversationally, not with the `AskUserQuestion` tool.
 - For reviews, report substantive issues with their consequence and fix.
 - When work yields several items needing the user's decision (review findings,
   research answers, open questions): apply mechanical fixes, make minor calls
-  yourself, and drop trivial items unmentioned. Ask the rest one per message —
-  short framing and why it matters, 2–4 numbered options, one marked
+  yourself, and drop trivial items unmentioned. List the rest, one line each,
+  and ask whether to go through them now. Once the user agrees, ask one per
+  message — short framing and why it matters, 2–4 numbered options, one marked
   recommended — and apply each answer before asking the next.
 - Expand when requested or necessary for correctness. Keep the work thorough
   even when the response is short.
@@ -58,6 +55,12 @@ Before implementing:
 - If you write 200 lines and it could be 50, rewrite it.
 
 Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+
+### 3. Finish the job
+- Simplest design, not the smallest diff. When a new case shares shape with an existing one, extract
+  the common part.
+- Fix inconsistencies in code you touch. List the ones outside your scope in
+  your final report.
 
 ## Deliverables vs. session talk
 Don't record session decisions as negations in durable artifacts (docs, code
